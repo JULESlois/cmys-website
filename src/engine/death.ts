@@ -17,10 +17,20 @@ export interface DeathCheck {
   luckCursed?: boolean;
 }
 
-/** 分龄获取致死阈值：少年/青年归零才死，壮年/晚年 ≤10 即死 */
+/**
+ * 分龄获取致死阈值。
+ *
+ * 属性已改为 0~100 尺度：
+ * - 30 岁前只有致死属性归零才死亡，避免少年/青年期被单次选择误杀；
+ * - 31~60 岁低于 6 视为长期崩溃；
+ * - 61~80 岁阈值为 12；
+ * - 81 岁后阈值升到 18，体现晚年脆弱性。
+ */
 export function getLethalThreshold(age: number): number {
   if (age <= 30) return 0;
-  return 10;
+  if (age <= 60) return 6;
+  if (age <= 80) return 12;
+  return 18;
 }
 
 export function checkDeath(state: GameState): DeathCheck {
@@ -74,9 +84,9 @@ export function checkRandomDeath(age: number): DeathCheck {
   if (age <= 17) return { isDead: false }; // 少年期无随机死亡
 
   let probability: number;
-  if (age <= 30) probability = 0.01;       // 青年 1%/年
-  else if (age <= 60) probability = 0.02;  // 壮年 2%/年
-  else probability = 0.03;                  // 晚年 3%/年
+  if (age <= 30) probability = 0.005;       // 青年 0.5%/年
+  else if (age <= 60) probability = 0.01;   // 壮年 1%/年
+  else probability = 0.02;                  // 晚年 2%/年
 
   if (Math.random() < probability) {
     const causes = [
@@ -94,9 +104,9 @@ export function checkRandomDeath(age: number): DeathCheck {
   return { isDead: false };
 }
 
-/** 体质自然衰减：30岁起每5年-1，仅整5年节点触发 */
+/** 体质自然衰减：30 岁起每 5 年 -2，仅整 5 年节点触发 */
 export function applyNaturalDecay(age: number): Partial<Record<AttributeName, number>> {
   if (age <= 30) return {};
-  if ((age - 30) % 5 === 0) return { physique: -1 };
+  if ((age - 30) % 5 === 0) return { physique: -2 };
   return {};
 }

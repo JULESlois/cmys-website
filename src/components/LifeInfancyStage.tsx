@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLife } from "./LifeContext";
 import { ANCHOR_EVENTS } from "../data/life/events-anchors";
+import { scaleAttributeChanges } from "../engine/balance";
+import { attr } from "../engine/types";
+import { getStoryArcByAge } from "../data/life/story-arcs";
 
 export function LifeInfancyStage() {
   const { state, dispatch } = useLife();
@@ -20,10 +23,11 @@ export function LifeInfancyStage() {
         let newAttrs = { ...state.attributes };
         for (const e of infancyEvents) {
           if (e.choices[0]?.effects?.attributes) {
-            for (const [k, v] of Object.entries(e.choices[0].effects.attributes)) {
+            const scaled = scaleAttributeChanges(e.choices[0].effects.attributes);
+            for (const [k, v] of Object.entries(scaled)) {
               newAttrs = {
                 ...newAttrs,
-                [k]: Math.max(0, Math.min(100, newAttrs[k as keyof typeof newAttrs] + (v as number))),
+                [k]: attr(newAttrs[k as keyof typeof newAttrs] + (v as number)),
               };
             }
           }
@@ -40,7 +44,8 @@ export function LifeInfancyStage() {
               eventId: e.id,
               title: e.title,
               choiceText: e.choices[0]?.text ?? "",
-              attributeChanges: e.choices[0]?.effects?.attributes ?? {},
+              attributeChanges: scaleAttributeChanges(e.choices[0]?.effects?.attributes ?? {}),
+              storyArcId: getStoryArcByAge(e.triggerAge as number).id,
             })),
             triggeredEventIds: Object.fromEntries(infancyEvents.map((e) => [e.id, 6])),
           },

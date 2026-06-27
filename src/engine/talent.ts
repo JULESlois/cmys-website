@@ -1,6 +1,7 @@
 // src/engine/talent.ts
 import type { Talent, GameState, AttributeName, Attributes } from "./types";
 import { attr } from "./types";
+import { scaleAttributeDelta } from "./balance";
 
 // 获取当前年龄生效的天赋
 export function getActiveTalents(state: GameState): Talent[] {
@@ -24,10 +25,10 @@ export function applyTalentModifiers(
 
   for (const talent of activeTalents) {
     for (const [key, val] of Object.entries(talent.positive) as [AttributeName, number][]) {
-      result[key] = (result[key] ?? 0) + val;
+      result[key] = (result[key] ?? 0) + scaleAttributeDelta(val);
     }
     for (const [key, val] of Object.entries(talent.negative) as [AttributeName, number][]) {
-      result[key] = (result[key] ?? 0) + val;
+      result[key] = (result[key] ?? 0) + scaleAttributeDelta(val);
     }
   }
 
@@ -63,10 +64,10 @@ export function applyTalentToAttributes(
 ): Attributes {
   const next = { ...attrs };
   for (const [key, val] of Object.entries(talent.positive) as [AttributeName, number][]) {
-    next[key] = attr(next[key] + val);
+    next[key] = attr(next[key] + scaleAttributeDelta(val));
   }
   for (const [key, val] of Object.entries(talent.negative) as [AttributeName, number][]) {
-    next[key] = attr(next[key] + val);
+    next[key] = attr(next[key] + scaleAttributeDelta(val));
   }
   return next;
 }

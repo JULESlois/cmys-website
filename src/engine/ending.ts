@@ -1,6 +1,7 @@
 // src/engine/ending.ts
 import type { GameState, GameResult, AchievementId } from "./types";
 import { checkAchievements, getAchievementScore, getAllAchievementIds } from "./achievements";
+import { getAttributeEnding, getAttributeEndingByAttribute } from "../data/life/attribute-endings";
 
 export function computeResult(state: GameState): GameResult {
   const { attributes, eventLog, relationships, career, age } = state;
@@ -48,8 +49,9 @@ export function computeResult(state: GameState): GameResult {
     4: ["沧海一声笑", "此心安处是吾乡", "青云直上"],
     5: ["半生戎马半生花", "一世风雨一世霞", "万古长空一轮月"],
   };
+  const attributeEnding = getAttributeEndingByAttribute(state.attributeEndingId) ?? getAttributeEnding(attributes);
   const pool = titles[starRating] ?? titles[1];
-  const title = pool[Math.floor(Math.random() * pool.length)];
+  const title = attributeEnding?.title ?? pool[Math.floor(Math.random() * pool.length)];
 
   // ── 人生亮点 ──
   const highlights: string[] = [];
@@ -60,11 +62,14 @@ export function computeResult(state: GameState): GameResult {
   if (achievements.length >= 5) highlights.push(`成就猎人——解锁了 ${achievements.length} 项成就`);
   if (achievements.includes("century")) highlights.push("百年孤独——活到了世界的尽头");
   if (achievements.includes("phoenix")) highlights.push("不死鸟——在死亡边缘反复横跳");
+  if (attributeEnding) highlights.unshift(attributeEnding.highlight);
 
   return {
     starRating,
     title,
     description: `享年 ${age} 岁 · 基础 ${baseScore} + 成就 ${achievementScore} + 叙事 ${narrativeScore}`,
+    endingDescription: attributeEnding?.description,
+    flavorText: attributeEnding?.flavorText,
     totalScore: Math.round(totalScore),
     highlights: highlights.length > 0 ? highlights : ["平平淡淡才是真"],
     achievements,

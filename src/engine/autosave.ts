@@ -1,5 +1,6 @@
 // src/engine/autosave.ts
 import type { EventTriggerRecord, GameState } from "./types";
+import { normalizeChapterState, syncStoryArcForAge } from "./chapters";
 
 const SAVE_KEY = "cmys_life_autosave";
 
@@ -34,6 +35,10 @@ function deserializeState(json: string): GameState {
   return {
     ...raw,
     triggeredEventIds: triggered,
+    chapter: syncStoryArcForAge(normalizeChapterState(raw.chapter), raw.age ?? 0),
+    pendingChapterIntroId: raw.pendingChapterIntroId ?? null,
+    attributeEndingId: raw.attributeEndingId ?? null,
+    nearDeathCount: raw.nearDeathCount ?? 0,
   };
 }
 

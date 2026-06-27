@@ -46,6 +46,13 @@ export interface EventBase {
   maxAge: Age;
   weight?: number;
   cooldownYears?: number;  // 新增：触发后冷却年数
+  chapterId?: string;      // 所属篇章事件
+  requiredChapter?: string;
+  excludedChapter?: string;
+  triggerChapter?: string;
+  chapterFlagsRequired?: Record<string, boolean | number | string>;
+  chapterPriority?: number;
+  storyArcId?: string;      // 主线篇章归属，仅用于管理/展示，不参与隐藏篇章过滤
 }
 
 export interface AnchorEvent extends EventBase {
@@ -79,6 +86,12 @@ export interface EventChoice {
     grantTalents?: string[];
     removeTalents?: string[];
     triggerEventId?: string;
+    triggerChapterId?: string;
+    setChapterFlags?: Record<string, boolean | number | string>;
+    exitChapter?: boolean;
+    completeChapterId?: string;
+    /** 结果关闭后是否停留在当前年龄继续篇章内部事件 */
+    holdAge?: boolean;
     relationshipEffect?: { targetId: string; change: number };
     careerLevelDelta?: number;  // 新增：职业等级变化
     isLethal?: boolean;
@@ -88,6 +101,43 @@ export interface EventChoice {
 export interface EventResult {
   text: string;
   attributeChanges: Partial<Record<AttributeName, number>>;
+  chapterTransition?: string;
+  holdAge?: boolean;
+  endGame?: boolean;
+}
+
+// ── Chapter Tree ──
+export interface ChapterState {
+  /** 主线现实篇章：萌娃篇、esu篇、大学篇等 */
+  currentArcId: string;
+  visitedArcIds: string[];
+  /** 隐藏异常篇章：沉没异生篇、梦蚀篇等 */
+  activeChapterId: string | null;
+  unlockedChapterIds: string[];
+  completedChapterIds: string[];
+  chapterFlags: Record<string, boolean | number | string>;
+  chapterDepth: number;
+}
+
+export interface ChapterEntryAnimation {
+  enabled: boolean;
+  chars?: string[];
+  subtitle?: string;
+  durationMs?: number;
+  motif?: "well" | "yomi" | "dream" | "default";
+}
+
+export interface ChapterDefinition {
+  id: string;
+  name: string;
+  subtitle?: string;
+  description: string;
+  tone: "fantasy" | "cthulhu" | "isekai" | "urban_legend" | "dream" | "reincarnation";
+  entryEventIds: string[];
+  exitEventIds?: string[];
+  endingEventIds?: string[];
+  /** 可选篇章入场动画。未配置或 enabled=false 时不播放。 */
+  entryAnimation?: ChapterEntryAnimation;
 }
 
 // ── Relationship ──
@@ -146,6 +196,8 @@ export type GamePhase =
   | { type: "save_choice" }
   | { type: "talent_selection"; round: number }
   | { type: "playing"; step: "aging" | "event_presenting" | "awaiting_choice" | "effect_resolving" }
+  | { type: "chapter_intro"; chapterId: string }
+  | { type: "ending_prelude"; endingId: AttributeName }
   | { type: "dying"; cause: string }
   | { type: "result" };
 
@@ -156,11 +208,14 @@ export interface GameState {
   talents: Talent[];
   relationships: Relationship[];
   career: Career | null;
+  chapter: ChapterState;
   eventLog: ResolvedEvent[];
   triggeredEventIds: EventTriggerRecord;  // 改: 从 Set<string> 变为 Record<string, number>
   currentEvent: GameEvent | null;
   pendingChoices: EventChoice[] | null;
   lastResult: EventResult | null;
+  pendingChapterIntroId: string | null;
+  attributeEndingId: AttributeName | null;
   nearDeathCount: number;  // 新增：遭遇即死选项的次数
   deathRecord: DeathRecord | null;
 }
@@ -172,6 +227,7 @@ export type GameAction =
   | { type: "RESOLVE_EVENT"; choiceIndex: number }
   | { type: "TRIGGER_DEATH"; cause: string }
   | { type: "DISMISS_RESULT" }
+  | { type: "DISMISS_CHAPTER_INTRO" }
   | { type: "SHOW_RESULT" }
   | { type: "RESTART" }
   | { type: "LOAD_SAVE"; state: GameState };
@@ -183,6 +239,8 @@ export interface ResolvedEvent {
   title: string;
   choiceText: string;
   attributeChanges: Partial<Record<AttributeName, number>>;
+  storyArcId?: string;
+  chapterId?: string;
 }
 
 export type DeathType = "attribute" | "lethal_choice" | "accident" | "natural";
@@ -197,6 +255,8 @@ export interface GameResult {
   starRating: number;       // 1~5
   title: string;            // 结局称号
   description: string;
+  endingDescription?: string;
+  flavorText?: string;
   totalScore: number;
   highlights: string[];
   achievements: AchievementId[];           // 新增：已触发的成就

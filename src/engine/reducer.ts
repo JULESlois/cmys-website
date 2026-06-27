@@ -4,22 +4,24 @@ import {
   attr, createAge,
 } from "./types";
 import { checkDeath, checkRandomDeath, applyNaturalDecay } from "./death";
-import { selectEvent, shouldTriggerEvent } from "./events";
+import { selectEvent, selectChapterEvent, shouldTriggerEvent } from "./events";
+import { createInitialChapterState, normalizeChapterState, syncStoryArcForAge, unlockChapter, completeChapter, setChapterFlags } from "./chapters";
+import { getChapterName, shouldPlayChapterEntryAnimation } from "../data/life/chapters";
+import { getStoryArcByAge } from "../data/life/story-arcs";
 import { generateConfidant, updateAffinity } from "./relationship";
+import { rollInitialAttribute, scaleAttributeChanges } from "./balance";
+import { getLethalChoiceConversion } from "./lethal";
+import { getAttributeEnding } from "../data/life/attribute-endings";
 
 // ── 属性初始化 ──
-function rollD6(): number {
-  return Math.floor(Math.random() * 3) + 3; // 3~5
-}
-
 export function createInitialAttributes(bonusPoints: Partial<Record<AttributeName, number>> = {}): Attributes {
   const base: Attributes = {
-    appearance: attr(rollD6()),
-    intelligence: attr(rollD6()),
-    physique: attr(rollD6()),
-    wealth: attr(rollD6()),
-    creativity: attr(rollD6()),
-    luck: attr(rollD6()),
+    appearance: attr(rollInitialAttribute()),
+    intelligence: attr(rollInitialAttribute()),
+    physique: attr(rollInitialAttribute()),
+    wealth: attr(rollInitialAttribute()),
+    creativity: attr(rollInitialAttribute()),
+    luck: attr(rollInitialAttribute()),
   };
 
   const bonusEntries = Object.entries(bonusPoints) as [AttributeName, number][];
@@ -40,11 +42,14 @@ export function createInitialState(talents: string[] = []): GameState {
     talents: [],
     relationships: [generateConfidant()],
     career: null,
+    chapter: createInitialChapterState(),
     eventLog: [],
     triggeredEventIds: {},
     currentEvent: null,
     pendingChoices: null,
     lastResult: null,
+    pendingChapterIntroId: null,
+    attributeEndingId: null,
     nearDeathCount: 0,
     deathRecord: null,
   };
@@ -61,6 +66,103 @@ function applyAttributeChanges(
   return next;
 }
 
+function mergeAttributeChanges(
+  base: Partial<Record<AttributeName, number>>,
+  extra: Partial<Record<AttributeName, number>>,
+): Partial<Record<AttributeName, number>> {
+  const next = { ...base };
+  for (const [key, val] of Object.entries(extra) as [AttributeName, number][]) {
+    next[key] = (next[key] ?? 0) + val;
+  }
+  return next;
+}
+
+function lockAttributeEndingIfNeeded(state: GameState): GameState {
+  if (state.attributeEndingId) return state;
+  if (state.phase.type === "dying" || state.phase.type === "result" || state.phase.type === "ending_prelude") return state;
+
+  const ending = getAttributeEnding(state.attributes);
+  if (!ending) return state;
+
+  return {
+    ...state,
+    attributeEndingId: ending.attribute,
+    pendingChapterIntroId: null,
+    phase: { type: "ending_prelude", endingId: ending.attribute },
+    currentEvent: null,
+    pendingChoices: null,
+    lastResult: null,
+  };
+}
+
+function shouldCheckForEvent(state: GameState): boolean {
+  return shouldTriggerEvent(state.age as number) || Boolean(state.chapter.activeChapterId);
+}
+
+function enterCurrentAge(state: GameState): GameState {
+  if (!shouldCheckForEvent(state)) return state;
+
+  const event = selectEvent(state);
+  if (!event) return state;
+
+  if (event.type === "procedural") {
+    const scaledEffects = scaleAttributeChanges(event.effects);
+    const attrs = applyAttributeChanges(state.attributes, scaledEffects);
+    return lockAttributeEndingIfNeeded({
+      ...state,
+      attributes: attrs,
+      eventLog: [...state.eventLog, {
+        age: state.age,
+        eventId: event.id,
+        title: event.title,
+        choiceText: "（自动）",
+        attributeChanges: scaledEffects,
+        storyArcId: event.storyArcId ?? getStoryArcByAge(state.age).id,
+        chapterId: event.chapterId,
+      }],
+      triggeredEventIds: { ...state.triggeredEventIds, [event.id]: state.age as number },
+    });
+  }
+
+  return {
+    ...state,
+    currentEvent: event,
+    pendingChoices: event.choices,
+    phase: { type: "playing", step: "event_presenting" },
+  };
+}
+
+function enterChapterAtCurrentAge(state: GameState): GameState {
+  const event = selectChapterEvent(state);
+  if (!event) return state;
+
+  if (event.type === "procedural") {
+    const scaledEffects = scaleAttributeChanges(event.effects);
+    const attrs = applyAttributeChanges(state.attributes, scaledEffects);
+    return lockAttributeEndingIfNeeded({
+      ...state,
+      attributes: attrs,
+      eventLog: [...state.eventLog, {
+        age: state.age,
+        eventId: event.id,
+        title: event.title,
+        choiceText: "（自动）",
+        attributeChanges: scaledEffects,
+        storyArcId: event.storyArcId ?? getStoryArcByAge(state.age).id,
+        chapterId: event.chapterId,
+      }],
+      triggeredEventIds: { ...state.triggeredEventIds, [event.id]: state.age as number },
+    });
+  }
+
+  return {
+    ...state,
+    currentEvent: event,
+    pendingChoices: event.choices,
+    phase: { type: "playing", step: "event_presenting" },
+  };
+}
+
 function advanceYears(state: GameState, delta: number): GameState {
   let currentState = { ...state };
   let attrs = { ...currentState.attributes };
@@ -74,6 +176,7 @@ function advanceYears(state: GameState, delta: number): GameState {
       ...currentState,
       age: createAge(nextAge),
       attributes: attrs,
+      chapter: syncStoryArcForAge(currentState.chapter, nextAge),
       phase: { type: "playing", step: "aging" },
       currentEvent: null,
       pendingChoices: null,
@@ -97,27 +200,9 @@ function advanceYears(state: GameState, delta: number): GameState {
       };
     }
 
-    const isLastStep = step === delta - 1;
-    if (isLastStep && shouldTriggerEvent(nextAge)) {
-      const event = selectEvent(currentState);
-      if (event) {
-        currentState.currentEvent = event;
-        if (event.type === "procedural") {
-          attrs = applyAttributeChanges(attrs, event.effects);
-          currentState.attributes = attrs;
-          currentState.eventLog = [...currentState.eventLog, {
-            age: currentState.age,
-            eventId: event.id,
-            title: event.title,
-            choiceText: "（自动）",
-            attributeChanges: event.effects,
-          }];
-          currentState.triggeredEventIds = { ...currentState.triggeredEventIds, [event.id]: nextAge };
-        } else {
-          currentState.pendingChoices = event.choices;
-          currentState.phase = { type: "playing", step: "event_presenting" };
-        }
-      }
+    currentState = enterCurrentAge(currentState);
+    if (currentState.phase.type !== "playing" || currentState.phase.step !== "aging") {
+      return currentState;
     }
   }
 
@@ -140,17 +225,64 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const choice = state.pendingChoices[action.choiceIndex];
       if (!choice) return state;
 
-      let attrs = applyAttributeChanges(state.attributes, choice.effects.attributes ?? {});
+      const scaledAttributeChanges = scaleAttributeChanges(choice.effects.attributes ?? {});
+      let attrs = applyAttributeChanges(state.attributes, scaledAttributeChanges);
       const event = state.currentEvent;
       const newTriggeredIds = { ...state.triggeredEventIds };
+      let chapter = normalizeChapterState(state.chapter);
+      let chapterTransition: string | undefined;
+      let pendingChapterIntroId = state.pendingChapterIntroId ?? null;
 
       // 锚点/参数化事件记录触发
       if (event.type === "anchor" || event.type === "parametric") {
         newTriggeredIds[event.id] = state.age as number;
       }
 
-      // 检查选择是否致死
+      // 检查选择是否致死；部分致死选项会转化为濒死触发器
       if (choice.effects.isLethal) {
+        const conversion = getLethalChoiceConversion(state, event, choice);
+        if (conversion) {
+          const combinedChanges = mergeAttributeChanges(scaledAttributeChanges, conversion.attributeChanges);
+          attrs = applyAttributeChanges(attrs, conversion.attributeChanges);
+          if (conversion.chapterFlags) {
+            chapter = setChapterFlags(chapter, conversion.chapterFlags);
+          }
+          const convertedState: GameState = {
+            ...state,
+            attributes: attrs,
+            eventLog: [...state.eventLog, {
+              age: state.age,
+              eventId: event.id,
+              title: event.title,
+              choiceText: choice.text,
+              attributeChanges: combinedChanges,
+              storyArcId: event.storyArcId ?? getStoryArcByAge(state.age).id,
+              chapterId: event.chapterId,
+            }],
+            triggeredEventIds: newTriggeredIds,
+            chapter,
+            nearDeathCount: state.nearDeathCount + 1,
+            phase: { type: "playing", step: "effect_resolving" },
+            currentEvent: null,
+            pendingChoices: null,
+            lastResult: {
+              text: conversion.text,
+              attributeChanges: combinedChanges,
+              chapterTransition: "黄泉债 +1",
+              holdAge: false,
+            },
+          };
+          const convertedDeathCheck = checkDeath(convertedState);
+          if (convertedDeathCheck.isDead) {
+            return {
+              ...convertedState,
+              phase: { type: "dying", cause: convertedDeathCheck.cause! },
+              deathRecord: { age: convertedState.age, cause: convertedDeathCheck.cause!, deathType: convertedDeathCheck.deathType ?? "attribute" },
+            };
+          }
+          return lockAttributeEndingIfNeeded(convertedState);
+        }
+
         const deathNarrative = choice.resultText
           ?? `在"${event.title}"中做出了致命的选择。`;
         return {
@@ -161,9 +293,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             eventId: event.id,
             title: event.title,
             choiceText: choice.text,
-            attributeChanges: choice.effects.attributes ?? {},
+            attributeChanges: scaledAttributeChanges,
+            storyArcId: event.storyArcId ?? getStoryArcByAge(state.age).id,
+            chapterId: event.chapterId,
           }],
           triggeredEventIds: newTriggeredIds,
+          chapter,
           phase: { type: "dying", cause: deathNarrative },
           deathRecord: { age: state.age, cause: deathNarrative, deathType: "lethal_choice" },
           currentEvent: null,
@@ -199,6 +334,29 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         talents = talents.filter((t) => !choice.effects.removeTalents!.includes(t.id));
       }
 
+      if (choice.effects.setChapterFlags) {
+        chapter = setChapterFlags(chapter, choice.effects.setChapterFlags);
+      }
+      if (choice.effects.triggerChapterId) {
+        chapter = unlockChapter(chapter, choice.effects.triggerChapterId);
+        chapterTransition = `进入${getChapterName(choice.effects.triggerChapterId) ?? choice.effects.triggerChapterId}`;
+        if (shouldPlayChapterEntryAnimation(choice.effects.triggerChapterId)) {
+          pendingChapterIntroId = choice.effects.triggerChapterId;
+        }
+      }
+      if (choice.effects.completeChapterId) {
+        chapter = completeChapter(chapter, choice.effects.completeChapterId);
+        chapterTransition = chapterTransition ?? `完成${getChapterName(choice.effects.completeChapterId) ?? choice.effects.completeChapterId}`;
+      }
+      if (choice.effects.exitChapter) {
+        const exited = chapter.activeChapterId;
+        chapter = { ...chapter, activeChapterId: null };
+        chapterTransition = chapterTransition ?? `离开${getChapterName(exited) ?? "篇章"}`;
+      }
+
+      const shouldHoldAge = choice.effects.holdAge
+        ?? Boolean(chapter.activeChapterId && (event.chapterId || choice.effects.triggerChapterId));
+
       // 检查当前事件是否包含致死选项（用于不死鸟成就追踪）
       const eventHasLethalOption = (event.type === "anchor" || event.type === "parametric") &&
         (event as any).choices?.some((c: any) => c.effects?.isLethal);
@@ -209,12 +367,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         talents,
         relationships,
         career,
+        chapter,
+        pendingChapterIntroId,
+        attributeEndingId: state.attributeEndingId,
         eventLog: [...state.eventLog, {
           age: state.age,
           eventId: event.id,
           title: event.title,
           choiceText: choice.text,
-          attributeChanges: choice.effects.attributes ?? {},
+          attributeChanges: scaledAttributeChanges,
+          storyArcId: event.storyArcId ?? getStoryArcByAge(state.age).id,
+          chapterId: event.chapterId,
         }],
         triggeredEventIds: newTriggeredIds,
         nearDeathCount: state.nearDeathCount + (eventHasLethalOption ? 1 : 0),
@@ -223,7 +386,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         pendingChoices: null,
         lastResult: {
           text: choice.resultText ?? `你选择了"${choice.text}"。`,
-          attributeChanges: choice.effects.attributes ?? {},
+          attributeChanges: scaledAttributeChanges,
+          chapterTransition,
+          holdAge: shouldHoldAge,
         },
       };
 
@@ -237,11 +402,59 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         };
       }
 
-      return resolvedState;
+      return lockAttributeEndingIfNeeded(resolvedState);
     }
 
-    case "DISMISS_RESULT":
-      return advanceYears({ ...state, lastResult: null }, 1);
+    case "DISMISS_RESULT": {
+      if (state.lastResult?.endGame) {
+        return {
+          ...state,
+          lastResult: null,
+          phase: { type: "result" },
+          currentEvent: null,
+          pendingChoices: null,
+        };
+      }
+
+      const clearedState: GameState = {
+        ...state,
+        lastResult: null,
+        phase: { type: "playing", step: "aging" },
+        currentEvent: null,
+        pendingChoices: null,
+      };
+
+      if (clearedState.pendingChapterIntroId) {
+        return {
+          ...clearedState,
+          phase: { type: "chapter_intro", chapterId: clearedState.pendingChapterIntroId },
+        };
+      }
+
+      if (state.lastResult?.holdAge && clearedState.chapter.activeChapterId) {
+        const chapterState = enterChapterAtCurrentAge(clearedState);
+        if (chapterState !== clearedState) return chapterState;
+      }
+
+      return clearedState;
+    }
+
+    case "DISMISS_CHAPTER_INTRO": {
+      const clearedState: GameState = {
+        ...state,
+        pendingChapterIntroId: null,
+        phase: { type: "playing", step: "aging" },
+        currentEvent: null,
+        pendingChoices: null,
+      };
+
+      if (clearedState.chapter.activeChapterId) {
+        const chapterState = enterChapterAtCurrentAge(clearedState);
+        if (chapterState !== clearedState) return chapterState;
+      }
+
+      return clearedState;
+    }
 
     case "TRIGGER_DEATH":
       return {
@@ -272,11 +485,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       } else if (raw && typeof raw === "object") {
         triggered = { ...(raw as Record<string, number>) };
       }
-      return {
+      const normalized: GameState = {
         ...loaded,
         triggeredEventIds: triggered,
+        chapter: syncStoryArcForAge(normalizeChapterState(loaded.chapter), loaded.age as number),
+        pendingChapterIntroId: loaded.pendingChapterIntroId ?? null,
+        attributeEndingId: loaded.attributeEndingId ?? null,
         nearDeathCount: loaded.nearDeathCount ?? 0,
       };
+      const locked = lockAttributeEndingIfNeeded(normalized);
+      if (locked !== normalized) return locked;
+      if (normalized.phase.type === "playing" && normalized.phase.step === "aging" && !normalized.currentEvent) {
+        return enterCurrentAge(normalized);
+      }
+      return normalized;
     }
 
     default:

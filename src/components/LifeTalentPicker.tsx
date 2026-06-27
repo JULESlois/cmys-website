@@ -5,6 +5,7 @@ import type { Talent, AttributeName } from "../engine/types";
 import { TALENT_POOL } from "../data/life/talents";
 import { selectTalentsForRound, applyTalentToAttributes } from "../engine/talent";
 import { motion } from "motion/react";
+import { scaleAttributeDelta } from "../engine/balance";
 
 const ATTR_LABEL: Record<AttributeName, string> = {
   appearance: "颜值",
@@ -88,12 +89,12 @@ export function LifeTalentPicker() {
             <div className="flex flex-wrap gap-1">
               {Object.entries(talent.positive).map(([k, v]) => (
                 <span key={k} className="text-[10px] font-mono text-green-700 px-1">
-                  {ATTR_LABEL[k as AttributeName]}+{v}
+                  {ATTR_LABEL[k as AttributeName]}+{scaleAttributeDelta(v)}
                 </span>
               ))}
               {Object.entries(talent.negative).map(([k, v]) => (
                 <span key={k} className="text-[10px] font-mono text-red-700 px-1">
-                  {ATTR_LABEL[k as AttributeName]}{v}
+                  {ATTR_LABEL[k as AttributeName]}{scaleAttributeDelta(v)}
                 </span>
               ))}
             </div>
