@@ -201,4 +201,72 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
       { text: "依然争胜，初心不改", effects: { attributes: { intelligence: 5, physique: -2 } } },
     ],
   },
+
+  // ══ 新增锚点事件 ══
+
+  // ── 少年期 ──
+  {
+    type: "anchor", id: "a_kid_epidemic", title: "愁没影身",
+    description: "那一年流感大流行。学校里每天都有同学被接走。你开始发烧，体温计的数字越来越高。",
+    minAge: createAge(11), maxAge: createAge(11), triggerAge: 11,
+    choices: [
+      { text: "在家硬扛，不去医院", effects: { attributes: {}, isLethal: true }, resultText: "高烧到第四天的时候，开始呼吸困难。等我被送进急诊的时候已经严重肺炎。这场流感带走了很多老人和孩子——你是其中之一。" },
+      { text: "第一时间去卫生所", effects: { attributes: { physique: 2, luck: 1 } }, resultText: "妈妈带我去卫生所挂了水。高烧到第三天退了，我瘦了一圈，但活了下来。桌上有同学送来的笔记，我在病床上翻了翻——落下的课，还能补回来。命只有一次。" },
+    ],
+  },
+
+  // ── 青年期 ──
+  {
+    type: "anchor", id: "a_young_lost", title: "沉没永逝",
+    description: "毕业旅行的最后一晚，你和朋友在异乡的海滩上喝醉了。有人提议游到那个发光的浮标那边——月光很美，海浪很温柔。",
+    minAge: createAge(23), maxAge: createAge(23), triggerAge: 23,
+    choices: [
+      { text: "脱了衣服跳进海里", effects: { attributes: {}, isLethal: true }, resultText: "海水在晚上比看起来远，也比看起来冷。游到一半时腿抽筋了。朋友们以为我在开玩笑。天亮的时候救援队才找到我。二十三岁的夏天，永远停在了那片看似温柔的海里。" },
+      { text: "躺在沙滩上看星星就好", effects: { attributes: { creativity: 3, luck: 2 } }, resultText: "我仰躺在温热的沙滩上，夜空像一口倒扣的锅盖满了芝麻。朋友们陆续睡了，我一个人醒着听海浪。那个晚上我用手机备忘录写了一首诗——很幼稚，但很真实。活着真好。" },
+    ],
+  },
+
+  // ── 壮年期 ──
+  {
+    type: "anchor", id: "a_mid_fire", title: "残明雨散",
+    description: "深夜火灾警报响起。酒店走廊浓烟滚滚，你裹着被子站在房门口。走廊尽头是安全通道，但浓烟中看不清方向。你的本能告诉你往外跑——但是否有人还在房间里？",
+    minAge: createAge(42), maxAge: createAge(42), triggerAge: 42,
+    choices: [
+      { text: "用湿毛巾捂住口鼻冲出走廊", effects: { attributes: {}, isLethal: true }, resultText: "我冲了出去，但走廊里的浓烟太厚了。在拐角处我被呛得弯下了腰——然后没能站起来。消防员说烟雾比火焰更快致命。我的房间门还开着，被子散落在地毯上。" },
+      { text: "堵住门缝，在窗口等待救援", effects: { attributes: { intelligence: 2, physique: 1, luck: 2 } }, resultText: "我用湿毛巾堵住门缝，打开所有窗户。在窗台上挥手的时候消防车的云梯过来了。获救后在避难所喝了三杯热茶，手还在抖。但学会了火灾第一课：不要往浓烟里跑。" },
+    ],
+  },
+
+  // ── 晚年期 ──
+  {
+    type: "anchor", id: "a_elder_last_winter", title: "沉暮远逝",
+    description: "最冷的一个冬天，暖气坏了。窗外零下十五度，屋子里的温度在慢慢下降。你有两个选择：穿上所有衣服撑到明天等修理工，或者去两公里外的儿子家住——但外面雪很深。",
+    minAge: createAge(78), maxAge: createAge(78), triggerAge: 78,
+    choices: [
+      { text: "步行去儿子家", effects: { attributes: {}, isLethal: true }, resultText: "出门时以为自己穿得够多了。走了不到一里地就开始喘——冷空气像刀片一样割着肺。我想赶紧走，但腿抬不动了。后来邻居说我在雪地里坐下后就没再站起来。老寒雪，收人魂。" },
+      { text: "给儿子打电话，裹着被子等", effects: { attributes: { intelligence: 2, luck: 2 } }, resultText: "我拨了儿子的电话：'别来——路太滑。我裹了被子，没事。'挂掉电话我把所有能穿的都穿上，缩在被子里。天亮的时候暖气修好了。儿子过来看我，嘴唇紧紧抿着——他怕失去我。我更怕让他失去。" },
+    ],
+  },
+
+  // ── 青年期职业陷阱 ──
+  {
+    type: "anchor", id: "a_young_fraud", title: "出没永生",
+    description: "一个'海外高薪'的工作机会摆在面前。面试官很专业，合同上的数字好得不像真的。他们说公司在东南亚——到了就能签正式合同。",
+    minAge: createAge(21), maxAge: createAge(26), triggerAge: 24,
+    choices: [
+      { text: "买了机票出发", effects: { attributes: {}, isLethal: true }, resultText: "下了飞机后有辆面包车来接我。车越开越偏，手机被收走，护照被扣下。后面的事像一场醒不来的噩梦。我的故事停在了二十四岁，再也没有人见过我。" },
+      { text: "上网查一下这家公司", effects: { attributes: { intelligence: 3, luck: 2 } }, resultText: "我在谷歌上搜了那个公司名——第三页就出现了'诈骗'两个字。我又搜了那栋大楼，街景图和面试时看到的完全不一样。我关上聊天窗口，把这个'机会'拉黑了。好险——有些幸运不是天上掉的馅饼，是你比别人多花了几分钟怀疑。" },
+    ],
+  },
+
+  // ── 壮年期健康陷阱 ──
+  {
+    type: "anchor", id: "a_mid_checkup", title: "赤明影深",
+    description: "医生说你的肺部 CT 显示了一个阴影。可能是炎症，也可能是更糟的东西。'需要做穿刺活检才能确认。'他说话时没有看你的眼睛。",
+    minAge: createAge(50), maxAge: createAge(50), triggerAge: 50,
+    choices: [
+      { text: "拖延随访，害怕知道结果", effects: { attributes: { physique: -10, luck: -3 }, isLethal: false }, resultText: "我把检查申请单锁进抽屉。半年后症状出现了——那时肿瘤已经从早期发展到了中期。后来回想，那个没有打开的抽屉，才是真正致命的。" },
+      { text: "第二天就去做活检", effects: { attributes: { physique: -3, luck: 3 } }, resultText: "我深吸一口气，第二天早上第一个到达检验科。活检结果：良性炎症。医生说你再年轻五岁都没必要做这个检查——但我做了。有时候害怕是对的，但正因为害怕，才要勇敢。" },
+    ],
+  },
 ];

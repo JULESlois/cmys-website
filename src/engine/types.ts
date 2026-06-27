@@ -45,6 +45,7 @@ export interface EventBase {
   minAge: Age;
   maxAge: Age;
   weight?: number;
+  cooldownYears?: number;  // 新增：触发后冷却年数
 }
 
 export interface AnchorEvent extends EventBase {
@@ -79,6 +80,7 @@ export interface EventChoice {
     removeTalents?: string[];
     triggerEventId?: string;
     relationshipEffect?: { targetId: string; change: number };
+    careerLevelDelta?: number;  // 新增：职业等级变化
     isLethal?: boolean;
   };
 }
@@ -106,6 +108,39 @@ export interface Career {
   milestones: string[];
 }
 
+// ── Event Trigger Record ──
+/** 事件ID → 最后触发年龄，替代 Set<string> */
+export type EventTriggerRecord = Record<string, number>;
+
+// ── Achievements ──
+export type AchievementId =
+  | "great_ups_and_downs"    // 大起大落
+  | "cheating_death"          // 向死而生
+  | "soulmate"                // 伯牙子期
+  | "defy_fate"               // 逆天改命
+  | "young_grey"              // 少年白头
+  | "ladykiller"              // 情圣
+  | "phoenix"                 // 不死鸟
+  | "rags_to_riches"          // 白手起家
+  | "scholar"                 // 学富五车
+  | "century"                 // 百年孤独
+  | "early_death"             // 早夭
+  | "homewrecker"             // 杀手本能
+  | "careerist"               // 青云直上
+  | "survivor"                // 劫后余生
+  | "hedonist"                // 及时行乐
+  | "stoic"                   // 不动如山
+  ;
+
+export interface Achievement {
+  id: AchievementId;
+  name: string;
+  description: string;
+  score: number;
+  /** 判定函数，返回是否达成 */
+  check: (state: GameState) => boolean;
+}
+
 // ── Game State ──
 export type GamePhase =
   | { type: "save_choice" }
@@ -122,10 +157,11 @@ export interface GameState {
   relationships: Relationship[];
   career: Career | null;
   eventLog: ResolvedEvent[];
-  triggeredEventIds: Set<string>;
+  triggeredEventIds: EventTriggerRecord;  // 改: 从 Set<string> 变为 Record<string, number>
   currentEvent: GameEvent | null;
   pendingChoices: EventChoice[] | null;
   lastResult: EventResult | null;
+  nearDeathCount: number;  // 新增：遭遇即死选项的次数
   deathRecord: DeathRecord | null;
 }
 
@@ -149,9 +185,12 @@ export interface ResolvedEvent {
   attributeChanges: Partial<Record<AttributeName, number>>;
 }
 
+export type DeathType = "attribute" | "lethal_choice" | "accident" | "natural";
+
 export interface DeathRecord {
   age: Age;
   cause: string;
+  deathType: DeathType;
 }
 
 export interface GameResult {
@@ -160,4 +199,9 @@ export interface GameResult {
   description: string;
   totalScore: number;
   highlights: string[];
+  achievements: AchievementId[];           // 新增：已触发的成就
+  allAchievements: AchievementId[];         // 新增：所有成就列表（前端展示灰掉的）
+  baseScore: number;                        // 新增：基础分
+  achievementScore: number;                 // 新增：成就分
+  narrativeScore: number;                   // 新增：叙事分
 }

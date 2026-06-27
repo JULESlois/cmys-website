@@ -54,8 +54,19 @@ function isEventEligible(event: GameEvent, state: GameState): boolean {
     }
     // 触发次数限制
     if (event.maxTriggers !== undefined && event.maxTriggers > 0) {
-      const count = [...triggeredEventIds].filter((id) => id === event.id).length;
+      const count = event.id in state.triggeredEventIds ? 1 : 0;
       if (count >= event.maxTriggers) return false;
+    }
+  }
+
+  // 冷却期检查（在 maxTriggers 检查之后）
+  if (event.type === "parametric" || event.type === "anchor") {
+    if (event.cooldownYears !== undefined && event.cooldownYears > 0) {
+      const lastAge = state.triggeredEventIds[event.id];
+      if (lastAge !== undefined) {
+        const yearsSinceLastTrigger = (state.age as number) - lastAge;
+        if (yearsSinceLastTrigger < event.cooldownYears) return false;
+      }
     }
   }
 

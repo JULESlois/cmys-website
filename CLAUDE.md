@@ -21,36 +21,40 @@ React 19 + TypeScript 5.8 + Vite 6 + TailwindCSS 4 + Motion (Framer Motion) + Re
 
 ```
 src/
-  engine/             # 纯函数引擎，不依赖 React
-    types.ts          # 所有类型：GameState, GameAction, GameEvent 等
-    reducer.ts        # gameReducer 状态机 + advanceYears 循环推进
-    events.ts         # shouldTriggerEvent / selectEvent / getEligibleEvents
-    death.ts          # checkDeath / applyNaturalDecay
-    talent.ts         # 天赋选择逻辑
-    career.ts         # 职业路径
-    relationship.ts   # 关系系统
-    ending.ts         # computeResult 结局评星
-    autosave.ts       # localStorage 存档（检查点：6/18/31/61）
-  components/         # React 组件
-    LifeGame.tsx      # 主容器，useReducer + phase switch 路由
-    LifeTalentPicker.tsx    # 天赋选择（3轮×3选1）
-    LifeInfancyStage.tsx    # 婴幼期 0-5（自动叙事）
-    LifeYouthStage.tsx      # 少年/青年期 6-30
-    LifeMidlifeStage.tsx    # 壮年期 31-60
-    LifeElderStage.tsx      # 晚年期 61-100
-    LifeDeathScreen.tsx     # 结局结算（黑底白字电影式浮现）
-    LifeEventCard.tsx       # 事件选择卡片
-    LifeEventResult.tsx     # 选择后叙事结果 + 属性变化
-    LifeStatsBars.tsx       # 六维属性柱碑图（variant: monoliths/typographic/meridian）
-    LifeIntro.tsx           # 片头动画（网格脉冲 + 逐字浮现）
+  engine/               # 纯函数引擎，不依赖 React
+    types.ts            # 所有类型：GameState, GameAction, GameEvent, Achievement 等
+    reducer.ts          # gameReducer 状态机 + advanceYears 循环推进
+    events.ts           # shouldTriggerEvent / selectEvent / getEligibleEvents
+    death.ts            # checkDeath / checkRandomDeath / getLethalThreshold / applyNaturalDecay
+    talent.ts           # 天赋选择逻辑
+    career.ts           # 职业路径 + 等级变化
+    relationship.ts     # 知己系统（固定名 "esu狗子"）
+    ending.ts           # computeResult 三层评分架构
+    achievements.ts     # 成就判定引擎（16 个隐藏成就）
+    autosave.ts         # localStorage 存档（检查点：6/18/31/61）
+  components/           # React 组件
+    LifeGame.tsx         # 主容器，useReducer + phase switch + 全局键盘映射
+    LifeContext.tsx      # Context 定义
+    LifeIntro.tsx        # 片头动画
+    LifeTalentPicker.tsx       # 天赋选择（3轮×3选1）
+    LifeInfancyStage.tsx       # 婴幼期 0-5（自动叙事 + 跳过按钮）
+    LifeYouthStage.tsx         # 少年/青年期 6-30
+    LifeMidlifeStage.tsx       # 壮年期 31-60
+    LifeElderStage.tsx         # 晚年期 61-100
+    ReignsCard.tsx             # Reigns 式事件卡片（拖拽 + 键盘动画）
+    LifeEventResult.tsx        # 选择后叙事结果 + 属性变化
+    LifeDeathScreen.tsx        # 结局结算（星级 + 称号 + 成就 + 死因 + 人生回顾）
+    LifeStatsBars.tsx          # 六维属性状态条
+    LifeEventCard.tsx          # 旧版事件卡片（已弃用，保留备用）
   data/life/
-    events-anchors.ts       # 锚点事件（固定年龄触发）
-    events-parametric.ts    # 参数化事件（属性/天赋条件触发）
-    talents.ts              # 天赋池
-    endings.ts              # 结局风味文本
+    events-anchors.ts          # 锚点事件（~28 个，固定年龄触发）
+    events-parametric.ts       # 参数化事件（~135 个）
+    talents.ts                 # 天赋池（12 个）
+    achievements.ts            # 16 个成就定义 + 判定条件
+    endings.ts                 # 结局风味文本 + 成就风味文本
   pages/
-    LifePage.tsx            # 路由入口，挂载 LifeGame
-    HomePage.tsx            # 主页
+    LifePage.tsx               # 路由入口，挂载 LifeGame
+    HomePage.tsx               # 主页
 ```
 
 ## 游戏状态机
@@ -61,13 +65,17 @@ save_choice → talent_selection(×3轮) → playing → dying → result
 
 `playing` 阶段子状态：`aging` → (有事件时) `event_presenting` → (选择后) `effect_resolving` → `aging`...
 
-`age <= 5` 走 LifeInfancyStage，`6-30` 走 LifeYouthStage，`31-60` 走 LifeMidlifeStage，`61+` 走 LifeElderStage。
+**阶段路由：**
+- `age 0-5` → LifeInfancyStage（婴幼期自动叙事，可跳过）
+- `age 6-30` → LifeYouthStage（少年/青年期，每年事件）
+- `age 31-60` → LifeMidlifeStage（壮年期，每3年事件，按钮+3岁）
+- `age 61-100` → LifeElderStage（晚年期，梯度间隔事件）
 
 ## CMYS 命名规范（核心约束）
 
-**所有事件标题必须是 C-M-Y-S 四字拼音首字母。** C/Ch 开头→C，M 开头→M，Y 开头→Y，S/Sh 开头→S。示例：`沉默一生`(Chen Mo Yi Sheng)、`出马应试`(Chu Ma Ying Shi)、`纯美月色`(Chun Mei Yue Se)。
+**所有事件标题必须是 C-M-Y-S 四字拼音首字母。** C/Ch → C，M → M，Y → Y，S/Sh → S。
 
-修改任何事件标题后，用以下脚本验证：
+验证脚本：
 ```python
 from pypinyin import pinyin, Style
 def check(title):
@@ -75,32 +83,116 @@ def check(title):
     return ''.join(initials) == 'cmys'
 ```
 
-禁止：标题与天赋重名、标题与任何 reserved 列表中的标题重复、非四字、非 CMYS 首字母。当前全部 90 个事件标题已合规。
+禁止：非四字、非 CMYS 首字母、与已有事件/天赋重名。
 
-## 事件系统关键规则
+## 事件系统
 
-- 婴幼期 0-5：`shouldTriggerEvent` 返回 false，走 LifeInfancyStage 自动叙事（4段锚点，每段2.5秒）
-- 少年/青年期 6-30：每年触发事件
-- 壮年期 31-60：`(age-31)%3===0`，每3年触发，按钮推进 `delta:3`
-- 晚年期 61-100：梯度间隔 — 61-70每3年、71-85每5年、86-100每7年
-- `ADVANCE_AGE` 支持 `delta` 参数，reducer 循环逐年处理：衰减→死亡判定→仅在最后一年检查事件
-- `RESOLVE_EVENT` 后进入 `effect_resolving` 阶段，显示叙事结果，`DISMISS_RESULT` 自动推进1年
-- 每个 EventChoice 应有 `resultText` 字段（2-3句文学叙事），缺失时 fallback 为 `你选择了"XXX"。`
+### 事件分类
+
+| 类型 | 数量 | 说明 |
+|------|------|------|
+| 锚点事件 | ~28 | 固定年龄触发，含即死选项 |
+| 参数化事件 | ~135 | 属性/天赋条件触发，含 maxTriggers + cooldownYears |
+
+### 触发频率
+
+| 年龄段 | 频率 | 说明 |
+|--------|------|------|
+| 婴幼期 0-5 | 自动叙事 | 6 段锚点，每段 2.5 秒 |
+| 少年/青年 6-30 | 每年 1 次 | 每岁触发事件 |
+| 壮年期 31-60 | 每 3 年 1 次 | `(age-31)%3===0` |
+| 晚年期 61-100 | 梯度间隔 | 61-70每3年、71-85每5年、86-100每7年 |
+
+### 去重机制
+
+- `maxTriggers`: 1（一生一次）/ 2（可复现）/ 3（filler）
+- `cooldownYears`: 8~20 年冷却期
+- `triggeredEventIds`: `Record<string, number>` — 事件ID → 最后触发年龄
+
+### 事件字段
+
+每个选项含：
+- `resultText` — 第一人称叙事结果
+- `relationshipEffect` — 知己好感变化（`{ targetId, change }`）
+- `careerLevelDelta` — 职业等级变化
+- `isLethal` — 是否致命选项
 
 ## 死亡机制
 
-- 颜值/智力/体质/家境 任一 ≤0 → 死亡
-- 才脉/运势 ≤0 → 惩罚但不致死（封印天赋/负面翻倍）
-- age ≤5 禁止死亡判定
-- 体质自然衰减：30岁起每5年-1，仅在各"整5年"节点（35/40/45/.../100）触发，总共最多-14。实现：`(age-30)%5===0 && age>30` 时返回 `{physique:-1}`
-- age=100 时自然老死
+### 三层致死网络
+
+| 层级 | 机制 | 说明 |
+|------|------|------|
+| 即死选项 | 事件中 `isLethal: true` 的选项 | 约 28 个即死事件覆盖全年龄段 |
+| 属性陷阱 | 扣除大量致命属性的选项 | 隐蔽但非即死 |
+| 随机意外 | `checkRandomDeath` 按概率触发 | 青年 1%/壮年 2%/晚年 3% |
+
+### 分龄致死阈值
+
+- 少年/青年期（≤30 岁）：致命属性归零才死
+- 壮年/晚年期（>30 岁）：致命属性 ≤10 即死
+- 婴幼期（≤5 岁）：禁止所有死亡判定
+- 100 岁：自然老死
+
+### 死亡类型（deathType）
+
+| 类型 | 标签 | 说明 |
+|------|------|------|
+| `attribute` | 属性衰竭致死 | 颜值/智力/体质/家境 归零 |
+| `lethal_choice` | 事件致死 | 选择了即死选项 |
+| `accident` | 意外身亡 | 随机意外触发 |
+| `natural` | 寿终正寝 | 100 岁老死 |
+
+## 评分系统（三层架构）
+
+总分 0~1000：
+- **基础分（35%）** — 六维属性加和 / 600 × 350
+- **成就分（40%）** — 16 个隐藏成就，每个 20~50 分
+- **叙事分（25%）** — 事件多样性 + 关系深度 + 职业巅峰 + 隐藏加成
+
+评星阈值：150 / 350 / 550 / 750
+
+## 属性系统
+
+六维：颜值、智力、体质、家境、才脉、运势。初始 D6(3~5) + 玩家分配 5 点 + 天赋修正。branded type `AttributeValue` 保证 [0,100] 范围。
+
+体质自然衰减：30 岁起每 5 年 -1，仅整 5 年节点触发，至多 -14。
+
+## 知己系统
+
+固定知己 "esu狗子"，初始好感 -20~+20。通过事件的 `relationshipEffect` 改变好感。
+- 伯牙子期：好感 ≥ 100
+- 杀手本能：好感 ≤ -80
+
+## 交互系统
+
+### ReignsCard
+
+- 鼠标拖拽：拖到阈值（屏幕宽度 30%）松手确认
+- 键盘：按住 ←/→ 卡片滑过去，松手确认；可切换方向
+- 点击：底部按钮直接选择
+- 任意键：aging/effect_resolving 阶段按任意键推进
+
+### 婴幼期
+
+- 自动叙事，每段 2.5 秒
+- "跳过" 按钮直接跳到 6 岁
+- 叙事期间不触发死亡判定
+
+## 存档系统
+
+- localStorage key: `cmys_life_autosave`
+- 检查点：6/18/31/61 岁
+- 单自动档覆盖写
+- `triggeredEventIds` 序列化为 JSON 原生 `Record<string, number>`
+- 兼容旧格式（Set 序列化的数组）
 
 ## 技术细节
 
-- 属性值用 branded type `AttributeValue` 保证 [0,100] 范围，`attr()` 函数自动 clamp
-- `triggeredEventIds` 用 `Set<string>`，序列化时转为数组
-- 存档检查点：6/18/31/61 岁。`LifeGame.useEffect` 监听 `state.age` 变化触发 `saveGame`
-- 全局 `scroll-snap-type: y mandatory` 在 LifeGame 挂载时强制禁用（overflow:hidden → requestAnimationFrame 恢复），防止跳页
-- 结局阶段：黑底 z-20 overlay 从 85%→100% 渐变，LifeDeathScreen 全白字 + 交错浮现动画
-- 片头：LifeIntro 全黑 + 网格脉冲 + "沉默一生"逐字浮现，三段式手动交叉淡入淡出避免白闪
-- 设计令牌：`--color-canvas:#F0F0F0`、`--color-primary:#1A1A1A`、`--color-secondary:#888`。字体：Inter/JetBrains Mono/DM Serif Display/Noto Serif SC
+- `nearDeathCount` 追踪遭遇即死选项的次数，用于"不死鸟"成就
+- `LOAD_SAVE` 向后兼容：`nearDeathCount ?? 0`
+- 全局 scroll-snap-type 在 LifeGame 挂载时强制禁用
+- 结局阶段：黑底 overlay + LifeDeathScreen 白字交错浮现
+- 片头：LifeIntro 全黑 + 网格脉冲 + "沉默一生"逐字浮现
+- 设计令牌：`--color-canvas:#F0F0F0`、`--color-primary:#1A1A1A`、`--color-secondary:#888`
+- 字体：Inter / JetBrains Mono / DM Serif Display / Noto Serif SC
