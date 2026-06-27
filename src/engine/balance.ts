@@ -5,10 +5,10 @@ export type AttributeChangeMap = Partial<Record<AttributeName, number>>;
 
 /**
  * 0~100 百分制初始属性。
- * 旧版本为 3~5，和 UI 百分比状态条、30 岁后死亡阈值不匹配。
+ * 初始值保持在 10~20，让后续事件、天赋和篇章选择成为主要成长来源。
  */
 export function rollInitialAttribute(): number {
-  return Math.floor(Math.random() * 21) + 38; // 38~58
+  return Math.floor(Math.random() * 11) + 10; // 10~20
 }
 
 /**
@@ -19,36 +19,36 @@ export function rollInitialAttribute(): number {
  * - 在 0~100 的新尺度中太弱。
  *
  * 这里保留事件数据本身，只在结算时映射：
- * 正负变化使用接近对称的百分制映射，保持旧事件在 0~100 尺度下的影响力。
+ * 低初始值下使用温和缩放：正收益推动成长，负收益保留代价但不让轻微 -1 直接变成早期死亡。
  */
 export function scaleAttributeDelta(delta: number): number {
   if (!Number.isFinite(delta) || delta === 0) return 0;
 
   const abs = Math.abs(delta);
   const positiveTable: Record<number, number> = {
-    1: 4,
-    2: 7,
-    3: 10,
-    4: 13,
-    5: 16,
-    6: 18,
+    1: 2,
+    2: 4,
+    3: 6,
+    4: 8,
+    5: 10,
+    6: 12,
   };
   const negativeTable: Record<number, number> = {
-    1: 4,
-    2: 6,
-    3: 9,
-    4: 12,
-    5: 14,
-    6: 16,
+    1: 1,
+    2: 2,
+    3: 4,
+    4: 6,
+    5: 8,
+    6: 10,
   };
 
   if (delta > 0) {
     if (abs in positiveTable) return positiveTable[abs];
-    return Math.min(30, Math.round(abs * 3));
+    return Math.min(20, Math.round(abs * 2));
   }
 
   if (abs in negativeTable) return -negativeTable[abs];
-  return -Math.min(24, Math.round(abs * 2.5));
+  return -Math.min(18, Math.round(abs * 1.7));
 }
 
 export function scaleAttributeChanges(changes: AttributeChangeMap): AttributeChangeMap {
