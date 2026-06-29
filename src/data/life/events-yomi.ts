@@ -86,5 +86,103 @@ export const YOMI_EVENTS: ParametricEvent[] = [
       { text: "把债转回自己名下", effects: { attributes: { physique: -4 }, setChapterFlags: { yomi_debt_self_taken: true, yomi_debt: 0 }, exitChapter: true, completeChapterId: "yomi_debt" }, resultText: "章盖下去的时候，你感到身体突然重了很多。但窗外的某个人，似乎终于能继续活下去。" },
       { text: "假装没有看清名字", effects: { attributes: {}, setChapterFlags: { yomi_debt_denied: true }, exitChapter: true, completeChapterId: "yomi_debt" }, resultText: "你回到现实。那天以后，你总觉得有人在梦里替你翻动一页空白档案。" },
     ],
-  }
+  },
+
+  {
+    type: "parametric",
+    id: "c_yomi_call_number",
+    title: "",
+    description: "叫号机没有显示号码。它显示的是一行死法：尚未承认自己仍然活着的人。周围所有人都低头看向手里的收据，像在庆幸这一次没有叫到自己。",
+    minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    chapterFlagsRequired: { yomi_receipt_seen: true }, weight: 9, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "走到窗口前", effects: { attributes: {}, setChapterFlags: { yomi_call_answered: true } }, resultText: "窗口后的人没有抬头，只推来一张确认单。第一栏不是姓名，而是：你是否承认自己不该这么轻易活下来？" },
+      { text: "假装没有听见", effects: { attributes: {}, setChapterFlags: { yomi_call_ignored: true, yomi_debt: 3 } }, resultText: "叫号机安静了。几秒后，你身后的队伍同时后退一步，把你一个人留在灯光底下。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_yomi_alive_proof",
+    title: "持命验身",
+    description: "柜台要求你提交仍然活着的证明。你递上脉搏、体温、记忆和姓名。工作人员逐项盖章，最后把姓名退了回来：这一项存在争议。",
+    minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    chapterFlagsRequired: { yomi_first_debt_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "要求复核姓名", effects: { attributes: {}, setChapterFlags: { yomi_name_review_requested: true } }, resultText: "工作人员递给你一面小镜子。镜中人张嘴说话，比你慢半拍：别复核。复核以后，就要决定哪个名字作废。" },
+      { text: "承认姓名存在争议", effects: { attributes: {}, setChapterFlags: { yomi_name_disputed: true } }, resultText: "红章落下时，你感觉现实里有个人突然忘了怎么称呼你。不是忘记你，只是称呼你这件事变得不再确定。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_yomi_dog_record",
+    title: "赤目遗册",
+    description: "第二份档案封面写着狗子的名字。页数很少，翻起来却很重。备注栏反复出现同一句话：本人要求不通知受益人。",
+    minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    chapterFlagsRequired: { yomi_first_debt_seen: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "阅读代签记录", effects: { attributes: {}, setChapterFlags: { yomi_dog_record_read: true, dog_memory: 2 }, relationshipEffect: { targetId: "confidant", change: 6 } }, resultText: "记录没有写他替你死过。它写得更轻：某年某月，替你保留一次返回资格。你忽然觉得这比死亡更难还。" },
+      { text: "合上档案", effects: { attributes: {}, setChapterFlags: { yomi_dog_record_closed: true } }, resultText: "档案合上前，你看见夹缝里露出一张照片。照片里的狗子坐在井下教室最后一排，笑得像刚刚说完一个谎。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_yomi_blank_file",
+    title: "",
+    description: "空白档案翻开后没有字。你等了很久，纸面才慢慢浮出一枚湿手印。那枚手印的大小，和你小时候一模一样。",
+    minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    chapterFlagsRequired: { yomi_blank_record_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "把手按上去对齐", effects: { attributes: {}, setChapterFlags: { yomi_blank_hand_matched: true } }, resultText: "两枚手印完全重合。工作人员轻声说：确认成功。这份没有姓名的人生，曾经也是你。" },
+      { text: "用袖口擦掉手印", effects: { attributes: {}, setChapterFlags: { yomi_blank_hand_erased: true, yomi_debt: 3 } }, resultText: "手印被擦开，纸面下面露出更多手印。它们层层叠叠，像有很多个小时候的你都曾经来过这里。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_yomi_photo_cold",
+    title: "偿梦余湿",
+    description: "你用记忆抵债后，柜台归还一张旧照片。照片里的人还在笑，可你看不出那天为什么值得笑。快乐没有消失，只是从你身上过户了。",
+    minAge: createAge(19), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    chapterFlagsRequired: { yomi_memory_paid: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "把照片收好", effects: { attributes: {}, setChapterFlags: { yomi_cold_photo_kept: true } }, resultText: "你收起照片。它仍然属于你，只是不再温暖。你突然明白，有些失去不会表现为忘记，而是表现为再也不能被打动。" },
+      { text: "要求退回那段感觉", effects: { attributes: {}, setChapterFlags: { yomi_memory_refund_requested: true, yomi_debt: 2 } }, resultText: "窗口后的人第一次抬头看你：感觉一经抵扣，不支持撤销。除非您愿意拿别人的感觉来换。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_yomi_contact_default",
+    title: "持梦约空",
+    description: "关系抵债后，你的通讯录没有少人。只是某个最熟悉的备注变成了系统默认姓名。聊天记录还在，每一句我在都像自动回复。",
+    minAge: createAge(19), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    chapterFlagsRequired: { yomi_relationship_paid: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "重新改回原来的备注", effects: { attributes: {}, relationshipEffect: { targetId: "confidant", change: -4 }, setChapterFlags: { yomi_contact_renamed: true } }, resultText: "你把备注改回去。屏幕闪了一下，又变回默认姓名。黄泉不删除关系，它只删除关系里最难证明的那部分。" },
+      { text: "接受这个默认姓名", effects: { attributes: {}, setChapterFlags: { yomi_contact_default_accepted: true } }, resultText: "你关掉屏幕。黑色玻璃倒映出你的脸，旁边还有一个很淡的人影，像一直在等你少说一句挽留。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_yomi_last_name_flicker",
+    title: "沉名易身",
+    description: "最后一笔债的付款人一栏不断变换：狗子，替身，未来的你，某个你已经很久没联系的人。每个名字出现时，你都觉得自己曾经亏欠过他。",
+    minAge: createAge(20), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    chapterFlagsRequired: { yomi_last_debt_requested: true }, weight: 9, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "要求固定付款人姓名", effects: { attributes: {}, setChapterFlags: { yomi_payer_fixed: true } }, resultText: "所有名字停止闪烁，最后留下你的名字。工作人员说：固定成功。请确认是否转回本人名下。" },
+      { text: "不要再看", effects: { attributes: {}, setChapterFlags: { yomi_payer_unseen: true, yomi_debt: 3 } }, resultText: "你闭上眼。名字没有因此停止变化，只是换到你的梦里继续闪。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_yomi_blank_stamp",
+    title: "",
+    description: "工作人员递来一枚没有字的章。章面干净得像从未使用过。他说：这不是用来盖在纸上的，是用来盖在您不想承认的那一部分人生上。",
+    minAge: createAge(20), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    chapterFlagsRequired: { yomi_last_debt_requested: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "盖在自己名字上", effects: { attributes: { physique: -2 }, setChapterFlags: { yomi_blank_stamp_self: true, yomi_debt: 0 }, exitChapter: true, completeChapterId: "yomi_debt" }, resultText: "章落下时没有声音。你却觉得身体里有一层湿纸被撕开。回到现实后，你知道有些债终于回来了，只是回来得很重。" },
+      { text: "盖在空白档案上", effects: { attributes: {}, setChapterFlags: { yomi_blank_stamp_file: true, yomi_debt_denied: true }, exitChapter: true, completeChapterId: "yomi_debt" }, resultText: "空白档案合上。窗口后的人说：手续完成。您仍然活着，只是以后有人想起您时，会先想起一片空白。" },
+    ],
+  },
+
 ];

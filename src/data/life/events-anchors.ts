@@ -47,7 +47,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "你进入小学。第一次考试，你握紧铅笔，手心出汗。",
     minAge: createAge(6), maxAge: createAge(6), triggerAge: 6,
     choices: [
-      { text: "认真答题", effects: { attributes: { intelligence: 3, physique: -1} } , resultText: "我安顿好自己，躲在高处的安全地带。看着楼下奔涌的洪水，我暗暗庆幸还好自己没事。虽然没有人责怪我，但我心里某个角落，总觉得有些说不上来的愧疚。"},
+      { text: "认真答题", effects: { attributes: { intelligence: 2, physique: -1} } , resultText: "我安顿好自己，躲在高处的安全地带。看着楼下奔涌的洪水，我暗暗庆幸还好自己没事。虽然没有人责怪我，但我心里某个角落，总觉得有些说不上来的愧疚。"},
       { text: "偷偷看同桌", effects: { attributes: { intelligence: 1, luck: -2 } } , resultText: "我站上讲台组织班会，声音从微微颤抖到逐渐沉稳。我学会了在嘈杂中掌控局面，在冲突中调解矛盾。同学们开始信任我，我也开始相信自己。"},
     ],
   },
@@ -65,7 +65,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "你进入初中。新的环境，新的同学，你感到自己正在加速成长。",
     minAge: createAge(12), maxAge: createAge(12), triggerAge: 12,
     choices: [
-      { text: "努力学习", effects: { attributes: { intelligence: 3, creativity: 1, physique: -1} } , resultText: "进考场前，我深呼吸了三次。遇到不会的题也没有慌张，跳过、回头、再试。最后一道作文题我写得格外顺畅——也许放松的心态反而让脑子更清醒了。"},
+      { text: "努力学习", effects: { attributes: { intelligence: 2, creativity: 1, physique: -1} } , resultText: "进考场前，我深呼吸了三次。遇到不会的题也没有慌张，跳过、回头、再试。最后一道作文题我写得格外顺畅——也许放松的心态反而让脑子更清醒了。"},
       { text: "多交朋友", effects: { attributes: { appearance: 2, wealth: 1, intelligence: -1} } , resultText: "我紧紧抱住母亲，闻到她发间熟悉的味道。她瘦了。我在她耳边说'妈，我会经常回来的'，她笑着点头，眼眶却红了。火车开动后我哭了很久，但心里有一个声音在说：你要对得起这份牵挂。"},
     ],
   },
@@ -84,7 +84,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     minAge: createAge(15), maxAge: createAge(15), triggerAge: 15,
     choices: [
       { text: "积极管理班级", effects: { attributes: { appearance: 2, intelligence: 1, physique: -1} } , resultText: "我把那三个字咽了回去，连同那个午后的阳光一起锁进日记本里。后来每次在图书馆遇见TA，我都假装在看窗外。暗恋是一场一个人的兵荒马乱，而我是唯一的士兵和唯一的逃兵。"},
-      { text: "专注自己学业", effects: { attributes: { intelligence: 3, physique: -1} } , resultText: "我脱下学士服，换上正装，挤进早高峰的地铁。办公室的格子间比宿舍的书桌还小，但我觉得自己像一头准备冲撞世界的公牛。第一份工作的工牌挂在胸前，沉甸甸的——那是名为'大人'的入场券。"},
+      { text: "专注自己学业", effects: { attributes: { intelligence: 2, physique: -1} } , resultText: "我脱下学士服，换上正装，挤进早高峰的地铁。办公室的格子间比宿舍的书桌还小，但我觉得自己像一头准备冲撞世界的公牛。第一份工作的工牌挂在胸前，沉甸甸的——那是名为'大人'的入场券。"},
     ],
   },
 
@@ -94,8 +94,8 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "高考。十二年磨一剑，你走进考场，笔尖落纸的声音像千军万马。",
     minAge: createAge(18), maxAge: createAge(18), triggerAge: 18,
     choices: [
-      { text: "全力以赴", effects: { attributes: { intelligence: 5, luck: 2, physique: -2} } , resultText: "当同学们忙着投简历时，我回到图书馆的老位置坐下。窗外还是那棵银杏树，只是叶子又黄了一次。我知道自己在逃避什么——但也知道自己在追寻什么。读书是一场漫长的修行，而我还不想下山。"},
-      { text: "心态平和，尽力就好", effects: { attributes: { intelligence: 3, creativity: 2, physique: -1} } , resultText: "你开始习惯在凌晨醒来，脑子里排满一整天的日程。房贷、父母的体检费、孩子的辅导班——这些数字压在你肩上，却也让你感到前所未有的踏实。原来被需要，也是一种力量。"},
+      { text: "全力以赴", effects: { attributes: { intelligence: 4, luck: 1, physique: -2} } , resultText: "当同学们忙着投简历时，我回到图书馆的老位置坐下。窗外还是那棵银杏树，只是叶子又黄了一次。我知道自己在逃避什么——但也知道自己在追寻什么。读书是一场漫长的修行，而我还不想下山。"},
+      { text: "心态平和，尽力就好", effects: { attributes: { intelligence: 2, creativity: 2, physique: -1} } , resultText: "你开始习惯在凌晨醒来，脑子里排满一整天的日程。房贷、父母的体检费、孩子的辅导班——这些数字压在你肩上，却也让你感到前所未有的踏实。原来被需要，也是一种力量。"},
     ],
   },
   {
@@ -104,7 +104,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     minAge: createAge(19), maxAge: createAge(19), triggerAge: 19,
     choices: [
       { text: "拥抱母亲，承诺常回家", effects: { attributes: { creativity: 2, luck: 2, wealth: -1} } , resultText: "你婉拒了那个升职的机会，推掉了几个应酬。朋友们都说你疯了，但你心里清楚——有些风景，过了这个年纪就再也看不到了。你背着包去了年轻时想去的地方，在异乡的街头，给家里打了一个长长的电话。"},
-      { text: "头也不回地走", effects: { attributes: { intelligence: 3, wealth: -1 } } , resultText: "你带着团队拿下了那个最难啃的项目。庆功宴上大家轮流敬酒，你笑着喝了一杯又一杯，胃里翻江倒海，面上不动声色。散场后你一个人坐在车里，揉了揉太阳穴——高处不胜寒，但你还没打算下来。"},
+      { text: "头也不回地走", effects: { attributes: { intelligence: 2, wealth: -1 } } , resultText: "你带着团队拿下了那个最难啃的项目。庆功宴上大家轮流敬酒，你笑着喝了一杯又一杯，胃里翻江倒海，面上不动声色。散场后你一个人坐在车里，揉了揉太阳穴——高处不胜寒，但你还没打算下来。"},
     ],
   },
   {
@@ -112,7 +112,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "第一次心动。那个人出现在图书馆的窗边，阳光正好。",
     minAge: createAge(20), maxAge: createAge(22), triggerAge: 20,
     choices: [
-      { text: "鼓起勇气表白", effects: { attributes: { appearance: 2, luck: 3, wealth: -1} } , resultText: "你推掉了几个可有可无的会议，一个人在美术馆里待了一下午。站在那幅巨大的油画前，你突然意识到，这些年你一直在赶路，却忘了问自己要去哪里。手机亮了一下，你没有接。"},
+      { text: "鼓起勇气表白", effects: { attributes: { appearance: 2, luck: 2, wealth: -1} } , resultText: "你推掉了几个可有可无的会议，一个人在美术馆里待了一下午。站在那幅巨大的油画前，你突然意识到，这些年你一直在赶路，却忘了问自己要去哪里。手机亮了一下，你没有接。"},
       { text: "默默藏在心里", effects: { attributes: { creativity: 2, physique: -1} } , resultText: "你把资金撤出了高风险项目，给全家买了更全面的保险。老同学笑你太保守，你只是笑笑——他们不知道，你夜里常常惊醒，满身冷汗。这个年纪，输不起了。"},
     ],
   },
@@ -122,7 +122,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     minAge: createAge(22), maxAge: createAge(23), triggerAge: 22,
     choices: [
       { text: "投身职场，大干一场", effects: { attributes: { wealth: 3, intelligence: 2, physique: -1} } , resultText: "你抵押了房子，投进一个外人看不懂的方向。妻子沉默了一整晚，第二天早上给你下了碗面。你吃着面，眼泪差点掉进碗里——你知道，这一局，不只是为了赢。"},
-      { text: "继续深造，充实自己", effects: { attributes: { intelligence: 4, creativity: 1, physique: -1} } , resultText: "你在退休申请上签了字，放下笔的那一刻，手有些抖。整理办公桌时翻出二十年前的名片，上面的自己意气风发。你把名片夹进笔记本，轻轻合上——这一页，翻过去了。"},
+      { text: "继续深造，充实自己", effects: { attributes: { intelligence: 2, creativity: 1, physique: -1} } , resultText: "你在退休申请上签了字，放下笔的那一刻，手有些抖。整理办公桌时翻出二十年前的名片，上面的自己意气风发。你把名片夹进笔记本，轻轻合上——这一页，翻过去了。"},
     ],
   },
 
@@ -159,7 +159,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "五十岁，知天命之年。你回望半生——那些奋斗过的日夜、喝过的酒、熬过的苦，都化作了鬓边的白发和眼中的沉静。你终于明白有些事强求不来，有些人留不住，有些路只能走一次。",
     minAge: createAge(50), maxAge: createAge(50), triggerAge: 50,
     choices: [
-      { text: "功成身退，颐养天年", effects: { attributes: { luck: 3, physique: 2, intelligence: -1} } , resultText: "你看着孙儿在玩具堆中笑闹，心里却泛起一丝复杂。物质的丰裕固然重要，但你更希望他长大后能记得这个午后——记得爷爷看他的眼神。你的手轻轻抚过他的头。"},
+      { text: "功成身退，颐养天年", effects: { attributes: { luck: 2, physique: 2, intelligence: -1} } , resultText: "你看着孙儿在玩具堆中笑闹，心里却泛起一丝复杂。物质的丰裕固然重要，但你更希望他长大后能记得这个午后——记得爷爷看他的眼神。你的手轻轻抚过他的头。"},
       { text: "老当益壮，再干一场", effects: { attributes: { wealth: 3, intelligence: 2, physique: -2 } } , resultText: "你落下一子，不紧不慢。对面的老友笑了，说你还是当年的你。你也笑了。棋至终局，胜负早已不重要——能坐到一起，就已经赢了。"},
     ],
   },
@@ -168,8 +168,8 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "五十五岁，秋收冬藏之时。你盘点一生的收成——事业、家庭、友情。哪些是你的骄傲，哪些又是你的遗憾？人到这个年纪，终于学会了与自己的不完美和解。",
     minAge: createAge(55), maxAge: createAge(55), triggerAge: 55,
     choices: [
-      { text: "知足常乐，享受晚年", effects: { attributes: { luck: 4, creativity: 2, wealth: -2} } },
-      { text: "人生还长，继续耕耘", effects: { attributes: { intelligence: 3, physique: -1, wealth: 1 } } },
+      { text: "知足常乐，享受晚年", effects: { attributes: { luck: 2, creativity: 2, wealth: -2} } },
+      { text: "人生还长，继续耕耘", effects: { attributes: { intelligence: 2, physique: -1, wealth: 1 } } },
     ],
   },
 
@@ -179,8 +179,8 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "你老了。某个黄昏，你坐在老屋的门槛上，夕阳把一切都镀成了金色。这一生，值了吗？",
     minAge: createAge(65), maxAge: createAge(70), triggerAge: 68,
     choices: [
-      { text: "这一生没有遗憾", effects: { attributes: { luck: 5, creativity: 3, intelligence: -2} } },
-      { text: "还有太多未完成的事", effects: { attributes: { intelligence: 3, physique: -2 } } },
+      { text: "这一生没有遗憾", effects: { attributes: { luck: 2, creativity: 3, intelligence: -2} } },
+      { text: "还有太多未完成的事", effects: { attributes: { intelligence: 2, physique: -2 } } },
     ],
   },
   {
@@ -188,7 +188,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "你抱起了孙子。那双清澈的眼睛让你想起了很久以前的自己——那个也曾对世界充满好奇的婴儿。",
     minAge: createAge(70), maxAge: createAge(78), triggerAge: 73,
     choices: [
-      { text: "把一生的故事讲给他听", effects: { attributes: { creativity: 5, luck: 3, wealth: -2} } },
+      { text: "把一生的故事讲给他听", effects: { attributes: { creativity: 5, luck: 2, wealth: -2} } },
       { text: "给他最好的物质条件", effects: { attributes: { wealth: -2, luck: 2, appearance: 2 } } },
     ],
   },
@@ -197,8 +197,8 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "八旬高龄，你坐在棋盘前。对手是当年一起学棋的老友。你们下了一盘很慢的棋，每一步都在回味这一生。",
     minAge: createAge(78), maxAge: createAge(88), triggerAge: 82,
     choices: [
-      { text: "从容落子，不计胜负", effects: { attributes: { intelligence: 3, luck: 3, creativity: 3, physique: -3} } },
-      { text: "依然争胜，初心不改", effects: { attributes: { intelligence: 5, physique: -2 } } },
+      { text: "从容落子，不计胜负", effects: { attributes: { intelligence: 2, luck: 2, creativity: 3, physique: -3} } },
+      { text: "依然争胜，初心不改", effects: { attributes: { intelligence: 2, physique: -2 } } },
     ],
   },
 
@@ -255,7 +255,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     minAge: createAge(21), maxAge: createAge(26), triggerAge: 24,
     choices: [
       { text: "买了机票出发", effects: { attributes: {}, isLethal: true }, resultText: "下了飞机后有辆面包车来接我。车越开越偏，手机被收走，护照被扣下。后面的事像一场醒不来的噩梦。我的故事停在了二十四岁，再也没有人见过我。" },
-      { text: "上网查一下这家公司", effects: { attributes: { intelligence: 3, luck: 2, physique: -1} }, resultText: "我在谷歌上搜了那个公司名——第三页就出现了'诈骗'两个字。我又搜了那栋大楼，街景图和面试时看到的完全不一样。我关上聊天窗口，把这个'机会'拉黑了。好险——有些幸运不是天上掉的馅饼，是你比别人多花了几分钟怀疑。" },
+      { text: "上网查一下这家公司", effects: { attributes: { intelligence: 2, luck: 2, physique: -1} }, resultText: "我在谷歌上搜了那个公司名——第三页就出现了'诈骗'两个字。我又搜了那栋大楼，街景图和面试时看到的完全不一样。我关上聊天窗口，把这个'机会'拉黑了。好险——有些幸运不是天上掉的馅饼，是你比别人多花了几分钟怀疑。" },
     ],
   },
 
@@ -266,7 +266,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     minAge: createAge(50), maxAge: createAge(50), triggerAge: 50,
     choices: [
       { text: "拖延随访，害怕知道结果", effects: { attributes: { physique: -10, luck: -3 }, isLethal: false }, resultText: "我把检查申请单锁进抽屉。半年后症状出现了——那时肿瘤已经从早期发展到了中期。后来回想，那个没有打开的抽屉，才是真正致命的。" },
-      { text: "第二天就去做活检", effects: { attributes: { physique: -3, luck: 3 } }, resultText: "我深吸一口气，第二天早上第一个到达检验科。活检结果：良性炎症。医生说你再年轻五岁都没必要做这个检查——但我做了。有时候害怕是对的，但正因为害怕，才要勇敢。" },
+      { text: "第二天就去做活检", effects: { attributes: { physique: -3, luck: 2 } }, resultText: "我深吸一口气，第二天早上第一个到达检验科。活检结果：良性炎症。医生说你再年轻五岁都没必要做这个检查——但我做了。有时候害怕是对的，但正因为害怕，才要勇敢。" },
     ],
   },
 ];

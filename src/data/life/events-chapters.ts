@@ -362,6 +362,127 @@ export const CHAPTER_EVENTS: ParametricEvent[] = [
       { text: "坐到那张空桌前", effects: { attributes: {}, setChapterFlags: { well_empty_desk_sat: true } }, resultText: "桌洞里有一张纸条：这不是第一次，也不会是最后一次。" },
       { text: "把空桌推回墙边", effects: { attributes: { physique: -1 }, setChapterFlags: { well_empty_desk_refused: true } }, resultText: "桌脚摩擦地面，声音像井盖被慢慢拖开。" },
     ],
-  }
+  },
+
+  {
+    type: "parametric",
+    id: "c_well_red_eraser",
+    title: "沉名遗失",
+    description: "第十四阶旁边躺着一块红色橡皮。它被削得很薄，像被谁反复用来擦掉名字。橡皮屑沿着台阶排成一行，每一粒都轻轻叫你。",
+    minAge: createAge(8), maxAge: createAge(60), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_stair_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "捡起橡皮", effects: { attributes: {}, setChapterFlags: { well_red_eraser_taken: true, well_name_lost: true, yomi_debt: 1 } }, resultText: "橡皮入手很冷。你想起自己名字里有一个字从小写得不好，现在你终于明白，不是你不会写，是它一直想离开。" },
+      { text: "用鞋尖把它踢下去", effects: { attributes: {}, setChapterFlags: { well_red_eraser_refused: true } }, resultText: "橡皮滚下楼梯。每滚一级，就有一个童年的声音叫错你的名字。第十三声后，楼梯下方传来狗子很轻的一句：别让它找到我。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_blank_fourteenth",
+    title: "",
+    description: "这一页没有标题。你盯着空白处看了很久，才发现不是标题没有出现，而是它被某个更早做出选择的你提前删掉了。",
+    minAge: createAge(8), maxAge: createAge(65), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_stair_seen: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "继续阅读空白", effects: { attributes: {}, setChapterFlags: { well_blank_read: true } }, resultText: "空白读起来像一段很长的尖叫。你没有听见声音，却知道自己的事件日志里多了一行不该存在的记录。" },
+      { text: "合上这一页", effects: { attributes: {}, setChapterFlags: { well_blank_closed: true } }, resultText: "你合上它。下一秒，井下所有窗户同时映出你的脸。每一张脸都在做你刚才没有选择的表情。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_dog_lie",
+    title: "赤目疑声",
+    description: "狗子说自己只是迷路。说完他先笑了一下，又很快把笑收回去。你忽然想起，大纲里写过：狗子每次准备说谎，都会先笑一下。",
+    minAge: createAge(8), maxAge: createAge(70), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_dog_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "装作没有发现", effects: { attributes: {}, setChapterFlags: { well_dog_lie_accepted: true }, relationshipEffect: { targetId: "confidant", change: 6 } }, resultText: "你点点头。狗子松了一口气，但那口气不像从肺里出来，更像从一张旧收据下面漏出来。" },
+      { text: "问他上一轮发生了什么", effects: { attributes: {}, setChapterFlags: { well_dog_lie_exposed: true, dog_memory: 2 }, relationshipEffect: { targetId: "confidant", change: -4 } }, resultText: "狗子的笑僵在脸上。他说：上一轮你没有问。上一轮你比较善良。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_duty_substitute",
+    title: "",
+    description: "黑板右上角写着本日值日。粉笔字一开始是你的名字，眨眼后变成“替身”。再眨眼，两个名字叠在一起，像同一个人被写了两遍。",
+    minAge: createAge(9), maxAge: createAge(65), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_empty_desk_sat: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "擦掉替身两个字", effects: { attributes: {}, setChapterFlags: { well_substitute_erased: true } }, resultText: "你擦得很用力。黑板干净以后，教室里所有人都看向最后一排。那里有个人低声说：那今天该谁替你留下？" },
+      { text: "把自己的名字补在旁边", effects: { attributes: {}, setChapterFlags: { well_duty_shared: true, well_substitute_invited: true } }, resultText: "两个名字并排站着。粉笔灰落在讲台上，像一层薄雪。狗子看着你，第一次没有阻止。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_photo_no_shadow",
+    title: "沉幕影失",
+    description: "井下照相馆挂着一排合影。照片里的人都笑得很标准，唯独你的位置是一块干净的空白。老板说：你的影子太新，冲洗要等下一轮。",
+    minAge: createAge(9), maxAge: createAge(70), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_market_seen: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "要求立刻取片", effects: { attributes: {}, setChapterFlags: { well_photo_taken: true } }, resultText: "老板递来照片。照片里你终于出现了，但站在你身后的那个人更清楚，清楚到像你只是他的背景。" },
+      { text: "把空白照片买走", effects: { attributes: {}, setChapterFlags: { well_empty_photo: true } }, resultText: "你把空白照片放进口袋。它轻得不像纸，像一段还没有来得及发生的人生。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_choice_rewrite",
+    title: "",
+    description: "你低头看见脚边有三个选项。前两个是你刚才见过的。第三个没有文字，只在末尾闪着一个光标，像在等你亲手把自己写进去。",
+    minAge: createAge(11), maxAge: createAge(70), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_last_line_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "选择没有文字的选项", effects: { attributes: {}, setChapterFlags: { well_unwritten_choice: true, well_parallel_seen: true } }, resultText: "你伸手按下空白。井下街道停顿了一秒，像某个程序终于承认你没有按照它预想的方式活下去。" },
+      { text: "只选看得见的东西", effects: { attributes: {}, setChapterFlags: { well_visible_choice_only: true } }, resultText: "你避开空白。它没有消失，只是挪到了你的影子里。此后每走一步，你都像拖着一个没被选择的答案。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_event_log",
+    title: "",
+    description: "名簿翻到一页不像名簿的东西。上面按年龄记录着你做过的事，甚至包括你刚才在选项前停留的那几秒。最下面一行写着：玩家尚未察觉。",
+    minAge: createAge(12), maxAge: createAge(75), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_parallel_seen: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "撕掉最后一行", effects: { attributes: {}, setChapterFlags: { well_log_torn: true } }, resultText: "纸没有破。你的指甲却像穿过水面一样陷进去。名簿自动补上一句：玩家开始反抗。" },
+      { text: "继续往后翻", effects: { attributes: {}, setChapterFlags: { well_log_read_future: true, yomi_debt: 2 } }, resultText: "后面的页数全是空白，只在每一页页脚印着同一句话：此处本应死亡，已延期。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_dog_receipt",
+    title: "赤目遗赊",
+    description: "狗子的课桌里有一叠湿收据。每一张都盖着红印，付款人一栏写着他的名字，受益人一栏被仔细刮掉，只剩你名字最后一笔。",
+    minAge: createAge(12), maxAge: createAge(70), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { dog_memory: 1 }, weight: 7, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "把收据还给他", effects: { attributes: {}, setChapterFlags: { well_dog_receipt_returned: true }, relationshipEffect: { targetId: "confidant", change: 8 } }, resultText: "狗子没有接。他说：你拿着吧。万一哪天我不记得了，你至少知道我不是白白留下的。" },
+      { text: "偷偷藏起一张", effects: { attributes: {}, setChapterFlags: { well_dog_receipt_stolen: true, yomi_debt: 2 }, relationshipEffect: { targetId: "confidant", change: -6 } }, resultText: "收据在你掌心变热。狗子没有回头，却轻声说：别偷那张。那张是我最后一次像人一样回去的凭证。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_substitute_homework",
+    title: "沉墨余生",
+    description: "替身把一本作业推到你面前。每一页都写着你的笔迹，但日期覆盖了你没有经历过的十几年。他说：我不是突然长大的。我只是替你活得比较安静。",
+    minAge: createAge(13), maxAge: createAge(75), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_substitute_invited: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "承认他也是你", effects: { attributes: {}, setChapterFlags: { well_substitute_acknowledged: true, yomi_debt: 2 } }, resultText: "替身笑了一下。那笑容让你很不舒服，因为你小时候也这样笑。井上方传来母亲的声音，但她喊的是你们两个的名字。" },
+      { text: "告诉他这里只能有一个你", effects: { attributes: {}, setChapterFlags: { well_substitute_rejected: true } }, resultText: "替身低头继续写作业。铅笔划过纸面，一笔一划都像在替你练习一场很久以后的死亡。" },
+    ],
+  },
+  {
+    type: "parametric",
+    id: "c_well_thirteenth_rollcall",
+    title: "沉鸣应声",
+    description: "第十三声铃响后，广播开始点名。第一个名字是你，第二个还是你，第三个变成了狗子。广播每念一次，教室里就少一个有影子的人。",
+    minAge: createAge(13), maxAge: createAge(75), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
+    chapterFlagsRequired: { well_thirteenth_bell: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
+    choices: [
+      { text: "替狗子答到", effects: { attributes: { physique: -1 }, setChapterFlags: { well_answered_for_dog: true }, relationshipEffect: { targetId: "confidant", change: 12 } }, resultText: "你喊了一声到。你的影子被粉笔灰擦掉一角，狗子却终于抬头看你。那一刻他像第一次相信你会救他。" },
+      { text: "等广播念完", effects: { attributes: {}, setChapterFlags: { well_rollcall_waited: true, yomi_debt: 2 } }, resultText: "广播念到最后，开始播放你的呼吸声。你这才发现，教室里最先消失的不是别人，是坐在最后一排的你。" },
+    ],
+  },
 
 ];

@@ -51,7 +51,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { intelligence: 5 }, weight: 2, maxTriggers: 2, cooldownYears: 10,
     choices: [
       { text: "稳定发挥", effects: { attributes: { intelligence: 2, appearance: 1, physique: -1} } , resultText: "我深吸一口气，一笔一划写得工工整整。那些练过无数遍的字从笔尖流出，稳稳地落在纸上。公布结果时我的名字赫然在列——稳扎稳打，从不会让人失望。"},
-      { text: "冒险用生僻字", effects: { attributes: { intelligence: 3, luck: -1 } } , resultText: "我赌了一把，写了一个刚学会的生僻字。笔划繁复，写到一半差点忘了怎么写，额头渗出冷汗。最后勉强写完，但那一笔明显有些犹豫。评委皱了皱眉——勇气可嘉，但赌注的代价也不小。"},
+      { text: "冒险用生僻字", effects: { attributes: { intelligence: 2, luck: -1 } } , resultText: "我赌了一把，写了一个刚学会的生僻字。笔划繁复，写到一半差点忘了怎么写，额头渗出冷汗。最后勉强写完，但那一笔明显有些犹豫。评委皱了皱眉——勇气可嘉，但赌注的代价也不小。"},
     ],
   },
   {
@@ -114,9 +114,9 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     type: "parametric", id: "p_kid_persist", title: "持墨砚石",
     description: "一道怎么也解不开的数学题摆在面前。草稿纸用了一张又一张，笔尖都快把纸戳破了。身边的同学都放弃了，只有你还咬着笔杆不肯认输。",
     minAge: createAge(10), maxAge: createAge(15),
-    statRequirements: { intelligence: 3 }, weight: 2, maxTriggers: 3, cooldownYears: 8,
+    statRequirements: { intelligence: 2 }, weight: 2, maxTriggers: 3, cooldownYears: 8,
     choices: [
-      { text: "死磕到底直到解出来", effects: { attributes: { intelligence: 3, physique: -1 } } , resultText: "我盯着那道题看了整整一个下午，草稿纸揉了一团又一团。写到第八张纸的时候，答案忽然自己跳了出来——那么简单，我居然绕了这么远的路。我瘫在椅背上头晕眼花，但心里比吃了蜜还甜。"},
+      { text: "死磕到底直到解出来", effects: { attributes: { intelligence: 2, physique: -1 } } , resultText: "我盯着那道题看了整整一个下午，草稿纸揉了一团又一团。写到第八张纸的时候，答案忽然自己跳了出来——那么简单，我居然绕了这么远的路。我瘫在椅背上头晕眼花，但心里比吃了蜜还甜。"},
       { text: "去请教老师或同学", effects: { attributes: { intelligence: 1, appearance: 1, physique: -1} } , resultText: "我拿着题去找班长，她三言两语就点通了关键。我恍然大悟的同时也有点脸红——这么简单我竟然卡了这么久。不过下次遇到类似的题，我大概不会再错了。学会了就是自己的。"},
     ],
   },
@@ -145,7 +145,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(14), maxAge: createAge(17), weight: 3, maxTriggers: 3, cooldownYears: 8,
     choices: [
       { text: "站起来据理力争", effects: { attributes: { appearance: 3, intelligence: -1 } } , resultText: "我腾地站起来，声音比预想中大得多。教室里安静了一瞬，所有人都在看我。我把想说的话一口气说完，心脏砰砰跳得像要蹦出胸腔。老师愣住了，我也愣住了——有些话说出来就收不回去了。"},
-      { text: "忍下来，用成绩证明自己", effects: { attributes: { intelligence: 3, luck: -1 } } , resultText: "我死死咬着嘴唇，把涌到喉咙的话咽了回去。指甲掐进掌心留下几道月牙印。回到座位上我翻开课本，一个字也看不进去——但我知道，愤怒解决不了问题，分数才是最好的反击。"},
+      { text: "忍下来，用成绩证明自己", effects: { attributes: { intelligence: 2, luck: -1 } } , resultText: "我死死咬着嘴唇，把涌到喉咙的话咽了回去。指甲掐进掌心留下几道月牙印。回到座位上我翻开课本，一个字也看不进去——但我知道，愤怒解决不了问题，分数才是最好的反击。"},
     ],
   },
 
@@ -240,9 +240,9 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     type: "parametric", id: "p_young_night_rain", title: "愁漫雨声",
     description: "职场如江湖。你被同事暗算背了黑锅，一个人在雨夜加班到凌晨。那些表面笑脸，不过是一场无声的厮杀。你盯着电脑屏幕，屏幕上的字渐渐模糊成一片——原来长大，就是学会咽下委屈。",
     minAge: createAge(22), maxAge: createAge(30),
-    statRequirements: { intelligence: 3 }, weight: 3, maxTriggers: 2, cooldownYears: 8,
+    statRequirements: { intelligence: 2 }, weight: 3, maxTriggers: 2, cooldownYears: 8,
     choices: [
-      { text: "收集证据，保护自己", effects: { attributes: { intelligence: 3, luck: 2, physique: -1} } , resultText: "我开始不动声色地保留邮件截图、聊天记录，整理每一个时间线。两个月后，当领导追责时，我拿出了完整的证据链。会议室里鸦雀无声——我没有报复任何人，只是学会了在这个江湖里保护好自己。"},
+      { text: "收集证据，保护自己", effects: { attributes: { intelligence: 2, luck: 2, physique: -1} } , resultText: "我开始不动声色地保留邮件截图、聊天记录，整理每一个时间线。两个月后，当领导追责时，我拿出了完整的证据链。会议室里鸦雀无声——我没有报复任何人，只是学会了在这个江湖里保护好自己。"},
       { text: "忍一时风平浪静", effects: { attributes: { luck: 1, physique: 1, intelligence: -1} } , resultText: "我咽下了这口气，默默把黑锅背了。后来那个陷害我的同事又故技重施，终于被公司开除了。我庆幸自己没冲动，但也明白了一个道理——善良如果没有牙齿，就是软弱。忍一时风平浪静，退一步未必海阔天空。"},
     ],
   },
@@ -252,7 +252,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(22), maxAge: createAge(30), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "从零开始，再来一次", effects: { attributes: { creativity: 4, luck: 2, physique: -2 } } , resultText: "我擦干眼泪，把所有的积蓄重新摊在桌上。这一次我什么都没有了，但也什么都不怕了。失败像一盆冷水，浇醒了我所有的幻想。我开始认真复盘每一个错误——真正的强者不是从不失败，而是把失败踩成台阶。"},
-      { text: "换一条路走", effects: { attributes: { intelligence: 3, luck: 1, physique: -1} } , resultText: "我承认了——这条路走不通。不是认输，是换一条赛道。那些打不倒你的，确实会让你变得更强大——但前提是，你得懂得转弯。我收起残剑，走向了另一片江湖。谁规定一条路必须走到底呢？"},
+      { text: "换一条路走", effects: { attributes: { intelligence: 2, luck: 1, physique: -1} } , resultText: "我承认了——这条路走不通。不是认输，是换一条赛道。那些打不倒你的，确实会让你变得更强大——但前提是，你得懂得转弯。我收起残剑，走向了另一片江湖。谁规定一条路必须走到底呢？"},
     ],
   },
   {
@@ -279,7 +279,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "同期入职的朋友已经开始躺平，而你还在咬牙进修。深夜的图书馆里，只有你的台灯还亮着。你揉了揉酸涩的眼睛，翻开下一页。不进则退，你不想退——因为你知道，所有看似无用的努力，都在悄悄塑造未来的你。",
     minAge: createAge(20), maxAge: createAge(28), weight: 3, maxTriggers: 3, cooldownYears: 8,
     choices: [
-      { text: "坚持学下去", effects: { attributes: { intelligence: 4, physique: -2 } } , resultText: "眼皮在打架，咖啡已经喝到第三杯。身边的座位一个个空了，只有头顶那盏灯还亮着。我揉了揉发酸的眼睛，在笔记本上又写了一页。走出图书馆时已经是深夜，路灯把我的影子拉得很长——但我在这条路上，每一步都算数。"},
+      { text: "坚持学下去", effects: { attributes: { intelligence: 2, physique: -2 } } , resultText: "眼皮在打架，咖啡已经喝到第三杯。身边的座位一个个空了，只有头顶那盏灯还亮着。我揉了揉发酸的眼睛，在笔记本上又写了一页。走出图书馆时已经是深夜，路灯把我的影子拉得很长——但我在这条路上，每一步都算数。"},
       { text: "休息一天，别太累", effects: { attributes: { physique: 2, intelligence: 1, wealth: -1} } , resultText: "我合上书本，去操场走了几圈。晚风很凉，吹散了脑中的混沌。回来后又翻了几页书，效率反而比硬撑着高了许多。原来有时候，停下来是为了走得更远——这个道理我用了很久才真正明白。"},
     ],
   },
@@ -317,7 +317,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(19), maxAge: createAge(26),
     statRequirements: { physique: 3, creativity: 3 }, weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "义无反顾地出发", effects: { attributes: { creativity: 4, luck: 3, wealth: -2 } } , resultText: "我递了辞呈，拖着行李箱去了那座陌生的城市。出站的那一刻，潮湿的海风扑面而来，我深吸了一口气——这味道里有未知，有自由，也有一丝恐惧。我给朋友发了条消息：'我到了。'然后关掉手机，走进了那片属于我的森林。"},
+      { text: "义无反顾地出发", effects: { attributes: { creativity: 4, luck: 2, wealth: -2 } } , resultText: "我递了辞呈，拖着行李箱去了那座陌生的城市。出站的那一刻，潮湿的海风扑面而来，我深吸了一口气——这味道里有未知，有自由，也有一丝恐惧。我给朋友发了条消息：'我到了。'然后关掉手机，走进了那片属于我的森林。"},
       { text: "做好万全准备再走", effects: { attributes: { intelligence: 2, wealth: 2, physique: -1} } , resultText: "我没有急着走，而是先在网上了解了那座城市的情况，存够了半年的房租，甚至提前联系了几个可能的住处。当终于坐上火车时，我比想象中平静。年少时的冲动很美，但深思熟虑后的出发，才是成年人该有的勇敢。"},
     ],
   },
@@ -337,7 +337,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你站在婚礼的殿堂上，看着TA的眼睛。这一生的承诺，从此刻开始。",
     minAge: createAge(25), maxAge: createAge(35), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "深情宣誓", effects: { attributes: { luck: 3, creativity: 2, wealth: -1} } , resultText: "你站在聚光灯下，握着TA的手，那些准备好的誓词忽然全部忘了。沉默了几秒，你只说了句：'以后的路，我们一起走。'台下有人笑了，也有人偷偷抹眼泪。那一夜，你第一次觉得'归宿'这个词有了形状。"},
+      { text: "深情宣誓", effects: { attributes: { luck: 2, creativity: 2, wealth: -1} } , resultText: "你站在聚光灯下，握着TA的手，那些准备好的誓词忽然全部忘了。沉默了几秒，你只说了句：'以后的路，我们一起走。'台下有人笑了，也有人偷偷抹眼泪。那一夜，你第一次觉得'归宿'这个词有了形状。"},
       { text: "务实规划未来", effects: { attributes: { wealth: 2, intelligence: 2, physique: -1} } , resultText: "你和TA在厨房餐桌上摊开账本，一笔一笔地算——房贷、育儿基金、养老储备。没有海誓山盟，只有密密麻麻的数字。但你知道，这比任何情话都实在：真正的承诺，写在柴米油盐里。"},
     ],
   },
@@ -402,7 +402,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "家里出了大事。你拖着疲惫的身躯回到家，TA什么也没说，只是默默给你倒了一杯热水，然后坐在你身边。那一刻你明白，所谓夫妻，就是同一条船上的人，风浪再大也不松手。",
     minAge: createAge(33), maxAge: createAge(50), weight: 2, maxTriggers: 2, cooldownYears: 8,
     choices: [
-      { text: "紧紧握住TA的手", effects: { attributes: { luck: 3, creativity: 2, wealth: -1} } , resultText: "你握住TA的手，指节发白。千言万语堵在喉咙里，最后只挤出一句：'有我呢。'TA的眼泪滴在你手背上，滚烫。那晚你们在沙发上坐了很久，谁也没有松开谁——有些风雨，握紧了手就能走过去。"},
+      { text: "紧紧握住TA的手", effects: { attributes: { luck: 2, creativity: 2, wealth: -1} } , resultText: "你握住TA的手，指节发白。千言万语堵在喉咙里，最后只挤出一句：'有我呢。'TA的眼泪滴在你手背上，滚烫。那晚你们在沙发上坐了很久，谁也没有松开谁——有些风雨，握紧了手就能走过去。"},
       { text: "一个人扛，不让TA担心", effects: { attributes: { physique: -2, intelligence: 2, wealth: 1 } } , resultText: "你笑着说'没事'，转身走进书房，轻轻关上了门。你坐在黑暗里，盯着手机上的数字发呆。你不想让TA看到你崩溃的样子——不是不信任，而是你觉得，有些重量注定只能一个人扛。"},
     ],
   },
@@ -421,7 +421,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(35), maxAge: createAge(55),
     statRequirements: { wealth: 3 }, weight: 2, maxTriggers: 2, cooldownYears: 8,
     choices: [
-      { text: "倾囊相助，情义无价", effects: { attributes: { wealth: -3, luck: 4, appearance: 2 } } , resultText: "你把银行卡递过去的时候，老友的泪水夺眶而出。你拍了拍他的肩膀，什么也没说。回家的路上妻子看了你一眼，欲言又止，最终只说了句：'做得对。'你知道那笔钱可能回不来了，但你更知道，有些东西比钱珍贵得多。"},
+      { text: "倾囊相助，情义无价", effects: { attributes: { wealth: -3, luck: 2, appearance: 2 } } , resultText: "你把银行卡递过去的时候，老友的泪水夺眶而出。你拍了拍他的肩膀，什么也没说。回家的路上妻子看了你一眼，欲言又止，最终只说了句：'做得对。'你知道那笔钱可能回不来了，但你更知道，有些东西比钱珍贵得多。"},
       { text: "量力而行，点到为止", effects: { attributes: { wealth: 1, intelligence: 1, creativity: -1} } , resultText: "你借出一笔在他偿还能力范围内的数目，又帮忙联系了几个熟人。老友千恩万谢，你说'都是小事'。回到办公室你记了一笔账——不只是钱的账，也是人情的账。中年人的友谊，经不起透支。"},
     ],
   },
@@ -461,7 +461,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(42), maxAge: createAge(58),
     statRequirements: { intelligence: 6, wealth: 3 }, weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "倾囊相授，毫无保留", effects: { attributes: { intelligence: 3, luck: 3, creativity: 2, physique: -2} } , resultText: "你把自己几十年的经验整理成文档，从方法论到踩过的坑，事无巨细。那个年轻人每次听完都两眼放光，笔记记了厚厚一本。你看着他，像看着一棵正在长大的树——你知道他终将超越你，而你觉得那很好。"},
+      { text: "倾囊相授，毫无保留", effects: { attributes: { intelligence: 2, luck: 2, creativity: 2, physique: -2} } , resultText: "你把自己几十年的经验整理成文档，从方法论到踩过的坑，事无巨细。那个年轻人每次听完都两眼放光，笔记记了厚厚一本。你看着他，像看着一棵正在长大的树——你知道他终将超越你，而你觉得那很好。"},
       { text: "教七分留三分", effects: { attributes: { intelligence: 1, wealth: 1, physique: -1} } , resultText: "你教他业务，教他为人，但从不把自己压箱底的心法全部说出。这不是自私——你告诉自己——有些路必须自己走过才算数。你在一旁看着，偶尔点拨一句。既为师徒，便不能替他走路。"},
     ],
   },
@@ -471,7 +471,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(40), maxAge: createAge(55),
     statRequirements: { wealth: 4 }, weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "咬牙坚持，从头再来", effects: { attributes: { physique: -2, luck: 3, creativity: 2, wealth: -2 } } , resultText: "你卖掉了车，退掉了办公室，坐在空荡荡的客厅里打了一圈电话。合伙人走了一半，但手里还有几个愿意相信你的人。你在白纸上重新写下了计划书——字迹有些抖，但每一笔都比从前更用力。"},
+      { text: "咬牙坚持，从头再来", effects: { attributes: { physique: -2, luck: 2, creativity: 2, wealth: -2 } } , resultText: "你卖掉了车，退掉了办公室，坐在空荡荡的客厅里打了一圈电话。合伙人走了一半，但手里还有几个愿意相信你的人。你在白纸上重新写下了计划书——字迹有些抖，但每一笔都比从前更用力。"},
       { text: "及时止损，另找出路", effects: { attributes: { wealth: -1, intelligence: 2, luck: 1 } } , resultText: "你在最后一份文件上签了字，结束了这场噩梦。清算师同情地看着你，你反倒安慰他：'没事，人还在。'你走出大楼，天正下着小雨。你没有打伞，在雨里走了很久，想着接下来该怎么办。"},
     ],
   },
@@ -500,7 +500,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你回到阔别多年的故乡。老屋还在，巷口那棵槐树却已被砍去。物是人非，感慨万千。",
     minAge: createAge(62), maxAge: createAge(72), weight: 2, maxTriggers: 3, cooldownYears: 8,
     choices: [
-      { text: "重修老屋，落叶归根", effects: { attributes: { wealth: -1, luck: 3, creativity: 2 } } , resultText: "你找来工匠，一砖一瓦地修复老屋。每一道墙缝都藏着记忆，每一扇窗户都照见过往。你决定在这里住下来，不再漂泊。"},
+      { text: "重修老屋，落叶归根", effects: { attributes: { wealth: -1, luck: 2, creativity: 2 } } , resultText: "你找来工匠，一砖一瓦地修复老屋。每一道墙缝都藏着记忆，每一扇窗户都照见过往。你决定在这里住下来，不再漂泊。"},
       { text: "只是静静走一圈就走了", effects: { attributes: { creativity: 2, wealth: -1} } , resultText: "你沿着巷子慢慢地走，用手抚摸每一面斑驳的墙。一切都变了，又好像什么都没变。你转身离开，没有回头——故乡在心里，不必强求归期。"},
     ],
   },
@@ -528,7 +528,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "老友聚会。当年的少年如今满头白发，推杯换盏间，那些遥远的名字又被提起。",
     minAge: createAge(68), maxAge: createAge(82), weight: 2, maxTriggers: 3, cooldownYears: 8,
     choices: [
-      { text: "组织定期聚会", effects: { attributes: { appearance: 2, luck: 3, wealth: -1} } , resultText: "你建了个老友群，定下每月一聚的规矩。第一次聚会来了八个人，第二次又少了两个。但你不在乎——能来的，都是时间淘洗后的真朋友。酒不必多，说说话就好。"},
+      { text: "组织定期聚会", effects: { attributes: { appearance: 2, luck: 2, wealth: -1} } , resultText: "你建了个老友群，定下每月一聚的规矩。第一次聚会来了八个人，第二次又少了两个。但你不在乎——能来的，都是时间淘洗后的真朋友。酒不必多，说说话就好。"},
       { text: "珍惜每一次见面", effects: { attributes: { creativity: 3, luck: 1, physique: -1} } , resultText: "你举起酒杯，和每一个老友碰杯。你知道这样的聚会越来越少，所以格外认真地看每个人的脸。席散后你站在门口目送大家离去，路灯把影子拉得很长。"},
     ],
   },
@@ -537,7 +537,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你开始思考这一生留下了什么。后代？作品？还是只是一个故事？",
     minAge: createAge(70), maxAge: createAge(85), weight: 2, maxTriggers: 2, cooldownYears: 10,
     choices: [
-      { text: "把经验传授给年轻人", effects: { attributes: { intelligence: 3, luck: 3, physique: -2} } , resultText: "你坐在年轻人中间，把自己一辈子的经验和教训摊开来讲。他们认真地记笔记，问问题。你忽然觉得——原来这一生没有白过，哪怕只点亮了一盏灯。"},
+      { text: "把经验传授给年轻人", effects: { attributes: { intelligence: 2, luck: 2, physique: -2} } , resultText: "你坐在年轻人中间，把自己一辈子的经验和教训摊开来讲。他们认真地记笔记，问问题。你忽然觉得——原来这一生没有白过，哪怕只点亮了一盏灯。"},
       { text: "写一份遗嘱清单", effects: { attributes: { wealth: 2, physique: -1} } , resultText: "你戴上老花镜，一笔一划地写下这份清单。财产不多，但每一件物品背后都有一个故事。你希望收到它们的人，能明白这些物的重量。"},
     ],
   },
@@ -558,7 +558,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { creativity: 6 }, weight: 2, maxTriggers: 3, cooldownYears: 8,
     choices: [
       { text: "暮年也要把它做出来", effects: { attributes: { creativity: 6, intelligence: 2, physique: -2 } } , resultText: "你戴上老花镜，从满是灰尘的工作台上翻出当年的图纸。手指已不太灵便，但心还是热的。你花了大半年把它做了出来——虽然晚了五十年，但终究没有带着它进坟墓。"},
-      { text: "传给下一代去实现", effects: { attributes: { luck: 3, intelligence: 2, wealth: -1} } , resultText: "你小心翼翼地把那本泛黄的笔记本交给孙辈。他们好奇地翻看着，眼睛里闪着光。你拍拍他们的肩说：'这是我的遗憾，但不是你们的。'"},
+      { text: "传给下一代去实现", effects: { attributes: { luck: 2, intelligence: 2, wealth: -1} } , resultText: "你小心翼翼地把那本泛黄的笔记本交给孙辈。他们好奇地翻看着，眼睛里闪着光。你拍拍他们的肩说：'这是我的遗憾，但不是你们的。'"},
     ],
   },
   {
@@ -566,8 +566,8 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "某个夜晚，你独自坐在院子里。月光清澈如水，你感到前所未有的平静。",
     minAge: createAge(75), maxAge: createAge(90), weight: 2, maxTriggers: 2, cooldownYears: 10,
     choices: [
-      { text: "享受这片刻宁静", effects: { attributes: { luck: 5, creativity: 2, wealth: -2} } , resultText: "你靠在藤椅上，月光洒在你的脸上。远处传来几声狗吠，更衬得夜色安静。你闭上眼睛，感觉自己像一片羽毛，漂浮在时间之外。"},
-      { text: "叫家人一起赏月", effects: { attributes: { appearance: 2, luck: 3, wealth: -1} } , resultText: "你招呼家人搬了椅子出来。孩子们起初还在看手机，后来也渐渐被这月色打动。一家人就这样静静地坐着，看着同一轮明月。千年前的古人，大概也是这样的吧。"},
+      { text: "享受这片刻宁静", effects: { attributes: { luck: 2, creativity: 2, wealth: -2} } , resultText: "你靠在藤椅上，月光洒在你的脸上。远处传来几声狗吠，更衬得夜色安静。你闭上眼睛，感觉自己像一片羽毛，漂浮在时间之外。"},
+      { text: "叫家人一起赏月", effects: { attributes: { appearance: 2, luck: 2, wealth: -1} } , resultText: "你招呼家人搬了椅子出来。孩子们起初还在看手机，后来也渐渐被这月色打动。一家人就这样静静地坐着，看着同一轮明月。千年前的古人，大概也是这样的吧。"},
     ],
   },
   {
@@ -587,7 +587,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { creativity: 4 },
     choices: [
       { text: "去完成它，趁还来得及", effects: { attributes: { creativity: 4, intelligence: 2, physique: -2 } } , resultText: "你重新打开尘封已久的工具箱，双手虽然颤抖，但眼神异常坚定。那些未完成的线条和色彩，在你的手中渐渐活了过来。你赶在日落之前，终于画完了最后一笔。"},
-      { text: "把它交给后人去实现", effects: { attributes: { luck: 3, intelligence: 1, wealth: -1} } , resultText: "你把这些年的构思和积累整理成册，郑重地交到年轻人手中。看着他们接下这份未竟的事业，你心里既有释然，也有一丝说不清的酸楚。"},
+      { text: "把它交给后人去实现", effects: { attributes: { luck: 2, intelligence: 1, wealth: -1} } , resultText: "你把这些年的构思和积累整理成册，郑重地交到年轻人手中。看着他们接下这份未竟的事业，你心里既有释然，也有一丝说不清的酸楚。"},
     ],
   },
   {
@@ -596,7 +596,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(70), maxAge: createAge(88), weight: 2, maxTriggers: 2, cooldownYears: 8,
     statRequirements: { physique: 3 },
     choices: [
-      { text: "发挥余热，不计回报", effects: { attributes: { luck: 3, creativity: 3, intelligence: -2} } , resultText: "你穿上志愿者的红马甲，在社区里忙前忙后。帮人修锁、教孩子写毛笔字、陪孤寡老人聊天。虽然累，但心里充实——原来被人需要，是这么温暖的事。"},
+      { text: "发挥余热，不计回报", effects: { attributes: { luck: 2, creativity: 3, intelligence: -2} } , resultText: "你穿上志愿者的红马甲，在社区里忙前忙后。帮人修锁、教孩子写毛笔字、陪孤寡老人聊天。虽然累，但心里充实——原来被人需要，是这么温暖的事。"},
       { text: "婉拒，安心养老", effects: { attributes: { physique: 2, luck: 1, wealth: -1} } , resultText: "你婉言谢绝了对方的请求，心里却没有完全放下。夜晚你望着窗外的万家灯火，想那些需要帮助的人是否已经得到了回应。你轻轻叹了口气，合上眼不再想。"},
     ],
   },
@@ -605,7 +605,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你和老伴一起在院子里晒太阳。TA的头发已经全白了，你的也是。你们没说几句话，但手一直握在一起。",
     minAge: createAge(68), maxAge: createAge(85), weight: 2, maxTriggers: 2, cooldownYears: 8,
     choices: [
-      { text: "牵起TA的手，说一声'辛苦了'", effects: { attributes: { luck: 3, appearance: 2, wealth: -1} } , resultText: "你握住TA布满皱纹的手，千言万语化作一句'辛苦了'。TA的眼眶湿了，你也湿了。这一路走来不容易，好在——你们一直在一起。"},
+      { text: "牵起TA的手，说一声'辛苦了'", effects: { attributes: { luck: 2, appearance: 2, wealth: -1} } , resultText: "你握住TA布满皱纹的手，千言万语化作一句'辛苦了'。TA的眼眶湿了，你也湿了。这一路走来不容易，好在——你们一直在一起。"},
       { text: "默默陪伴，不必多言", effects: { attributes: { luck: 2, creativity: 2, wealth: -1} } , resultText: "你什么都没说，只是把TA的手握得更紧了一些。阳光暖暖地照着，你们像两棵老树，根早已纠缠在一起，枝叶在风中沙沙作响。"},
     ],
   },
@@ -624,7 +624,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(78), maxAge: createAge(98), weight: 2, maxTriggers: 1, cooldownYears: 999,
     statRequirements: { intelligence: 6 },
     choices: [
-      { text: "'好好活着就是答案'", effects: { attributes: { intelligence: 3, luck: 2, physique: -1} } , resultText: "孩子歪着头想了想，似懂非懂地跑开了。你望着他的背影，想起自己也曾问过同样的问题。如今你终于有了答案——不是用语言，而是用这一生。"},
+      { text: "'好好活着就是答案'", effects: { attributes: { intelligence: 2, luck: 2, physique: -1} } , resultText: "孩子歪着头想了想，似懂非懂地跑开了。你望着他的背影，想起自己也曾问过同样的问题。如今你终于有了答案——不是用语言，而是用这一生。"},
       { text: "讲一个故事来回答", effects: { attributes: { creativity: 4, intelligence: 1, physique: -1} } },
     ],
   },
@@ -633,7 +633,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你感到身体越来越轻。床前围满了熟悉的面孔，有人在哭，有人在轻声唤你的名字。你想说别难过，但已经发不出声音了。舞台的灯光，终于要灭了。",
     minAge: createAge(85), maxAge: createAge(100), weight: 3, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "微笑着闭上眼睛", effects: { attributes: { luck: 3, creativity: 2 }, isLethal: true } },
+      { text: "微笑着闭上眼睛", effects: { attributes: { luck: 2, creativity: 2 }, isLethal: true } },
       { text: "留下最后的嘱托", effects: { attributes: { intelligence: 2, appearance: 2 }, isLethal: true } },
     ],
   },
@@ -702,7 +702,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { physique: 3 },
     choices: [
       { text: "吃抗生素硬撑，项目不能断", effects: { attributes: {}, isLethal: true }, resultText: "我把药往嘴里一塞，继续赶那份明天要交的PPT。第三天同事发现我倒在办公桌前——呼吸已经停了。医生说年轻人心肺衰竭的原因很简单：对命运的透支，超过了生命的限额。" },
-      { text: "请假住院彻底治疗", effects: { attributes: { physique: -2, wealth: -1, luck: 3 } }, resultText: "我请了两周病假，每天输液、吃药、看窗外那棵树从枯枝长到发芽。出院时我用沙哑的声音对医生说谢谢。命只有一条——这个道理，咳了血才真正学到。" },
+      { text: "请假住院彻底治疗", effects: { attributes: { physique: -2, wealth: -1, luck: 2 } }, resultText: "我请了两周病假，每天输液、吃药、看窗外那棵树从枯枝长到发芽。出院时我用沙哑的声音对医生说谢谢。命只有一条——这个道理，咳了血才真正学到。" },
     ],
   },
   {
@@ -788,7 +788,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { physique: 4 },
     choices: [
       { text: "先开会，事后再看", effects: { attributes: {}, isLethal: true }, resultText: "我在会议室里讲话讲到一半，突然右边的视野开始变暗。同事们说我站了一会儿，然后像一棵被砍倒的树一样直直地倒下去。脑干出血——医生说走得不痛苦。只是太快了，太早了。" },
-      { text: "马上住院，什么会都不开了", effects: { attributes: { physique: -3, luck: 3, wealth: -2 } }, resultText: "我拨了三个电话：取消今天的两个会、给妻子发了一条消息、然后叫了 120。躺在救护车里看着输液瓶的药水一滴滴落下，鼻子一酸——这条命，差一点就被会议室里的 PPT 带走了。" },
+      { text: "马上住院，什么会都不开了", effects: { attributes: { physique: -3, luck: 2, wealth: -2 } }, resultText: "我拨了三个电话：取消今天的两个会、给妻子发了一条消息、然后叫了 120。躺在救护车里看着输液瓶的药水一滴滴落下，鼻子一酸——这条命，差一点就被会议室里的 PPT 带走了。" },
     ],
   },
   {
@@ -798,7 +798,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { wealth: 5 },
     choices: [
       { text: "铤而走险，走朋友的'路子'", effects: { attributes: {}, isLethal: true }, resultText: "我在看守所里睡了最后一个晚上。有人说是'经济犯罪'，但对我来说这些词都太遥远了——我只是想让家人过得更好，结果连陪伴他们的权利都输掉了。铁门合上的声音，比所有讨债的电话都更响。" },
-      { text: "卖掉一切，从头还债", effects: { attributes: { wealth: -15, intelligence: 3, luck: 2 } }, resultText: "我签了卖房合同，交出了车钥匙。搬进出租屋那天妻子哭了，我说'别哭，人还在呢'。之后的五年我白天上班晚上跑滴滴，一分一分地还。还清最后一笔债的时候我站在银行门口，感觉像刚出狱一样——自由了。" },
+      { text: "卖掉一切，从头还债", effects: { attributes: { wealth: -15, intelligence: 2, luck: 2 } }, resultText: "我签了卖房合同，交出了车钥匙。搬进出租屋那天妻子哭了，我说'别哭，人还在呢'。之后的五年我白天上班晚上跑滴滴，一分一分地还。还清最后一笔债的时候我站在银行门口，感觉像刚出狱一样——自由了。" },
     ],
   },
   {
@@ -818,7 +818,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { physique: 4 },
     choices: [
       { text: "拖延，先用偏方试试", effects: { attributes: {}, isLethal: true }, resultText: "我听了那个'老中医'的偏方，喝了两个月草药汤。复查的时候已经扩散了。医生叹了口气——如果能早一个月来，还有手术的机会。我走出诊室的时候腿在发抖。不是害怕死，是后悔当时没有给自己一个活的机会。" },
-      { text: "立即安排手术", effects: { attributes: { physique: -10, luck: 3, wealth: -3 } }, resultText: "手术安排在两天后。被推进手术室时我握着妻子的手说'等我'。六个小时后主刀医生给了我一个OK的手势——切干净了。胸口的伤疤很难看，但每一次看见它我就知道：我还在。疤痕是生命给的勋章。" },
+      { text: "立即安排手术", effects: { attributes: { physique: -10, luck: 2, wealth: -3 } }, resultText: "手术安排在两天后。被推进手术室时我握着妻子的手说'等我'。六个小时后主刀医生给了我一个OK的手势——切干净了。胸口的伤疤很难看，但每一次看见它我就知道：我还在。疤痕是生命给的勋章。" },
     ],
   },
   {
@@ -828,7 +828,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { wealth: 5 },
     choices: [
       { text: "独自去机场拦住他", effects: { attributes: {}, isLethal: true }, resultText: "我在机场航站楼追到了他——他正在过安检。我冲上去揪住他的衣领，两个保安上来把我推开。争执中我撞到了安检台，倒下的时候后脑勺磕在大理石地板上。机场的急救人员来过，但为时已晚。" },
-      { text: "收集证据走法律程序", effects: { attributes: { intelligence: 3, luck: 1, wealth: -2 } }, resultText: "我冷静下来，把所有转账记录、通话录音、邮件往来打印了厚厚一摞交给律师。他跑到了国外，但账户被冻结、上了国际通缉名单。钱大部分追不回来——但我守住了底线。有时候正义不是把对方打倒，而是你没有被他拉下水。" },
+      { text: "收集证据走法律程序", effects: { attributes: { intelligence: 2, luck: 1, wealth: -2 } }, resultText: "我冷静下来，把所有转账记录、通话录音、邮件往来打印了厚厚一摞交给律师。他跑到了国外，但账户被冻结、上了国际通缉名单。钱大部分追不回来——但我守住了底线。有时候正义不是把对方打倒，而是你没有被他拉下水。" },
     ],
   },
   {
@@ -859,7 +859,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { wealth: 3 },
     choices: [
       { text: "按对方说的转钱", effects: { attributes: { wealth: -25, luck: -3 }, isLethal: false }, resultText: "我颤抖着手把一辈子的积蓄转了过去。挂掉电话后忽然觉得不对——拨回去，空号。我瘫在沙发上一整天没动，觉得自己像一个被时代抛弃的傻瓜。这笔钱再也没追回来。" },
-      { text: "挂掉电话，找儿女核实", effects: { attributes: { intelligence: 2, luck: 3, wealth: -1} }, resultText: "我挂掉电话后心跳还是很快。给女儿打了个电话——她说：'爸，你差点就被骗了！公安局不会打这种电话！'我擦了把汗，连说知道了。骗子挂了三次电话，第四次我直接开了免提让女儿跟他们聊。" },
+      { text: "挂掉电话，找儿女核实", effects: { attributes: { intelligence: 2, luck: 2, wealth: -1} }, resultText: "我挂掉电话后心跳还是很快。给女儿打了个电话——她说：'爸，你差点就被骗了！公安局不会打这种电话！'我擦了把汗，连说知道了。骗子挂了三次电话，第四次我直接开了免提让女儿跟他们聊。" },
     ],
   },
   {
@@ -916,7 +916,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你出了事——具体什么事已经不重要了。重要的是你躺在医院里，第一个出现在病房门口的是狗子。他看起来一夜没睡，手里拎着一袋水果，表情很难看。",
     minAge: createAge(32), maxAge: createAge(48), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "抓住他的手，说一声\"兄弟\"", effects: { relationshipEffect: { targetId: "confidant", change: 20 }, attributes: { luck: 3 } }, resultText: "我伸出手，狗子握住了。他的掌心很粗糙——这些年他过得也不容易。我们什么都没说，但好像什么都说了。他递给我一个橘子：'给你剥好了。'橘子很甜，比医院食堂的饭菜好吃一万倍。" },
+      { text: "抓住他的手，说一声\"兄弟\"", effects: { relationshipEffect: { targetId: "confidant", change: 20 }, attributes: { luck: 2 } }, resultText: "我伸出手，狗子握住了。他的掌心很粗糙——这些年他过得也不容易。我们什么都没说，但好像什么都说了。他递给我一个橘子：'给你剥好了。'橘子很甜，比医院食堂的饭菜好吃一万倍。" },
       { text: "强撑着说没事，让他走", effects: { relationshipEffect: { targetId: "confidant", change: 5 }, attributes: { physique: 2 } }, resultText: "我说'没事你回去吧'，他看了我一眼，放下水果转身走了。走廊里他的脚步停了大概两秒，然后又响了起来。后来他再也没有主动来看过我。我想叫他，但话始终堵在喉咙里。" },
     ],
   },
@@ -934,7 +934,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "多年以后在街上遇到了狗子。他头发白了，你也白了。你们站在原地互相看了很久——然后都笑了。时间把很多恩怨都冲刷成了砂砾，金子在阳光下还在发亮。",
     minAge: createAge(62), maxAge: createAge(78), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "请他到家里吃一顿饭", effects: { relationshipEffect: { targetId: "confidant", change: 25 }, attributes: { luck: 3, creativity: 2 } }, resultText: "老伴做了一桌子菜，狗子带了瓶老酒。我们喝到深夜，把年轻时的事一件一件翻出来——那些当时觉得天大的事，现在看来都像笑话。他临走的时候拍着我的肩膀说：'这辈子交你这个朋友，值了。'我站在门口看着他的车灯消失，眼眶有点热。" },
+      { text: "请他到家里吃一顿饭", effects: { relationshipEffect: { targetId: "confidant", change: 25 }, attributes: { luck: 2, creativity: 2 } }, resultText: "老伴做了一桌子菜，狗子带了瓶老酒。我们喝到深夜，把年轻时的事一件一件翻出来——那些当时觉得天大的事，现在看来都像笑话。他临走的时候拍着我的肩膀说：'这辈子交你这个朋友，值了。'我站在门口看着他的车灯消失，眼眶有点热。" },
       { text: "寒暄两句然后告别", effects: { relationshipEffect: { targetId: "confidant", change: 5 }, attributes: { luck: 1 } }, resultText: "我们站在街边聊了十分钟——工作、孩子、身体。然后他说要赶公交，转身走了。我看着他的背影，想起几十年前在操场上等我的那个少年。有些关系像河，不刻意维护就会干涸——而我们两个都太久没有浇过水了。" },
     ],
   },
@@ -943,7 +943,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "狗子病重了。他的家人打电话给你——说他一直在念叨你的名字。你赶到医院，他躺在病床上，人瘦了一圈，但看见你的时候眼睛亮了一下。",
     minAge: createAge(65), maxAge: createAge(82), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "每天来医院陪他，直到最后", effects: { relationshipEffect: { targetId: "confidant", change: 30 }, attributes: { luck: 5, wealth: -5 } }, resultText: "我每天下午来医院，给他读报纸、讲笑话、唠叨他的药有没有按时吃。有一天他忽然说：'谢谢你。'声音很轻，但我知道这是他这辈子对我说过最重的话。后来他走了。走的时候握着我的手。我很久没有哭过了——但那天哭了。" },
+      { text: "每天来医院陪他，直到最后", effects: { relationshipEffect: { targetId: "confidant", change: 30 }, attributes: { luck: 2, wealth: -5 } }, resultText: "我每天下午来医院，给他读报纸、讲笑话、唠叨他的药有没有按时吃。有一天他忽然说：'谢谢你。'声音很轻，但我知道这是他这辈子对我说过最重的话。后来他走了。走的时候握着我的手。我很久没有哭过了——但那天哭了。" },
       { text: "来看了几次，但生活实在太忙了", effects: { relationshipEffect: { targetId: "confidant", change: -30 }, attributes: { wealth: 2 } }, resultText: "我来了三次——第一次、第二次、然后过了很久才来第三次。他的家人说他已经不怎么能说话了。我站在病床前，他睁眼看着我，嘴动了动——不知道是在叫我，还是在说算了。我走出医院大楼的时候，觉得有什么东西永远留在了那间病房里。" },
     ],
   },
@@ -956,7 +956,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { intelligence: 2 },
     choices: [
       { text: "投入全部积蓄\"创业\"", effects: { attributes: { wealth: -25, intelligence: 2 } }, resultText: "我把工作两年攒的八万块投了进去。一个月后，那个'公司'被查封了——传销。老同学的微信头像变成了灰色。我站在出租屋里的镜子前看着自己，觉得这个教训比任何一堂课都贵——但至少，我以后不会再上同样的当了。" },
-      { text: "觉得不对劲，拒绝离开", effects: { attributes: { intelligence: 3, wealth: 2, creativity: -1} }, resultText: "我悄悄拿出手机搜了一下那个'项目'的名字——第一条结果就是'诈骗'。我趁上厕所的机会溜了。后来听说那个人骗了好几个老同学的钱，最多的投了二十万。我庆幸自己的那一瞬间犹豫。" },
+      { text: "觉得不对劲，拒绝离开", effects: { attributes: { intelligence: 2, wealth: 2, creativity: -1} }, resultText: "我悄悄拿出手机搜了一下那个'项目'的名字——第一条结果就是'诈骗'。我趁上厕所的机会溜了。后来听说那个人骗了好几个老同学的钱，最多的投了二十万。我庆幸自己的那一瞬间犹豫。" },
     ],
   },
   {
@@ -965,7 +965,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(24), maxAge: createAge(30), weight: 2, maxTriggers: 1, cooldownYears: 999,
     statRequirements: { wealth: 3 },
     choices: [
-      { text: "投一半试试", effects: { attributes: { wealth: 30, luck: 3, physique: -6} }, resultText: "我投了五万。半年后他发来截图——产品被收购了。五万变成了二十一万。我盯着银行短信看了五分钟，然后给家里打了个电话。这是我人生中第一次不是因为借钱才打回家的电话。这种感觉太他妈好了。" },
+      { text: "投一半试试", effects: { attributes: { wealth: 30, luck: 2, physique: -6} }, resultText: "我投了五万。半年后他发来截图——产品被收购了。五万变成了二十一万。我盯着银行短信看了五分钟，然后给家里打了个电话。这是我人生中第一次不是因为借钱才打回家的电话。这种感觉太他妈好了。" },
       { text: "保守，还是存定期吧", effects: { attributes: { wealth: 3, luck: -1 } }, resultText: "我把那笔钱存了定期。三年后朋友的公司上市了——新闻上说他身价翻了二十倍。我举着报纸看了很久，然后把那杯咖啡喝完了。不是后悔，只是有点羡慕当初那个敢赌一把的自己。" },
     ],
   },
@@ -975,7 +975,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(32), maxAge: createAge(45), weight: 2, maxTriggers: 1, cooldownYears: 999,
     statRequirements: { wealth: 4 },
     choices: [
-      { text: "报警、清算、重新开始", effects: { attributes: { wealth: -30, intelligence: 3, luck: 2 } }, resultText: "我给律师打了电话，整理好所有的财务记录报了案。公司清算那天我站在空荡荡的办公室里抽了根烟——然后拨通了第一个新客户的电话。三年后我在同一栋楼里重新开了公司。那块玻璃上刻着的公司名换了一个字——但这次我学会了怎么看人。" },
+      { text: "报警、清算、重新开始", effects: { attributes: { wealth: -30, intelligence: 2, luck: 2 } }, resultText: "我给律师打了电话，整理好所有的财务记录报了案。公司清算那天我站在空荡荡的办公室里抽了根烟——然后拨通了第一个新客户的电话。三年后我在同一栋楼里重新开了公司。那块玻璃上刻着的公司名换了一个字——但这次我学会了怎么看人。" },
       { text: "算了，认栽。找份工作安稳过", effects: { attributes: { wealth: -15, luck: 1, physique: 1 } }, resultText: "我拿了最后的工资走人。新工作薪水不高但稳定——不用再担心回款和工资。坐在格子间里有时候会想起以前创业的日子，像一场梦。说实话，有时晚上睡不着会想象——如果我没放弃会怎样？但没有如果了。" },
     ],
   },
@@ -985,7 +985,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(35), maxAge: createAge(50), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "签字，拿补偿金改善生活", effects: { attributes: { wealth: 35, creativity: -1 } }, resultText: "签完字那天我站在那片即将消失的巷子里发了一会呆。小时候在这里捉迷藏、放风筝、挨过打也挨过糖。那些记忆换了一笔钱——我知道这不公平，但日子还要过。我用那笔钱付了房子的首付，剩下的存给了孩子。" },
-      { text: "不签，留住老宅", effects: { attributes: { wealth: 5, luck: 3, creativity: 3, appearance: -2} }, resultText: "我在协议上写了'不同意'三个字交还给了工作组。后来那片老宅被政府保留改成了文化街区——我每次回去都觉得，那不仅是留住了一栋房子，是留住了一段不会被拆迁的记忆。钱可以再赚，但有些东西没了就真的没了。" },
+      { text: "不签，留住老宅", effects: { attributes: { wealth: 5, luck: 2, creativity: 3, appearance: -2} }, resultText: "我在协议上写了'不同意'三个字交还给了工作组。后来那片老宅被政府保留改成了文化街区——我每次回去都觉得，那不仅是留住了一栋房子，是留住了一段不会被拆迁的记忆。钱可以再赚，但有些东西没了就真的没了。" },
     ],
   },
   {
@@ -994,7 +994,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(40), maxAge: createAge(55), weight: 2, maxTriggers: 1, cooldownYears: 999,
     statRequirements: { physique: 3 },
     choices: [
-      { text: "全部积蓄拿出来治病", effects: { attributes: { wealth: -35, physique: 8, luck: 3 } }, resultText: "我在银行转出了最后一笔钱的时候手是抖的。但手术很顺利，住院的那三周是我这辈子第一次这么认真地看窗外的日出——一天一天，天亮了。出院那天账单清零，口袋也清零了。但只要人还在，账就是一本可以重新写的空白本子。" },
+      { text: "全部积蓄拿出来治病", effects: { attributes: { wealth: -35, physique: 8, luck: 2 } }, resultText: "我在银行转出了最后一笔钱的时候手是抖的。但手术很顺利，住院的那三周是我这辈子第一次这么认真地看窗外的日出——一天一天，天亮了。出院那天账单清零，口袋也清零了。但只要人还在，账就是一本可以重新写的空白本子。" },
       { text: "保守治疗，省下钱留给家人", effects: { attributes: { physique: -5, wealth: -5, luck: -2 } }, resultText: "我没做那个最贵的手术。省下的钱留给家人，自己靠药物慢慢养。后来虽然落了点后遗症，但看着孩子的学费有着落的时候，我咬咬牙觉得——这买卖不亏。只是有时候夜里痛醒，会想那个更好的方案。但也就是想想。" },
     ],
   },
@@ -1004,7 +1004,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(38), maxAge: createAge(52), weight: 2, maxTriggers: 1, cooldownYears: 999,
     statRequirements: { wealth: 3, intelligence: 5 },
     choices: [
-      { text: "郑重接受，接下这份衣钵", effects: { attributes: { wealth: 30, intelligence: 3, appearance: 2, physique: -6} }, resultText: "我花了三个月完成交接，把每一个流程跑通、每一个客户走访一遍。老前辈在电话里说'我没看错你'，然后笑着挂了。我对着窗外的晚霞端了一杯咖啡——不是咖啡店的，是办公室里的。苦，但我自己冲的。" },
+      { text: "郑重接受，接下这份衣钵", effects: { attributes: { wealth: 30, intelligence: 2, appearance: 2, physique: -6} }, resultText: "我花了三个月完成交接，把每一个流程跑通、每一个客户走访一遍。老前辈在电话里说'我没看错你'，然后笑着挂了。我对着窗外的晚霞端了一杯咖啡——不是咖啡店的，是办公室里的。苦，但我自己冲的。" },
       { text: "婉拒，不想背负别人的期望", effects: { attributes: { wealth: 5, creativity: 3, luck: 2, physique: -3} }, resultText: "我恭敬地谢绝了。走出咖啡馆的时候心里有一丝可惜，但更多的是释然——有些责任太重了，接不住就是接不住。我走自己的路，虽然慢一点，但踏实。那杯咖啡的味道我一直记得——干净，没有负担。" },
     ],
   },
@@ -1015,8 +1015,8 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "这一阵你的人生好像开了挂——考试押题全中，参加比赛拿了一等奖，走在路上都能被街拍的夸长得好看。连路边捡的刮刮乐都中了二十块。你开始觉得：命运是不是终于站在自己这边了？",
     minAge: createAge(10), maxAge: createAge(15), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "保持谦逊，继续做好自己", effects: { attributes: { luck: 15, intelligence: 2, wealth: -4} }, resultText: "我把那些幸运攒在心里，没有到处炫耀。依旧每天最早到教室，依旧把作业写得工工整整。妈妈说你变了——变得稳重了。其实我没变，我只是怕把这些好运一口气都用完。但心里有一个声音悄悄说——原来我也值得被命运垂青。" },
-      { text: "沾沾自喜，到处炫耀", effects: { attributes: { luck: 25, appearance: -2 } }, resultText: "我把奖状贴在书包外面，把街拍照发到所有群聊里。同学们开始疏远我——但我没注意到。青春期的膨胀像气球，越吹越大，看不到那根针已经举起来了。但至少在当下——我觉得自己无所不能。" },
+      { text: "保持谦逊，继续做好自己", effects: { attributes: { luck: 2, intelligence: 1, wealth: -4} }, resultText: "我把那些幸运攒在心里，没有到处炫耀。依旧每天最早到教室，依旧把作业写得工工整整。妈妈说你变了——变得稳重了。其实我没变，我只是怕把这些好运一口气都用完。但心里有一个声音悄悄说——原来我也值得被命运垂青。" },
+      { text: "沾沾自喜，到处炫耀", effects: { attributes: { luck: 2, appearance: -2 } }, resultText: "我把奖状贴在书包外面，把街拍照发到所有群聊里。同学们开始疏远我——但我没注意到。青春期的膨胀像气球，越吹越大，看不到那根针已经举起来了。但至少在当下——我觉得自己无所不能。" },
     ],
   },
   {
@@ -1042,8 +1042,8 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "人生最深的谷底之后，一道光照了进来。一个你从未想过会再联系的人主动找上你，给你带来了一个意想不到的机会。你没有理由相信这次会好——但你也没有理由再拒绝了。",
     minAge: createAge(30), maxAge: createAge(45), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "抓住这个机会，全力翻盘", effects: { attributes: { luck: 40, creativity: 5, wealth: 10, physique: -6} }, resultText: "我挂掉电话后深吸了一口气——机会来得毫无预兆，像是命运忽然记起了那个在谷底不肯认输的人。我用尽全力抓住它，像溺水的人抓住岸边的草。三年后回看——那一通电话改变了一切。正如老话说的：宝剑锋从磨砺出。" },
-      { text: "谨慎观望，不敢再信了", effects: { attributes: { luck: 15, intelligence: 3, wealth: 3, creativity: -2} }, resultText: "我说'让我考虑一下'——这些年被骗怕了。花了一周做调查、问熟人、看数据——最后才点了头。这一次我没赌那么大，但每一步都踩得很稳。有些事情不需要孤注一掷，慎重本身也是一种幸运。" },
+      { text: "抓住这个机会，全力翻盘", effects: { attributes: { luck: 2, creativity: 4, wealth: 8, physique: -6} }, resultText: "我挂掉电话后深吸了一口气——机会来得毫无预兆，像是命运忽然记起了那个在谷底不肯认输的人。我用尽全力抓住它，像溺水的人抓住岸边的草。三年后回看——那一通电话改变了一切。正如老话说的：宝剑锋从磨砺出。" },
+      { text: "谨慎观望，不敢再信了", effects: { attributes: { luck: 2, intelligence: 2, wealth: 3, creativity: -2} }, resultText: "我说'让我考虑一下'——这些年被骗怕了。花了一周做调查、问熟人、看数据——最后才点了头。这一次我没赌那么大，但每一步都踩得很稳。有些事情不需要孤注一掷，慎重本身也是一种幸运。" },
     ],
   },
 
@@ -1063,7 +1063,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(28), maxAge: createAge(38), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "走过去，敬TA一杯\"敬往事\"", effects: { attributes: { creativity: 5, appearance: 3, luck: 2, wealth: -3} }, resultText: "我端着杯子走过去说：'这些年你还好吗？'——开场白很老套，但我找不到更好的了。我们聊了很久，从工作到生活，从过去的误解到现在的不易。散场时TA说：'其实我以前也有点喜欢你，只是那时候说不出口。'我在停车场站了很久，对着手机屏幕笑了笑——有些答案，等了很多年。但来了就好。" },
-      { text: "远远看着，不打扰", effects: { attributes: { intelligence: 3, luck: 2, physique: -1} }, resultText: "我站在人群的另一侧，没有走过去。有那么一瞬间我想迈开步子——但脚像钉在了原地。散场后回家的路上，广播里放了一首老歌，是当年TA最喜欢的那首。我调高了音量，跟着哼了几句。有些人的意义不在于重逢，而在于他们曾经如何在你的青春里留下过痕迹。" },
+      { text: "远远看着，不打扰", effects: { attributes: { intelligence: 2, luck: 2, physique: -1} }, resultText: "我站在人群的另一侧，没有走过去。有那么一瞬间我想迈开步子——但脚像钉在了原地。散场后回家的路上，广播里放了一首老歌，是当年TA最喜欢的那首。我调高了音量，跟着哼了几句。有些人的意义不在于重逢，而在于他们曾经如何在你的青春里留下过痕迹。" },
     ],
   },
 
@@ -1093,7 +1093,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你被开除了。HR 说完那些客套话后推过来一份离职协议。你走出写字楼，手里抱着一个不大的纸箱——里面是工位上的全部家当。太阳很刺眼，你眯起眼睛，忽然不知道接下来该往哪个方向走。",
     minAge: createAge(20), maxAge: createAge(26), weight: 2, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "总结教训，七天之内找到新工作", effects: { attributes: { intelligence: 3, wealth: 2, physique: -1}, careerLevelDelta: 1 }, resultText: "我在出租屋里复盘了一整个晚上——把那些搞砸的事一条一条写下来。第二天开始疯狂投简历，第四天面了三家公司，第七天收到了offer。新工位比原来的大一倍。人生有些门是被踹开的——因为你自己在踹。" },
+      { text: "总结教训，七天之内找到新工作", effects: { attributes: { intelligence: 2, wealth: 2, physique: -1}, careerLevelDelta: 1 }, resultText: "我在出租屋里复盘了一整个晚上——把那些搞砸的事一条一条写下来。第二天开始疯狂投简历，第四天面了三家公司，第七天收到了offer。新工位比原来的大一倍。人生有些门是被踹开的——因为你自己在踹。" },
       { text: "回家躺了一个月", effects: { attributes: { physique: 2, creativity: 3, wealth: -1}, careerLevelDelta: -1 }, resultText: "我给自己放了个假。躺在沙发上刷完了所有积压的剧，然后翻出大学时的作品集翻了翻——忽然想起自己其实喜欢画东西。那一个月看似在躺平，但种子已经埋下了。找工作的时候我投了一家设计公司——被录了。原来迷路也是路的一部分。" },
     ],
   },
@@ -1103,7 +1103,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(32), maxAge: createAge(45), weight: 2, maxTriggers: 1, cooldownYears: 999,
     statRequirements: { intelligence: 5, wealth: 3 },
     choices: [
-      { text: "亲自带队，所有细节过手", effects: { attributes: { wealth: 10, intelligence: 3, physique: -3 }, careerLevelDelta: 2 }, resultText: "我睡在办公室两周，把方案翻了三版，跟合作方吵了两架，最后在交付前一天凌晨三点把终版文件发给了客户。第二天客户回了一句：'这个我们要了。'我瘫在椅子里看着天花板笑了——不是那种轻轻的微笑，是发自胸腔的大笑。这次，干成了。" },
+      { text: "亲自带队，所有细节过手", effects: { attributes: { wealth: 10, intelligence: 2, physique: -3 }, careerLevelDelta: 2 }, resultText: "我睡在办公室两周，把方案翻了三版，跟合作方吵了两架，最后在交付前一天凌晨三点把终版文件发给了客户。第二天客户回了一句：'这个我们要了。'我瘫在椅子里看着天花板笑了——不是那种轻轻的微笑，是发自胸腔的大笑。这次，干成了。" },
       { text: "委托团队推进，把控方向", effects: { attributes: { wealth: 4, intelligence: 1, luck: 1, physique: -2}, careerLevelDelta: 1 }, resultText: "我把项目分解成十个模块，交给了最信得过的四个人。每周例会听汇报、拍板方向、不越级不插手。项目平稳交付那天，我给团队发了一个大红包——也给了自己一个。有些成功不需要你亲力亲为，盯准方向就够了。" },
     ],
   },
@@ -1114,7 +1114,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { intelligence: 5, wealth: 4 },
     choices: [
       { text: "跳槽，重新开始", effects: { attributes: { wealth: 15, intelligence: 2, physique: -2 }, careerLevelDelta: 2 }, resultText: "我在新办公室安顿好的那天，窗外是一片陌生的天际线。工资翻了一倍，职级升了一级——但同事们看我的眼神是审视的。我知道在这里我需要重新证明一切。压力很大，但人也轻了——因为这一次每一步都是我自己选的。" },
-      { text: "留下，续签忠诚", effects: { attributes: { wealth: 5, luck: 3, creativity: 2, physique: -3}, careerLevelDelta: 1 }, resultText: "我去跟老板谈了涨薪——不是猎头给的那个数，但加上了一份信任和一份期权。签完新合同的那天老板请我喝了杯酒：'我没看错人。'有些选择不是关于钱——是关于想要什么样的路陪你走到最后。" },
+      { text: "留下，续签忠诚", effects: { attributes: { wealth: 5, luck: 2, creativity: 2, physique: -3}, careerLevelDelta: 1 }, resultText: "我去跟老板谈了涨薪——不是猎头给的那个数，但加上了一份信任和一份期权。签完新合同的那天老板请我喝了杯酒：'我没看错人。'有些选择不是关于钱——是关于想要什么样的路陪你走到最后。" },
     ],
   },
 ];
