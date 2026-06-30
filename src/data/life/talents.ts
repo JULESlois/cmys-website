@@ -3,6 +3,16 @@ import type { Talent } from "../../engine/types";
 
 export const TALENT_POOL: Talent[] = [
   {
+    id: "t_jingtingyusheng",
+    name: "井听余声",
+    description: "你能听见井下不是回声，而是另一个人生在点你的名。特殊天赋：允许安全进入沉没异生篇。",
+    category: "lifelong",
+    kind: "special",
+    tags: ["特殊", "井", "异界", "沉没异生"],
+    positive: {},
+    negative: {},
+  },
+  {
     id: "t_chumashiyingshi",
     name: "出马应试",
     description: "考试运极佳，但长期压力损耗身心",

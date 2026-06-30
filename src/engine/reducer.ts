@@ -10,8 +10,10 @@ import { getChapterName, shouldPlayChapterEntryAnimation } from "../data/life/ch
 import { getStoryArcByAge } from "../data/life/story-arcs";
 import { generateConfidant, updateAffinity } from "./relationship";
 import { rollInitialAttribute, scaleAttributeChanges } from "./balance";
+import { applyTalentModifiers, getActiveTalents } from "./talent";
 import { getLethalChoiceConversion } from "./lethal";
 import { getAttributeEnding } from "../data/life/attribute-endings";
+import { TALENT_POOL } from "../data/life/talents";
 
 // ── 属性初始化 ──
 export function createInitialAttributes(bonusPoints: Partial<Record<AttributeName, number>> = {}): Attributes {
@@ -77,6 +79,35 @@ function mergeAttributeChanges(
   return next;
 }
 
+
+function hasTalentIds(state: GameState, required: string[] | undefined): boolean {
+  if (!required || required.length === 0) return true;
+  const talentIds = new Set(state.talents.map((talent) => talent.id));
+  return required.every((talentId) => talentIds.has(talentId));
+}
+
+function hasExcludedTalentIds(state: GameState, excluded: string[] | undefined): boolean {
+  if (!excluded || excluded.length === 0) return false;
+  const talentIds = new Set(state.talents.map((talent) => talent.id));
+  return excluded.some((talentId) => talentIds.has(talentId));
+}
+
+function resolveChoiceByTalents(choice: import("./types").EventChoice, state: GameState): Pick<import("./types").EventChoice, "effects" | "resultText"> {
+  for (const conditional of choice.conditionalEffects ?? []) {
+    if (!hasTalentIds(state, conditional.requiredTalents)) continue;
+    if (hasExcludedTalentIds(state, conditional.excludedTalents)) continue;
+    return {
+      effects: conditional.effects,
+      resultText: conditional.resultText ?? choice.resultText,
+    };
+  }
+
+  return {
+    effects: choice.effects,
+    resultText: choice.resultText,
+  };
+}
+
 function lockAttributeEndingIfNeeded(state: GameState): GameState {
   if (state.attributeEndingId) return state;
   if (state.phase.type === "dying" || state.phase.type === "result" || state.phase.type === "ending_prelude") return state;
@@ -106,7 +137,8 @@ function enterCurrentAge(state: GameState): GameState {
   if (!event) return state;
 
   if (event.type === "procedural") {
-    const scaledEffects = scaleAttributeChanges(event.effects);
+    const talentModifierResult = applyTalentModifiers(scaleAttributeChanges(event.effects), getActiveTalents(state));
+    const scaledEffects = talentModifierResult.changes;
     const attrs = applyAttributeChanges(state.attributes, scaledEffects);
     return lockAttributeEndingIfNeeded({
       ...state,
@@ -137,7 +169,8 @@ function enterChapterAtCurrentAge(state: GameState): GameState {
   if (!event) return state;
 
   if (event.type === "procedural") {
-    const scaledEffects = scaleAttributeChanges(event.effects);
+    const talentModifierResult = applyTalentModifiers(scaleAttributeChanges(event.effects), getActiveTalents(state));
+    const scaledEffects = talentModifierResult.changes;
     const attrs = applyAttributeChanges(state.attributes, scaledEffects);
     return lockAttributeEndingIfNeeded({
       ...state,
@@ -191,7 +224,7 @@ function advanceYears(state: GameState, delta: number): GameState {
       };
     }
 
-    const randomDeath = checkRandomDeath(nextAge);
+    const randomDeath = checkRandomDeath(nextAge, currentState.attributes);
     if (randomDeath.isDead) {
       return {
         ...currentState,
@@ -224,8 +257,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (!state.currentEvent || !state.pendingChoices) return state;
       const choice = state.pendingChoices[action.choiceIndex];
       if (!choice) return state;
+      const resolvedChoice = resolveChoiceByTalents(choice, state);
+      const choiceEffects = resolvedChoice.effects;
+      const resultText = resolvedChoice.resultText;
 
-      const scaledAttributeChanges = scaleAttributeChanges(choice.effects.attributes ?? {});
+      const talentModifierResult = applyTalentModifiers(
+        scaleAttributeChanges(choiceEffects.attributes ?? {}),
+        getActiveTalents(state),
+      );
+      const scaledAttributeChanges = talentModifierResult.changes;
+      const talentEffects = talentModifierResult.descriptions;
       let attrs = applyAttributeChanges(state.attributes, scaledAttributeChanges);
       const event = state.currentEvent;
       const newTriggeredIds = { ...state.triggeredEventIds };
@@ -239,8 +280,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
 
       // 检查选择是否致死；部分致死选项会转化为濒死触发器
-      if (choice.effects.isLethal) {
-        const conversion = getLethalChoiceConversion(state, event, choice);
+      if (choiceEffects.isLethal) {
+        const conversion = choiceEffects.forceLethal ? null : getLethalChoiceConversion(state, event, choice);
         if (conversion) {
           const combinedChanges = mergeAttributeChanges(scaledAttributeChanges, conversion.attributeChanges);
           attrs = applyAttributeChanges(attrs, conversion.attributeChanges);
@@ -269,6 +310,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
               text: conversion.text,
               attributeChanges: combinedChanges,
               chapterTransition: "黄泉债 +1",
+              talentEffects,
               holdAge: false,
             },
           };
@@ -283,7 +325,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           return lockAttributeEndingIfNeeded(convertedState);
         }
 
-        const deathNarrative = choice.resultText
+        const deathNarrative = resultText
           ?? `在"${event.title}"中做出了致命的选择。`;
         return {
           ...state,
@@ -308,8 +350,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
       // 应用关系效果
       let relationships = [...state.relationships];
-      if (choice.effects.relationshipEffect) {
-        const { targetId, change } = choice.effects.relationshipEffect;
+      if (choiceEffects.relationshipEffect) {
+        const { targetId, change } = choiceEffects.relationshipEffect;
         relationships = relationships.map((r) => {
           if (r.id === targetId || (targetId === "confidant" && r.tag === "confidant")) {
             return updateAffinity(r, change);
@@ -320,42 +362,53 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
       // 应用职业等级变化
       let career = state.career;
-      if (choice.effects.careerLevelDelta && career) {
-        const newLevel = Math.max(1, Math.min(10, career.level + choice.effects.careerLevelDelta));
+      if (choiceEffects.careerLevelDelta && career) {
+        const newLevel = Math.max(1, Math.min(10, career.level + choiceEffects.careerLevelDelta));
         career = { ...career, level: newLevel };
       }
 
       // 应用天赋授予/移除
       let talents = [...state.talents];
-      if (choice.effects.grantTalents) {
-        // 延迟实现
-      }
-      if (choice.effects.removeTalents) {
-        talents = talents.filter((t) => !choice.effects.removeTalents!.includes(t.id));
-      }
-
-      if (choice.effects.setChapterFlags) {
-        chapter = setChapterFlags(chapter, choice.effects.setChapterFlags);
-      }
-      if (choice.effects.triggerChapterId) {
-        chapter = unlockChapter(chapter, choice.effects.triggerChapterId);
-        chapterTransition = `进入${getChapterName(choice.effects.triggerChapterId) ?? choice.effects.triggerChapterId}`;
-        if (shouldPlayChapterEntryAnimation(choice.effects.triggerChapterId)) {
-          pendingChapterIntroId = choice.effects.triggerChapterId;
+      if (choiceEffects.grantTalents) {
+        const existingIds = new Set(talents.map((t) => t.id));
+        for (const talentId of choiceEffects.grantTalents) {
+          if (existingIds.has(talentId)) continue;
+          const talent = TALENT_POOL.find((t) => t.id === talentId);
+          if (!talent) continue;
+          const hasConflict = talents.some((selected) =>
+            selected.exclusiveWith?.includes(talent.id) || talent.exclusiveWith?.includes(selected.id)
+          );
+          if (hasConflict) continue;
+          talents = [...talents, talent];
+          existingIds.add(talent.id);
         }
       }
-      if (choice.effects.completeChapterId) {
-        chapter = completeChapter(chapter, choice.effects.completeChapterId);
-        chapterTransition = chapterTransition ?? `完成${getChapterName(choice.effects.completeChapterId) ?? choice.effects.completeChapterId}`;
+      if (choiceEffects.removeTalents) {
+        talents = talents.filter((t) => !choiceEffects.removeTalents!.includes(t.id));
       }
-      if (choice.effects.exitChapter) {
+
+      if (choiceEffects.setChapterFlags) {
+        chapter = setChapterFlags(chapter, choiceEffects.setChapterFlags);
+      }
+      if (choiceEffects.triggerChapterId) {
+        chapter = unlockChapter(chapter, choiceEffects.triggerChapterId);
+        chapterTransition = `进入${getChapterName(choiceEffects.triggerChapterId) ?? choiceEffects.triggerChapterId}`;
+        if (shouldPlayChapterEntryAnimation(choiceEffects.triggerChapterId)) {
+          pendingChapterIntroId = choiceEffects.triggerChapterId;
+        }
+      }
+      if (choiceEffects.completeChapterId) {
+        chapter = completeChapter(chapter, choiceEffects.completeChapterId);
+        chapterTransition = chapterTransition ?? `完成${getChapterName(choiceEffects.completeChapterId) ?? choiceEffects.completeChapterId}`;
+      }
+      if (choiceEffects.exitChapter) {
         const exited = chapter.activeChapterId;
         chapter = { ...chapter, activeChapterId: null };
         chapterTransition = chapterTransition ?? `离开${getChapterName(exited) ?? "篇章"}`;
       }
 
-      const shouldHoldAge = choice.effects.holdAge
-        ?? Boolean(chapter.activeChapterId && (event.chapterId || choice.effects.triggerChapterId));
+      const shouldHoldAge = choiceEffects.holdAge
+        ?? Boolean(chapter.activeChapterId && (event.chapterId || choiceEffects.triggerChapterId));
 
       // 检查当前事件是否包含致死选项（用于不死鸟成就追踪）
       const eventHasLethalOption = (event.type === "anchor" || event.type === "parametric") &&
@@ -385,9 +438,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         currentEvent: null,
         pendingChoices: null,
         lastResult: {
-          text: choice.resultText ?? `你选择了"${choice.text}"。`,
+          text: resultText ?? `你选择了"${choice.text}"。`,
           attributeChanges: scaledAttributeChanges,
           chapterTransition,
+          talentEffects,
           holdAge: shouldHoldAge,
         },
       };

@@ -26,11 +26,14 @@ export type Attributes = Record<AttributeName, AttributeValue>;
 export const LETHAL_ATTRIBUTES: AttributeName[] = ["appearance", "intelligence", "physique", "wealth"];
 
 // ── Talent ──
+export type TalentKind = "normal" | "special";
+
 export interface Talent {
   id: string;
   name: string;           // CMYS 四字缩写
   description: string;
   category: "childhood" | "prime" | "lifelong";  // 童年 / 壮年 / 终身
+  kind?: TalentKind;
   tags: string[];
   positive: Partial<Record<AttributeName, number>>;
   negative: Partial<Record<AttributeName, number>>;
@@ -78,30 +81,44 @@ export interface ProceduralEvent extends EventBase {
 
 export type GameEvent = AnchorEvent | ParametricEvent | ProceduralEvent;
 
+export interface EventChoiceEffects {
+  attributes?: Partial<Record<AttributeName, number>>;
+  grantTalents?: string[];
+  removeTalents?: string[];
+  triggerEventId?: string;
+  triggerChapterId?: string;
+  setChapterFlags?: Record<string, boolean | number | string>;
+  exitChapter?: boolean;
+  completeChapterId?: string;
+  /** 结果关闭后是否停留在当前年龄继续篇章内部事件 */
+  holdAge?: boolean;
+  relationshipEffect?: { targetId: string; change: number };
+  careerLevelDelta?: number;  // 新增：职业等级变化
+  isLethal?: boolean;
+  /** true 时跳过濒死转化，直接进入死亡。用于天赋门槛失败等强规则。 */
+  forceLethal?: boolean;
+}
+
+export interface ConditionalChoiceEffect {
+  requiredTalents?: string[];
+  excludedTalents?: string[];
+  effects: EventChoiceEffects;
+  resultText?: string;
+}
+
 export interface EventChoice {
   text: string;
   resultText?: string;
-  effects: {
-    attributes?: Partial<Record<AttributeName, number>>;
-    grantTalents?: string[];
-    removeTalents?: string[];
-    triggerEventId?: string;
-    triggerChapterId?: string;
-    setChapterFlags?: Record<string, boolean | number | string>;
-    exitChapter?: boolean;
-    completeChapterId?: string;
-    /** 结果关闭后是否停留在当前年龄继续篇章内部事件 */
-    holdAge?: boolean;
-    relationshipEffect?: { targetId: string; change: number };
-    careerLevelDelta?: number;  // 新增：职业等级变化
-    isLethal?: boolean;
-  };
+  effects: EventChoiceEffects;
+  /** 根据天赋等条件改写同一个选择的真实后果。命中后使用该分支替换默认 effects/resultText。 */
+  conditionalEffects?: ConditionalChoiceEffect[];
 }
 
 export interface EventResult {
   text: string;
   attributeChanges: Partial<Record<AttributeName, number>>;
   chapterTransition?: string;
+  talentEffects?: string[];
   holdAge?: boolean;
   endGame?: boolean;
 }

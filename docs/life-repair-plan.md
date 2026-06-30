@@ -449,30 +449,46 @@ P0-2 锚点事件优先
 
 ### P1-3 实现天赋持续效果
 
-**问题**
+**状态：已修复**
 
-当前天赋主要是开局一次性属性修正。`getActiveTalents()` 和 `applyTalentModifiers()` 存在，但没有进入事件结算主流程。
+天赋系统已从“仅开局一次性属性修正”扩展为“开局修正 + 对应年龄段持续修饰事件结果”。
 
-**涉及文件**
+**已处理文件**
 
 - `src/engine/talent.ts`
 - `src/engine/reducer.ts`
-- `src/data/life/talents.ts`
+- `src/engine/types.ts`
 - `src/components/LifeTalentPicker.tsx`
 - `src/components/LifeEventResult.tsx`
+- `src/components/LifeInfancyStage.tsx`
 
-**修复方案**
+**实现方式**
 
-1. 事件结算时，根据当前年龄获取 active talents。
-2. 天赋可以影响属性变化、事件权重、特定事件解锁。
-3. 天赋效果应在结果页可见，例如：`沉默有诗：才脉额外 +3`。
-4. `grantTalents` 补全实现，支持事件获得新天赋。
+1. `LifeTalentPicker` 使用 `useMemo` 固定当前轮候选，避免组件重渲染导致候选天赋重新随机。
+2. `getActiveTalents()` 按年龄段启用 childhood / prime / lifelong 天赋。
+3. `applyTalentModifiers()` 已接入普通事件、自动事件、篇章自动事件和婴幼期自动成长。
+4. 持续效果只修饰事件已经变化的属性，不凭空追加属性，避免每个事件都无条件灌数值。
+5. `EventResult.talentEffects` 记录天赋参与结算的描述，并在结果页显示。
+6. `grantTalents` 已补全：支持事件授予新天赋，并检查重复与互斥。
 
-**验收标准**
 
-- 童年/壮年/终身天赋在对应年龄段有实际效果。
-- 玩家能从结果反馈里看到天赋参与了结算。
-- 天赋选择会改变一局游戏的策略，而不是只改初始数值。
+**特殊天赋补充**
+
+- `Talent.kind` 已支持 `normal | special`。
+- 特殊天赋作为隐藏路线门票，当前三轮天赋选择中只在第 1 轮最多出现 1 个；选择特殊天赋后，后续候选池不再出现特殊天赋。
+- 已新增 `t_jingtingyusheng / 井听余声`，用于安全进入《沉没异生篇》。没有该天赋时，井入口危险选项会强制死亡；拥有该天赋时，保留原有进入篇章文本并进入 `well_otherworld`。
+- `EventChoice.conditionalEffects` 已接入 reducer，支持同一个选项根据天赋解析为不同后果。
+
+**当前限制**
+
+- 天赋暂未影响事件权重；目前影响范围集中在属性结算和事件解锁条件。
+- 事件授予天赋只加入天赋列表，不再额外立刻施加一次开局属性修正，避免重复爆发。
+
+**验证结果**
+
+- `npm run lint` 通过。
+- `npm run build` 通过。
+- 抽样验证确认：童年天赋只在童年生效，壮年天赋成年后生效；天赋只修饰被事件触及的属性。
 
 ---
 

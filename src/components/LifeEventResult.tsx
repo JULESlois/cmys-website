@@ -19,6 +19,7 @@ interface Props {
 export function LifeEventResult({ result, onDismiss }: Props) {
   const changes = Object.entries(result.attributeChanges) as [AttributeName, number][];
   const hasChanges = changes.length > 0;
+  const talentEffects = result.talentEffects ?? [];
 
   return (
     <motion.div
@@ -44,6 +45,16 @@ export function LifeEventResult({ result, onDismiss }: Props) {
               className={`font-mono text-sm tabular-nums ${val > 0 ? "text-green-700" : val < 0 ? "text-red-700" : "text-secondary"}`}
             >
               {LABELS[key]} {val > 0 ? "+" : ""}{val}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {talentEffects.length > 0 && (
+        <div className="flex flex-col items-center gap-1 text-center">
+          {talentEffects.map((effect, index) => (
+            <span key={`${effect}-${index}`} className="font-mono text-[10px] text-primary/50">
+              {effect}
             </span>
           ))}
         </div>

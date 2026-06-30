@@ -1,5 +1,5 @@
 // src/components/LifeTalentPicker.tsx
-import { useState } from "react";
+import { useMemo } from "react";
 import { useLife } from "./LifeContext";
 import type { Talent, AttributeName } from "../engine/types";
 import { TALENT_POOL } from "../data/life/talents";
@@ -19,18 +19,15 @@ const ATTR_LABEL: Record<AttributeName, string> = {
 export function LifeTalentPicker() {
   const { state, dispatch } = useLife();
   const round = (state.phase as { type: "talent_selection"; round: number }).round;
-  const [selected, setSelected] = useState<Talent[]>([]);
+  const selectedTalentIds = useMemo(() => state.talents.map((t) => t.id), [state.talents]);
+  const selectedTalentKey = selectedTalentIds.join("|");
 
-  const candidates = selectTalentsForRound(
-    TALENT_POOL,
-    state.talents.map((t) => t.id),
-    round
+  const candidates = useMemo(
+    () => selectTalentsForRound(TALENT_POOL, selectedTalentIds, round),
+    [round, selectedTalentKey],
   );
 
   const handleSelect = (talent: Talent) => {
-    const newSelected = [...selected, talent];
-    setSelected(newSelected);
-
     const newTalents = [...state.talents, talent];
     const newAttrs = applyTalentToAttributes(state.attributes, talent);
 
@@ -82,19 +79,26 @@ export function LifeTalentPicker() {
             onClick={() => handleSelect(talent)}
             className="group relative p-6 border border-primary/20 text-left hover:border-primary/60 transition-colors glass-panel"
           >
-            <h3 className="font-mono text-sm tracking-wider mb-2">{talent.name}</h3>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <h3 className="font-mono text-sm tracking-wider">{talent.name}</h3>
+              {talent.kind === "special" && (
+                <span className="font-mono text-[9px] text-primary/60 border border-primary/20 px-1 py-0.5">
+                  特殊
+                </span>
+              )}
+            </div>
             <p className="font-mono text-[10px] text-secondary leading-relaxed mb-3">
               {talent.description}
             </p>
             <div className="flex flex-wrap gap-1">
-              {Object.entries(talent.positive).map(([k, v]) => (
+              {(Object.entries(talent.positive) as [AttributeName, number][]).map(([k, v]) => (
                 <span key={k} className="text-[10px] font-mono text-green-700 px-1">
-                  {ATTR_LABEL[k as AttributeName]}+{scaleAttributeDelta(v)}
+                  {ATTR_LABEL[k]}+{scaleAttributeDelta(v)}
                 </span>
               ))}
-              {Object.entries(talent.negative).map(([k, v]) => (
+              {(Object.entries(talent.negative) as [AttributeName, number][]).map(([k, v]) => (
                 <span key={k} className="text-[10px] font-mono text-red-700 px-1">
-                  {ATTR_LABEL[k as AttributeName]}{scaleAttributeDelta(v)}
+                  {ATTR_LABEL[k]}{scaleAttributeDelta(v)}
                 </span>
               ))}
             </div>

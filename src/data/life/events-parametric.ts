@@ -661,7 +661,18 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "村口有一口荒废多年的枯井，井口被木板盖着。你和小伙伴打赌谁能把井盖掀开。大家都看着你，等着你动手。木板下方没有水声，只有一种像楼梯间回音的安静。",
     minAge: createAge(7), maxAge: createAge(13), weight: 5, maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "用力掀开井盖", effects: { attributes: { physique: -2, creativity: 3, luck: -1 }, triggerChapterId: "well_otherworld", setChapterFlags: { well_opened: true } }, resultText: "木板腐朽得厉害，你一使劲就碎了。脚下一空时，你以为自己会落进井水里。可井底没有水，只有一截干净得不合常理的石阶，向黑暗深处延伸。" },
+      {
+        text: "用力掀开井盖",
+        effects: { attributes: { physique: -2, luck: -1 }, isLethal: true, forceLethal: true },
+        resultText: "你用力掀开井盖。木板碎裂的声音太轻，轻得像谁在井下替你把最后一口气收好。你还没看清井底，就已经听见自己的名字从很深的地方传回来。",
+        conditionalEffects: [
+          {
+            requiredTalents: ["t_jingtingyusheng"],
+            effects: { attributes: { physique: -2, creativity: 3, luck: -1 }, triggerChapterId: "well_otherworld", setChapterFlags: { well_opened: true } },
+            resultText: "木板腐朽得厉害，你一使劲就碎了。脚下一空时，你以为自己会落进井水里。可井底没有水，只有一截干净得不合常理的石阶，向黑暗深处延伸。",
+          },
+        ],
+      },
       { text: "算了，太危险了", effects: { attributes: { intelligence: 2, luck: 1 }, setChapterFlags: { well_refused_first: true } }, resultText: "我蹲在井边听了听——什么声音也没有。但我总觉得这井不该碰。我站起身拍拍裤子：'别玩了，我妈叫我回家吃饭。'那天夜里，我梦见井盖自己打开了。" },
     ],
   },
@@ -671,7 +682,18 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(8), maxAge: createAge(17), weight: 6, maxTriggers: 1, cooldownYears: 999,
     chapterFlagsRequired: { well_refused_first: true },
     choices: [
-      { text: "推开梦里的铁门", effects: { attributes: { creativity: 3, luck: -2 }, triggerChapterId: "well_otherworld", setChapterFlags: { well_dream_entered: true, well_opened: true } }, resultText: "铁门没有声音。门后不是地下室，而是一截干净的石阶。你认出那股潮湿的味道——那口井从来没有被你甩在身后，它只是换了一种方式等你。" },
+      {
+        text: "推开梦里的铁门",
+        effects: { attributes: { creativity: 1, luck: -2 }, isLethal: true, forceLethal: true },
+        resultText: "你推开梦里的铁门。门后没有楼梯，也没有地下室，只有一个正在等你回答的空洞。醒来时，枕边一片潮湿，你却已经不在床上。",
+        conditionalEffects: [
+          {
+            requiredTalents: ["t_jingtingyusheng"],
+            effects: { attributes: { creativity: 3, luck: -2 }, triggerChapterId: "well_otherworld", setChapterFlags: { well_dream_entered: true, well_opened: true } },
+            resultText: "铁门没有声音。门后不是地下室，而是一截干净的石阶。你认出那股潮湿的味道——那口井从来没有被你甩在身后，它只是换了一种方式等你。",
+          },
+        ],
+      },
       { text: "醒来后把梦写下来", effects: { attributes: { creativity: 2, intelligence: 1 }, setChapterFlags: { well_dream_written: true } }, resultText: "你在作业本最后一页写下梦里的门。写到一半，铅笔芯忽然断了。断口处的石墨粉落在纸上，像一口很小很小的井。" },
     ],
   },
