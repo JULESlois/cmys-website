@@ -1,5 +1,6 @@
 // src/engine/events.ts
 import type { GameState, GameEvent, AttributeName } from "./types";
+import { getActiveTalents } from "./talent";
 import { getAllLifeEvents, getAnchorLifeEvents } from "../data/life/events-registry";
 
 // 构建年龄段索引
@@ -129,13 +130,32 @@ export function getEligibleEvents(state: GameState): GameEvent[] {
   return [...candidateMap.values()].filter((e) => isEventEligible(e, state));
 }
 
-function weightedPick(events: GameEvent[]): GameEvent | null {
+function getAdjustedEventWeight(event: GameEvent, state: GameState): number {
+  let weight = event.weight ?? 1;
+  const eventTags = event.eventTags ?? [];
+  if (eventTags.length === 0) return weight;
+
+  for (const talent of getActiveTalents(state)) {
+    const tagWeights = talent.effects?.eventWeightTags;
+    if (!tagWeights) continue;
+    for (const tag of eventTags) {
+      const multiplier = tagWeights[tag];
+      if (typeof multiplier === "number" && Number.isFinite(multiplier)) {
+        weight *= multiplier;
+      }
+    }
+  }
+
+  return Math.max(0.05, weight);
+}
+
+function weightedPick(events: GameEvent[], state: GameState): GameEvent | null {
   if (events.length === 0) return null;
-  const totalWeight = events.reduce((sum, e) => sum + (e.weight ?? 1), 0);
+  const totalWeight = events.reduce((sum, e) => sum + getAdjustedEventWeight(e, state), 0);
   let random = Math.random() * totalWeight;
 
   for (const event of events) {
-    random -= event.weight ?? 1;
+    random -= getAdjustedEventWeight(event, state);
     if (random <= 0) return event;
   }
 
@@ -151,7 +171,7 @@ export function selectChapterEvent(state: GameState): GameEvent | null {
     .filter((event) => event.chapterId === activeChapterId || event.requiredChapter === activeChapterId)
     .sort((a, b) => (b.chapterPriority ?? 0) - (a.chapterPriority ?? 0));
 
-  return weightedPick(chapterEvents);
+  return weightedPick(chapterEvents, state);
 }
 
 // 加权随机选择事件；锚点与当前篇章事件优先
@@ -169,11 +189,11 @@ export function selectEvent(state: GameState): GameEvent | null {
     const chapterEvents = eligible
       .filter((event) => event.chapterId === activeChapterId || event.requiredChapter === activeChapterId)
       .sort((a, b) => (b.chapterPriority ?? 0) - (a.chapterPriority ?? 0));
-    const picked = weightedPick(chapterEvents);
+    const picked = weightedPick(chapterEvents, state);
     if (picked) return picked;
   }
 
-  return weightedPick(eligible);
+  return weightedPick(eligible, state);
 }
 
 // 判断当前年龄是否应该触发事件

@@ -55,6 +55,10 @@ export function getAllLifeEvents(): GameEvent[] {
   return ALL_LIFE_EVENTS;
 }
 
+export function getLifeEventById(id: string): GameEvent | null {
+  return ALL_LIFE_EVENTS.find((event) => event.id === id) ?? null;
+}
+
 export function getAnchorLifeEvents(): GameEvent[] {
   return ANCHOR_EVENT_REGISTRY;
 }
@@ -64,7 +68,14 @@ export function getEventsByStoryArc(storyArcId: string): GameEvent[] {
 }
 
 export function getEventsByHiddenChapter(chapterId: string): GameEvent[] {
-  return ALL_LIFE_EVENTS.filter((event) => event.chapterId === chapterId || event.requiredChapter === chapterId || ("choices" in event && event.choices.some((choice) => choice.effects.triggerChapterId === chapterId)));
+  return ALL_LIFE_EVENTS.filter((event) => {
+    if (event.chapterId === chapterId || event.requiredChapter === chapterId) return true;
+    if (!("choices" in event)) return false;
+    return event.choices.some((choice) =>
+      choice.effects.triggerChapterId === chapterId ||
+      choice.conditionalEffects?.some((conditional) => conditional.effects.triggerChapterId === chapterId)
+    );
+  });
 }
 
 export function getEventPackById(id: string): EventPack | null {

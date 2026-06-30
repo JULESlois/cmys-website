@@ -187,6 +187,12 @@ entryAnimation: {
 
 事件系统为此新增 `conditionalEffects`：同一个选项可以根据 `requiredTalents` / `excludedTalents` 解析为不同的真实后果。默认分支仍使用原 `effects/resultText`，命中条件分支时使用该分支的 `effects/resultText` 替换默认结果。
 
+`triggerEventId` 现已接入 reducer。选项或天赋死亡改写写入 `triggerEventId` 后，不会跳过当前结果页；系统会先展示当前结果，关闭后在同一年龄立刻呈现目标事件。
+
+事件现在支持 `eventTags`。天赋可以通过 `effects.eventWeightTags` 按标签调整事件权重，例如 `井听余声` 会提高 `well` 标签事件权重，`命赊未清` 会提高 `yomi` 标签事件权重。
+
+新增样板特殊天赋 `t_mingsheweiqing / 命赊未清`。该天赋提供死亡改写：第一次 `accident` 类型死亡不会直接结束，而是写入 `yomi_debt: 2`，显示赊命结果，并通过 `triggerEventId: "p_yomi_receipt"` 跳转到黄泉债收据事件。
+
 ### 天赋持续效果
 
 天赋现在不仅在开局选择时影响初始属性，也会在对应年龄段持续修饰事件结算。持续效果只作用于事件已经产生变化的属性：正向天赋会放大对应收益或缓冲对应损失，负向天赋会削弱对应收益或加重对应损失。这样可以让天赋参与事件结算，同时避免每个事件无条件追加属性导致数值爆炸。结果页会通过 `talentEffects` 展示天赋参与，例如“天赋「出马应试」影响智力+1”。

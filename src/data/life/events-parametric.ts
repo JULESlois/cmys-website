@@ -659,7 +659,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
   {
     type: "parametric", id: "p_kid_well", title: "沉没影深",
     description: "村口有一口荒废多年的枯井，井口被木板盖着。你和小伙伴打赌谁能把井盖掀开。大家都看着你，等着你动手。木板下方没有水声，只有一种像楼梯间回音的安静。",
-    minAge: createAge(7), maxAge: createAge(13), weight: 5, maxTriggers: 1, cooldownYears: 999,
+    minAge: createAge(7), maxAge: createAge(13), weight: 5, eventTags: ["well", "hidden", "danger"], maxTriggers: 1, cooldownYears: 999,
     choices: [
       {
         text: "用力掀开井盖",
@@ -679,7 +679,7 @@ export const PARAMETRIC_EVENTS: ParametricEvent[] = [
   {
     type: "parametric", id: "p_kid_well_dream", title: "沉梦又深",
     description: "自从那天离开废井后，你开始反复做同一个梦。梦里没有村口，只有学校楼梯间尽头一扇写着负一层的铁门。门缝里吹出潮湿的风，有人用粉笔在门背后写你的名字。",
-    minAge: createAge(8), maxAge: createAge(17), weight: 6, maxTriggers: 1, cooldownYears: 999,
+    minAge: createAge(8), maxAge: createAge(17), weight: 6, eventTags: ["well", "hidden", "dream"], maxTriggers: 1, cooldownYears: 999,
     chapterFlagsRequired: { well_refused_first: true },
     choices: [
       {

@@ -28,6 +28,23 @@ export const LETHAL_ATTRIBUTES: AttributeName[] = ["appearance", "intelligence",
 // ── Talent ──
 export type TalentKind = "normal" | "special";
 
+export interface TalentDeathConversion {
+  deathType?: DeathType | "any";
+  maxUses?: number;
+  resultText: string;
+  attributes?: Partial<Record<AttributeName, number>>;
+  setChapterFlags?: Record<string, boolean | number | string>;
+  triggerEventId?: string;
+  triggerChapterId?: string;
+}
+
+export interface TalentEffects {
+  /** 按事件标签调整事件权重，例如 { well: 2 } 表示井相关事件权重翻倍。 */
+  eventWeightTags?: Record<string, number>;
+  /** 死亡改写：把特定死亡转为濒死、欠债、篇章入口等。 */
+  deathConversions?: TalentDeathConversion[];
+}
+
 export interface Talent {
   id: string;
   name: string;           // CMYS 四字缩写
@@ -37,6 +54,7 @@ export interface Talent {
   tags: string[];
   positive: Partial<Record<AttributeName, number>>;
   negative: Partial<Record<AttributeName, number>>;
+  effects?: TalentEffects;
   exclusiveWith?: string[];
 }
 
@@ -48,6 +66,7 @@ export interface EventBase {
   minAge: Age;
   maxAge: Age;
   weight?: number;
+  eventTags?: string[];
   cooldownYears?: number;  // 新增：触发后冷却年数
   chapterId?: string;      // 所属篇章事件
   requiredChapter?: string;
@@ -231,6 +250,8 @@ export interface GameState {
   currentEvent: GameEvent | null;
   pendingChoices: EventChoice[] | null;
   lastResult: EventResult | null;
+  /** 结果页关闭后强制触发的事件 id，用于 triggerEventId 与天赋死亡改写。 */
+  pendingEventId: string | null;
   pendingChapterIntroId: string | null;
   attributeEndingId: AttributeName | null;
   nearDeathCount: number;  // 新增：遭遇即死选项的次数

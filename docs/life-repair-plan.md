@@ -478,6 +478,9 @@ P0-2 锚点事件优先
 - 特殊天赋作为隐藏路线门票，当前三轮天赋选择中只在第 1 轮最多出现 1 个；选择特殊天赋后，后续候选池不再出现特殊天赋。
 - 已新增 `t_jingtingyusheng / 井听余声`，用于安全进入《沉没异生篇》。没有该天赋时，井入口危险选项会强制死亡；拥有该天赋时，保留原有进入篇章文本并进入 `well_otherworld`。
 - `EventChoice.conditionalEffects` 已接入 reducer，支持同一个选项根据天赋解析为不同后果。
+- `triggerEventId` 已接入 reducer：当前结果页关闭后，同年龄立刻进入目标事件。
+- `EventBase.eventTags` 与 `Talent.effects.eventWeightTags` 已接入事件选择权重。
+- 已新增 `t_mingsheweiqing / 命赊未清`，作为死亡改写型特殊天赋样板：第一次意外死亡会转为黄泉债收据事件。
 
 **当前限制**
 

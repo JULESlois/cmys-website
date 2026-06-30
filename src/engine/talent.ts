@@ -3,7 +3,6 @@ import type { Talent, GameState, AttributeName, Attributes } from "./types";
 import { attr } from "./types";
 import { scaleAttributeDelta } from "./balance";
 
-
 export function isSpecialTalent(talent: Talent | undefined): boolean {
   return talent?.kind === "special";
 }

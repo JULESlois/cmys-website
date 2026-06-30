@@ -11,6 +11,32 @@ export const TALENT_POOL: Talent[] = [
     tags: ["特殊", "井", "异界", "沉没异生"],
     positive: {},
     negative: {},
+    effects: {
+      eventWeightTags: { well: 2 },
+    },
+  },
+  {
+    id: "t_mingsheweiqing",
+    name: "命赊未清",
+    description: "你的死亡像被人提前赊过账。特殊天赋：第一次意外死亡不直接终结，而是转入黄泉债。",
+    category: "lifelong",
+    kind: "special",
+    tags: ["特殊", "黄泉债", "死亡改写"],
+    positive: {},
+    negative: {},
+    effects: {
+      eventWeightTags: { yomi: 1.8 },
+      deathConversions: [
+        {
+          deathType: "accident",
+          maxUses: 1,
+          attributes: { physique: -8, luck: -6, creativity: 4 },
+          setChapterFlags: { yomi_debt: 2, yomi_death_converted: true },
+          triggerEventId: "p_yomi_receipt",
+          resultText: "那一刻本该结束。可黑暗里有人把你的名字从终止栏挪到延期栏。醒来时，掌心贴着一张湿透的收据，上面写着：本次死亡已赊欠。",
+        },
+      ],
+    },
   },
   {
     id: "t_chumashiyingshi",

@@ -8,7 +8,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     id: "p_yomi_receipt",
     title: "沉命余赊",
     description: "你开始反复梦见一张湿透的收据。收据抬头写着你的名字，金额栏却不是数字，而是几次本该发生的死亡。",
-    minAge: createAge(18), maxAge: createAge(99), weight: 12, maxTriggers: 1, cooldownYears: 999,
+    minAge: createAge(18), maxAge: createAge(99), weight: 12, eventTags: ["yomi", "hidden", "debt"], maxTriggers: 1, cooldownYears: 999,
     chapterFlagsRequired: { yomi_debt: 2 },
     choices: [
       { text: "按下手印，查看欠账", effects: { attributes: {}, triggerChapterId: "yomi_debt", setChapterFlags: { yomi_receipt_seen: true } }, resultText: "红印落下，收据背面浮出一串日期。每一个日期旁边，都写着：已延期。" },
@@ -21,6 +21,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "持命验赊",
     description: "一间没有门牌的窗口排着队。窗口后的人说：你不是来还钱的，你是来确认谁替你付过。",
     minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_receipt_seen: true }, weight: 10, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "查看第一笔延期", effects: { attributes: {}, setChapterFlags: { yomi_first_debt_seen: true } }, resultText: "第一笔延期来自一次意外。备注栏写着：从未来的你那里扣除。" },
@@ -33,6 +34,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "沉门映册",
     description: "桌上摆着三份档案：你的、狗子的、空白的。空白档案封面干净得像从未有人活过。",
     minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_first_debt_seen: true }, weight: 10, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "翻开自己的档案", effects: { attributes: {}, setChapterFlags: { yomi_self_record_seen: true } }, resultText: "档案里有几页被水泡烂了。那些页数对应你逃过的死亡。" },
@@ -45,6 +47,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "偿梦遗失",
     description: "柜台递来一枚小剪刀。对方说：还债不一定用寿命，也可以用一段你舍不得的记忆。",
     minAge: createAge(19), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_self_record_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "剪掉一段童年记忆", effects: { attributes: {}, setChapterFlags: { yomi_memory_paid: true, yomi_debt: 1 } }, resultText: "剪刀合上后，你知道自己曾经很快乐，但想不起是因为什么。" },
@@ -57,6 +60,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "持梦约损",
     description: "第二种偿还方式是关系。不是让某个人消失，而是让一句本该说出口的话永远变轻。",
     minAge: createAge(19), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_blank_record_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "用一段关系抵债", effects: { attributes: {}, relationshipEffect: { targetId: "confidant", change: -12 }, setChapterFlags: { yomi_relationship_paid: true, yomi_debt: 1 } }, resultText: "你没有失去那个人，只是从此很难把真正想说的话说完整。" },
@@ -69,6 +73,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "出命又生",
     description: "窗口后的灯逐盏熄灭。对方说：你可以回去，但下一次延期不会这么便宜。",
     minAge: createAge(20), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_first_debt_seen: true }, weight: 6, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "带着欠条回到现实", effects: { attributes: {}, setChapterFlags: { yomi_returned: true }, exitChapter: true, completeChapterId: "yomi_debt" }, resultText: "你醒来时，床头有一张不存在的收据。上面只剩一行字：下次见。" },
@@ -81,6 +86,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "沉名易身",
     description: "最后一笔债写着一个熟悉的人。你终于明白，所谓延期，有时只是把死亡从你身上挪到别人身边。",
     minAge: createAge(20), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_last_debt_requested: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "把债转回自己名下", effects: { attributes: { physique: -4 }, setChapterFlags: { yomi_debt_self_taken: true, yomi_debt: 0 }, exitChapter: true, completeChapterId: "yomi_debt" }, resultText: "章盖下去的时候，你感到身体突然重了很多。但窗外的某个人，似乎终于能继续活下去。" },
@@ -94,6 +100,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "",
     description: "叫号机没有显示号码。它显示的是一行死法：尚未承认自己仍然活着的人。周围所有人都低头看向手里的收据，像在庆幸这一次没有叫到自己。",
     minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_receipt_seen: true }, weight: 9, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "走到窗口前", effects: { attributes: {}, setChapterFlags: { yomi_call_answered: true } }, resultText: "窗口后的人没有抬头，只推来一张确认单。第一栏不是姓名，而是：你是否承认自己不该这么轻易活下来？" },
@@ -106,6 +113,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "持命验身",
     description: "柜台要求你提交仍然活着的证明。你递上脉搏、体温、记忆和姓名。工作人员逐项盖章，最后把姓名退了回来：这一项存在争议。",
     minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_first_debt_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "要求复核姓名", effects: { attributes: {}, setChapterFlags: { yomi_name_review_requested: true } }, resultText: "工作人员递给你一面小镜子。镜中人张嘴说话，比你慢半拍：别复核。复核以后，就要决定哪个名字作废。" },
@@ -118,6 +126,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "赤目遗册",
     description: "第二份档案封面写着狗子的名字。页数很少，翻起来却很重。备注栏反复出现同一句话：本人要求不通知受益人。",
     minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_first_debt_seen: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "阅读代签记录", effects: { attributes: {}, setChapterFlags: { yomi_dog_record_read: true, dog_memory: 2 }, relationshipEffect: { targetId: "confidant", change: 6 } }, resultText: "记录没有写他替你死过。它写得更轻：某年某月，替你保留一次返回资格。你忽然觉得这比死亡更难还。" },
@@ -130,6 +139,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "",
     description: "空白档案翻开后没有字。你等了很久，纸面才慢慢浮出一枚湿手印。那枚手印的大小，和你小时候一模一样。",
     minAge: createAge(18), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_blank_record_seen: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "把手按上去对齐", effects: { attributes: {}, setChapterFlags: { yomi_blank_hand_matched: true } }, resultText: "两枚手印完全重合。工作人员轻声说：确认成功。这份没有姓名的人生，曾经也是你。" },
@@ -142,6 +152,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "偿梦余湿",
     description: "你用记忆抵债后，柜台归还一张旧照片。照片里的人还在笑，可你看不出那天为什么值得笑。快乐没有消失，只是从你身上过户了。",
     minAge: createAge(19), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_memory_paid: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "把照片收好", effects: { attributes: {}, setChapterFlags: { yomi_cold_photo_kept: true } }, resultText: "你收起照片。它仍然属于你，只是不再温暖。你突然明白，有些失去不会表现为忘记，而是表现为再也不能被打动。" },
@@ -154,6 +165,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "持梦约空",
     description: "关系抵债后，你的通讯录没有少人。只是某个最熟悉的备注变成了系统默认姓名。聊天记录还在，每一句我在都像自动回复。",
     minAge: createAge(19), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_relationship_paid: true }, weight: 7, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "重新改回原来的备注", effects: { attributes: {}, relationshipEffect: { targetId: "confidant", change: -4 }, setChapterFlags: { yomi_contact_renamed: true } }, resultText: "你把备注改回去。屏幕闪了一下，又变回默认姓名。黄泉不删除关系，它只删除关系里最难证明的那部分。" },
@@ -166,6 +178,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "沉名易身",
     description: "最后一笔债的付款人一栏不断变换：狗子，替身，未来的你，某个你已经很久没联系的人。每个名字出现时，你都觉得自己曾经亏欠过他。",
     minAge: createAge(20), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_last_debt_requested: true }, weight: 9, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "要求固定付款人姓名", effects: { attributes: {}, setChapterFlags: { yomi_payer_fixed: true } }, resultText: "所有名字停止闪烁，最后留下你的名字。工作人员说：固定成功。请确认是否转回本人名下。" },
@@ -178,6 +191,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
     title: "",
     description: "工作人员递来一枚没有字的章。章面干净得像从未使用过。他说：这不是用来盖在纸上的，是用来盖在您不想承认的那一部分人生上。",
     minAge: createAge(20), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
+    eventTags: ["yomi", "hidden"],
     chapterFlagsRequired: { yomi_last_debt_requested: true }, weight: 8, maxTriggers: 1, cooldownYears: 999,
     choices: [
       { text: "盖在自己名字上", effects: { attributes: { physique: -2 }, setChapterFlags: { yomi_blank_stamp_self: true, yomi_debt: 0 }, exitChapter: true, completeChapterId: "yomi_debt" }, resultText: "章落下时没有声音。你却觉得身体里有一层湿纸被撕开。回到现实后，你知道有些债终于回来了，只是回来得很重。" },
