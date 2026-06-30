@@ -140,6 +140,12 @@ function deathTypeMatches(expected: DeathType | "any" | undefined, actual: Death
   return !expected || expected === "any" || expected === actual;
 }
 
+function getLethalChoiceDeathType(event: GameEvent): DeathType {
+  const tags = event.eventTags ?? [];
+  if (tags.includes("accident")) return "accident";
+  return "lethal_choice";
+}
+
 function presentSpecificEvent(state: GameState, event: GameEvent): GameState {
   if (event.type === "procedural") {
     const talentModifierResult = applyTalentModifiers(scaleAttributeChanges(event.effects), getActiveTalents(state));
@@ -187,6 +193,7 @@ function applyTalentDeathConversion(state: GameState, deathCheck: DeathCheck): G
     const conversions = talent.effects?.deathConversions ?? [];
     for (const [index, conversion] of conversions.entries()) {
       if (!deathTypeMatches(conversion.deathType, deathCheck.deathType)) continue;
+      if (conversion.attribute && deathCheck.attribute !== conversion.attribute) continue;
       const flagKey = `talent_death_conversion_${talent.id}_${index}`;
       const used = getNumberFlag(state, flagKey);
       if (conversion.maxUses !== undefined && used >= conversion.maxUses) continue;
@@ -392,8 +399,37 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         newTriggeredIds[event.id] = state.age as number;
       }
 
-      // 检查选择是否致死；部分致死选项会转化为濒死触发器
+      // 检查选择是否致死；非强制即死选项先尝试天赋死亡改写，再进入普通濒死转化。
       if (choiceEffects.isLethal) {
+        const deathNarrative = resultText
+          ?? `在"${event.title}"中做出了致命的选择。`;
+
+        if (!choiceEffects.forceLethal) {
+          const lethalChoiceState: GameState = {
+            ...state,
+            attributes: attrs,
+            eventLog: [...state.eventLog, {
+              age: state.age,
+              eventId: event.id,
+              title: event.title,
+              choiceText: choice.text,
+              attributeChanges: scaledAttributeChanges,
+              storyArcId: event.storyArcId ?? getStoryArcByAge(state.age).id,
+              chapterId: event.chapterId,
+            }],
+            triggeredEventIds: newTriggeredIds,
+            chapter,
+            currentEvent: null,
+            pendingChoices: null,
+          };
+          const talentConvertedDeath = applyTalentDeathConversion(lethalChoiceState, {
+            isDead: true,
+            cause: deathNarrative,
+            deathType: getLethalChoiceDeathType(event),
+          });
+          if (talentConvertedDeath) return talentConvertedDeath;
+        }
+
         const conversion = choiceEffects.forceLethal ? null : getLethalChoiceConversion(state, event, choice);
         if (conversion) {
           const combinedChanges = mergeAttributeChanges(scaledAttributeChanges, conversion.attributeChanges);
@@ -438,8 +474,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           return lockAttributeEndingIfNeeded(convertedState);
         }
 
-        const deathNarrative = resultText
-          ?? `在"${event.title}"中做出了致命的选择。`;
         return {
           ...state,
           attributes: attrs,

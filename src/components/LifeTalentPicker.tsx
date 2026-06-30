@@ -39,10 +39,6 @@ export function LifeTalentPicker() {
       >
         选择你的天赋
       </motion.h2>
-      <p className="font-mono text-xs text-secondary text-center leading-relaxed">
-        从随机出现的 3 个天赋中选择 1 个。选择后人生立即开始。
-      </p>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">
         {candidates.map((talent, i) => (
           <motion.button
@@ -53,14 +49,7 @@ export function LifeTalentPicker() {
             onClick={() => handleSelect(talent)}
             className="group relative p-6 border border-primary/20 text-left hover:border-primary/60 transition-colors glass-panel"
           >
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <h3 className="font-mono text-sm tracking-wider">{talent.name}</h3>
-              {talent.kind === "special" && (
-                <span className="font-mono text-[9px] text-primary/60 border border-primary/20 px-1 py-0.5">
-                  特殊
-                </span>
-              )}
-            </div>
+            <h3 className="font-mono text-sm tracking-wider mb-2">{talent.name}</h3>
             <p className="font-mono text-[10px] text-secondary leading-relaxed mb-3">
               {talent.description}
             </p>

@@ -5,7 +5,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_jingtingyusheng",
     name: "沉鸣余声",
-    description: "你能听见井下不是回声，而是另一个人生在点你的名。特殊天赋：允许安全进入沉没异生篇。",
+    description: "你能听见井下不是回声，而是另一个人生在点你的名。那声音很轻，却像一直知道你会来。",
     category: "lifelong",
     kind: "special",
     tags: ["特殊", "井", "异界", "沉没异生"],
@@ -18,7 +18,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_mingsheweiqing",
     name: "持命余赊",
-    description: "你的死亡像被人提前赊过账。特殊天赋：第一次意外死亡不直接终结，而是转入黄泉债。",
+    description: "你的死亡像被人提前赊过账。账目没有写清日期，只在阴影里留下潮湿的红印。",
     category: "lifelong",
     kind: "special",
     tags: ["特殊", "黄泉债", "死亡改写"],
