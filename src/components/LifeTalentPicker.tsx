@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useLife } from "./LifeContext";
 import type { Talent, AttributeName } from "../engine/types";
 import { TALENT_POOL } from "../data/life/talents";
-import { selectTalentsForRound, applyTalentToAttributes } from "../engine/talent";
+import { selectTalentsForDraw } from "../engine/talent";
 import { motion } from "motion/react";
 import { scaleAttributeDelta } from "../engine/balance";
 
@@ -18,42 +18,16 @@ const ATTR_LABEL: Record<AttributeName, string> = {
 
 export function LifeTalentPicker() {
   const { state, dispatch } = useLife();
-  const round = (state.phase as { type: "talent_selection"; round: number }).round;
   const selectedTalentIds = useMemo(() => state.talents.map((t) => t.id), [state.talents]);
   const selectedTalentKey = selectedTalentIds.join("|");
 
   const candidates = useMemo(
-    () => selectTalentsForRound(TALENT_POOL, selectedTalentIds, round),
-    [round, selectedTalentKey],
+    () => selectTalentsForDraw(TALENT_POOL, selectedTalentIds),
+    [selectedTalentKey],
   );
 
   const handleSelect = (talent: Talent) => {
-    const newTalents = [...state.talents, talent];
-    const newAttrs = applyTalentToAttributes(state.attributes, talent);
-
-    if (round >= 2) {
-      // 最后一轮，开始游戏
-      dispatch({
-        type: "LOAD_SAVE",
-        state: {
-          ...state,
-          talents: newTalents,
-          attributes: newAttrs,
-          phase: { type: "playing", step: "aging" },
-          age: 0 as import("../engine/types").Age,
-        },
-      });
-    } else {
-      dispatch({
-        type: "LOAD_SAVE",
-        state: {
-          ...state,
-          talents: newTalents,
-          attributes: newAttrs,
-          phase: { type: "talent_selection", round: round + 1 },
-        },
-      });
-    }
+    dispatch({ type: "SELECT_TALENT", talentId: talent.id });
   };
 
   return (
@@ -65,8 +39,8 @@ export function LifeTalentPicker() {
       >
         选择你的天赋
       </motion.h2>
-      <p className="font-mono text-xs text-secondary">
-        第 {round + 1} / 3 轮
+      <p className="font-mono text-xs text-secondary text-center leading-relaxed">
+        从随机出现的 3 个天赋中选择 1 个。选择后人生立即开始。
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">

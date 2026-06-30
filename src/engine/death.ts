@@ -12,6 +12,7 @@ export interface DeathCheck {
   isDead: boolean;
   cause?: string;
   deathType?: import("./types").DeathType;
+  attribute?: AttributeName;
   penalty?: { attribute: AttributeName; description: string };
   sealedTalent?: boolean;
   luckCursed?: boolean;
@@ -52,6 +53,7 @@ export function checkDeath(state: GameState): DeathCheck {
         isDead: true,
         cause: causeMap[attr],
         deathType: "attribute",
+        attribute: attr,
       };
     }
   }

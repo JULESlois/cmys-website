@@ -86,7 +86,7 @@ export const FORTUNES: Fortune[] = [
   },
   {
     id: "11",
-    name: "仓廪殷实",
+    name: "仓满盈实",
     fortune: "大吉，财运",
     explanation: "粮仓充实，衣食无忧。",
     description: "正财旺盛，投资或储蓄有稳定回报，适合购置实物资产或储备物资。",

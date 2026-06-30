@@ -10,7 +10,7 @@ import { getChapterName, shouldPlayChapterEntryAnimation } from "../data/life/ch
 import { getStoryArcByAge } from "../data/life/story-arcs";
 import { generateConfidant, updateAffinity } from "./relationship";
 import { rollInitialAttribute, scaleAttributeChanges } from "./balance";
-import { applyTalentModifiers, getActiveTalents } from "./talent";
+import { applyTalentModifiers, applyTalentToAttributes, getActiveTalents } from "./talent";
 import { getLethalChoiceConversion } from "./lethal";
 import { getAttributeEnding } from "../data/life/attribute-endings";
 import { TALENT_POOL } from "../data/life/talents";
@@ -39,7 +39,7 @@ export function createInitialAttributes(bonusPoints: Partial<Record<AttributeNam
 
 export function createInitialState(talents: string[] = []): GameState {
   return {
-    phase: { type: "talent_selection", round: 0 },
+    phase: { type: "talent_selection" },
     age: createAge(0),
     attributes: createInitialAttributes(),
     talents: [],
@@ -651,7 +651,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return createInitialState();
 
     case "SELECT_TALENT": {
-      return state;
+      if (state.phase.type !== "talent_selection") return state;
+      const talent = TALENT_POOL.find((item) => item.id === action.talentId);
+      if (!talent) return state;
+
+      return {
+        ...state,
+        talents: [talent],
+        attributes: applyTalentToAttributes(state.attributes, talent),
+        phase: { type: "playing", step: "aging" },
+        age: createAge(0),
+        currentEvent: null,
+        pendingChoices: null,
+        lastResult: null,
+      };
     }
 
     case "LOAD_SAVE": {

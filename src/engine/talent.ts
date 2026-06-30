@@ -85,12 +85,11 @@ export function applyTalentModifiers(
   return { changes: result, descriptions };
 }
 
-// 从天赋池中为当前轮次随机选 3 个天赋。
-// 特殊天赋是路线门票：三轮选择中只在第 1 轮最多出现 1 个；一旦已选择特殊天赋，后续不再出现特殊天赋。
-export function selectTalentsForRound(
+// 为本局随机展示 3 个候选天赋。
+// 玩家只能从这 3 个候选中选择 1 个；候选中最多出现 1 个特殊天赋。
+export function selectTalentsForDraw(
   pool: Talent[],
-  selectedIds: string[],
-  round: number
+  selectedIds: string[] = []
 ): Talent[] {
   const selectedTalents = selectedIds
     .map((id) => pool.find((p) => p.id === id))
@@ -99,7 +98,7 @@ export function selectTalentsForRound(
 
   const available = pool.filter((t) => {
     if (selectedIds.includes(t.id)) return false;
-    if (isSpecialTalent(t) && (hasSelectedSpecialTalent || round > 0)) return false;
+    if (isSpecialTalent(t) && hasSelectedSpecialTalent) return false;
     // 互斥检查
     const hasConflict = selectedIds.some((sid) => {
       const selectedTalent = pool.find((p) => p.id === sid);
@@ -109,7 +108,9 @@ export function selectTalentsForRound(
     return true;
   });
 
-  const special = shuffleTalents(available.filter(isSpecialTalent)).slice(0, 1);
+  const special = hasSelectedSpecialTalent
+    ? []
+    : shuffleTalents(available.filter(isSpecialTalent)).slice(0, 1);
   const normal = shuffleTalents(available.filter((talent) => !isSpecialTalent(talent))).slice(0, 3 - special.length);
   return shuffleTalents([...special, ...normal]);
 }

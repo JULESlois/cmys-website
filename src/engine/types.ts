@@ -30,6 +30,8 @@ export type TalentKind = "normal" | "special";
 
 export interface TalentDeathConversion {
   deathType?: DeathType | "any";
+  /** deathType=attribute 时可限制只改写某个属性归零/低阈值死亡。 */
+  attribute?: AttributeName;
   maxUses?: number;
   resultText: string;
   attributes?: Partial<Record<AttributeName, number>>;
@@ -230,7 +232,7 @@ export interface Achievement {
 // ── Game State ──
 export type GamePhase =
   | { type: "save_choice" }
-  | { type: "talent_selection"; round: number }
+  | { type: "talent_selection" }
   | { type: "playing"; step: "aging" | "event_presenting" | "awaiting_choice" | "effect_resolving" }
   | { type: "chapter_intro"; chapterId: string }
   | { type: "ending_prelude"; endingId: AttributeName }

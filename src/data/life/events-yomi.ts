@@ -162,7 +162,7 @@ export const YOMI_EVENTS: ParametricEvent[] = [
   {
     type: "parametric",
     id: "c_yomi_contact_default",
-    title: "持梦约空",
+    title: "持梦余损",
     description: "关系抵债后，你的通讯录没有少人。只是某个最熟悉的备注变成了系统默认姓名。聊天记录还在，每一句我在都像自动回复。",
     minAge: createAge(19), maxAge: createAge(99), requiredChapter: "yomi_debt", chapterId: "yomi_debt",
     eventTags: ["yomi", "hidden"],

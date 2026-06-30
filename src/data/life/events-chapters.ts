@@ -354,7 +354,7 @@ export const CHAPTER_EVENTS: ParametricEvent[] = [
   {
     type: "parametric",
     id: "c_well_empty_desk",
-    title: "沉默余席",
+    title: "沉默余室",
     description: "教室最后一排多出一张空桌。桌面刻着很多划痕，每一道都像某次失败后的重新开始。",
     minAge: createAge(8), maxAge: createAge(60), requiredChapter: "well_otherworld", chapterId: "well_otherworld",
     chapterFlagsRequired: { well_stair_seen: true }, weight: 6, maxTriggers: 1, cooldownYears: 999,
