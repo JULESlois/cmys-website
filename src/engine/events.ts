@@ -64,6 +64,9 @@ function isEventEligible(event: GameEvent, state: GameState): boolean {
   // 年龄范围
   if (age < event.minAge || age > event.maxAge) return false;
 
+  // 同一年龄内不重复触发同一个事件，避免默认不增龄后循环抽中。
+  if (triggeredEventIds[event.id] === (age as number)) return false;
+
   // 篇章过滤
   const activeChapterId = state.chapter?.activeChapterId ?? null;
   if (event.requiredChapter && activeChapterId !== event.requiredChapter) return false;

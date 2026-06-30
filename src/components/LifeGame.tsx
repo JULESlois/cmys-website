@@ -12,6 +12,8 @@ import { LifeDeathScreen } from "./LifeDeathScreen";
 import { LifeElderStage } from "./LifeElderStage";
 import { LifeIntro } from "./LifeIntro";
 import { LifeChapterIntro } from "./LifeChapterIntro";
+import { LifeMusicPlayer } from "./LifeMusicPlayer";
+import { LifeStoryArcSummary } from "./LifeStoryArcSummary";
 import { getChapterById } from "../data/life/chapters";
 import { getAttributeEndingByAttribute } from "../data/life/attribute-endings";
 import { AnimatePresence, motion } from "motion/react";
@@ -59,16 +61,19 @@ export function LifeGame() {
     const handleKey = (e: KeyboardEvent) => {
       // 不拦截 ReignsCard 的事件选择阶段、死亡/结局/选天赋/存档选择阶段
       const phase = state.phase;
-      if (phase.type !== "playing") return;
-      if (phase.step === "event_presenting") return; // ReignsCard 自己处理
-      if (state.age <= 5) return; // 婴幼期自动叙事
       // 忽略输入框内的按键
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
-      if (phase.step === "aging") {
-        const delta = state.age > 30 && state.age <= 60 ? 3 : 1;
-        dispatch({ type: "ADVANCE_AGE", delta });
-      } else if (phase.step === "effect_resolving") {
+      if (phase.type === "story_arc_summary") {
+        dispatch({ type: "DISMISS_STORY_ARC_SUMMARY" });
+        return;
+      }
+
+      if (phase.type !== "playing") return;
+      if (phase.step === "event_presenting") return; // ReignsCard 自己处理
+      if (state.age <= 5) return; // 婴幼期自动叙事
+
+      if (phase.step === "effect_resolving") {
         dispatch({ type: "DISMISS_RESULT" });
       }
     };
@@ -112,6 +117,9 @@ export function LifeGame() {
 
       case "talent_selection":
         return <LifeTalentPicker />;
+
+      case "story_arc_summary":
+        return <LifeStoryArcSummary />;
 
       case "chapter_intro": {
         const chapter = getChapterById(phase.chapterId);
@@ -223,6 +231,7 @@ export function LifeGame() {
 
   return (
     <LifeContext.Provider value={ctx}>
+      <LifeMusicPlayer />
       <div className="relative min-h-screen bg-canvas text-primary font-sans">
         <div
           className="absolute inset-0 pointer-events-none opacity-10"

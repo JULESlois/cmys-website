@@ -81,6 +81,11 @@ function mergeAttributeChanges(
   return next;
 }
 
+function getEventAgeDelta(event: GameEvent | null | undefined): number {
+  const raw = event?.ageDelta ?? 0;
+  if (!Number.isFinite(raw)) return 0;
+  return Math.max(0, Math.min(100, Math.floor(raw)));
+}
 
 function hasTalentIds(state: GameState, required: string[] | undefined): boolean {
   if (!required || required.length === 0) return true;
@@ -311,12 +316,26 @@ function enterChapterAtCurrentAge(state: GameState): GameState {
   };
 }
 
-function advanceYears(state: GameState, delta: number): GameState {
+function advanceYears(state: GameState, delta: number, options: { skipStoryArcSummary?: boolean } = {}): GameState {
   let currentState = { ...state };
   let attrs = { ...currentState.attributes };
 
   for (let step = 0; step < delta; step++) {
     const nextAge = (currentState.age as number) + 1 > 100 ? 100 : (currentState.age as number) + 1;
+    const currentArcId = currentState.chapter.currentArcId;
+    const nextArc = getStoryArcByAge(nextAge);
+    const isEnteringOrInsideSpecialChapter = Boolean(
+      currentState.pendingChapterIntroId || currentState.chapter.activeChapterId,
+    );
+    if (!options.skipStoryArcSummary && !isEnteringOrInsideSpecialChapter && nextArc.id !== currentArcId) {
+      return {
+        ...currentState,
+        phase: { type: "story_arc_summary", arcId: currentArcId, nextAge: createAge(nextAge) },
+        currentEvent: null,
+        pendingChoices: null,
+      };
+    }
+
     const decay = applyNaturalDecay(nextAge);
     attrs = applyAttributeChanges(attrs, decay);
 
@@ -370,6 +389,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "ADVANCE_AGE": {
       return advanceYears(state, action.delta ?? 1);
+    }
+
+    case "DISMISS_STORY_ARC_SUMMARY": {
+      if (state.phase.type !== "story_arc_summary") return state;
+      return advanceYears({
+        ...state,
+        phase: { type: "playing", step: "aging" },
+        currentEvent: null,
+        pendingChoices: null,
+      }, 1, { skipStoryArcSummary: true });
     }
 
     case "RESOLVE_EVENT": {
@@ -461,6 +490,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
               chapterTransition: "黄泉债 +1",
               talentEffects,
               holdAge: false,
+              ageDelta: getEventAgeDelta(event),
             },
           };
           const convertedDeathCheck = checkDeath(convertedState);
@@ -594,6 +624,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           chapterTransition,
           talentEffects,
           holdAge: shouldHoldAge,
+          ageDelta: getEventAgeDelta(event),
         },
       };
 
@@ -642,10 +673,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         return enterPendingEvent(clearedState);
       }
 
-      if (state.lastResult?.holdAge && clearedState.chapter.activeChapterId) {
-        const chapterState = enterChapterAtCurrentAge(clearedState);
-        if (chapterState !== clearedState) return chapterState;
+      const ageDelta = state.lastResult?.ageDelta ?? 0;
+      if (ageDelta > 0) {
+        return advanceYears(clearedState, ageDelta);
       }
+
+      const currentAgeState = enterCurrentAge(clearedState);
+      if (currentAgeState !== clearedState) return currentAgeState;
 
       return clearedState;
     }

@@ -5,7 +5,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_jingtingyusheng",
     name: "沉鸣余声",
-    description: "你能听见井下不是回声，而是另一个人生在点你的名。那声音很轻，却像一直知道你会来。",
+    description: "井下的声音像另一个人生在轻轻点你的名。",
     category: "lifelong",
     kind: "special",
     tags: ["特殊", "井", "异界", "沉没异生"],
@@ -18,7 +18,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_mingsheweiqing",
     name: "持命余赊",
-    description: "你的死亡像被人提前赊过账。账目没有写清日期，只在阴影里留下潮湿的红印。",
+    description: "你的死亡像被提前赊过账，只在阴影里留下潮湿红印。",
     category: "lifelong",
     kind: "special",
     tags: ["特殊", "黄泉债", "死亡改写"],
@@ -41,7 +41,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_chumashiyingshi",
     name: "出马应试",
-    description: "擅长应试与长期训练，考试和学习事件更容易靠近你，但压力也会更频繁地出现。",
+    description: "考试与学习更容易靠近你，压力也会随之增加。",
     category: "lifelong",
     tags: ["考试", "学业"],
     positive: { intelligence: 2 },
@@ -54,7 +54,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_chenmoyoushi",
     name: "沉默有诗",
-    description: "孤独更容易沉淀成作品。创作、记忆和独处事件更常出现，社交喧闹会略微远离。",
+    description: "孤独更容易沉淀成作品，创作与独处也更常出现。",
     category: "lifelong",
     tags: ["创作", "文艺"],
     positive: { creativity: 2 },
@@ -67,7 +67,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_cimuoyuanshe",
     name: "辞母远涉",
-    description: "远行、迁移与独立选择更容易出现；家庭牵挂会被你拉得更远。",
+    description: "远行与独立选择更常出现，家庭牵挂会被你拉远。",
     category: "prime",
     tags: ["远行", "独立"],
     positive: { intelligence: 1, physique: 1 },
@@ -79,7 +79,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_changmianyueshi",
     name: "长眠月食",
-    description: "你在谷底会醒得更晚，也更难彻底睡去。第一次意外死亡会被黑暗缓冲为濒死。",
+    description: "你更难彻底睡去，第一次意外死亡会被黑暗缓冲为濒死。",
     category: "lifelong",
     tags: ["韧性", "高风险"],
     positive: { physique: 1 },
@@ -100,7 +100,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_canglinyinshi",
     name: "仓满盈实",
-    description: "财富、投资和安稳生活更容易靠近你；家境崩塌时可以用积蓄抵住一次。",
+    description: "财富与安稳更容易靠近你，家境崩塌时可抵住一次。",
     category: "prime",
     tags: ["财富", "安逸"],
     positive: { wealth: 2 },
@@ -122,7 +122,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_chunmiaoyusu",
     name: "春苗雨苏",
-    description: "童年和成长事件更容易变成养分。你适合在早期快速积累，但成年后优势趋于平缓。",
+    description: "童年与成长更容易变成养分，早期积累更快。",
     category: "childhood",
     tags: ["成长", "生机"],
     positive: { intelligence: 1, physique: 1, creativity: 1 },
@@ -134,7 +134,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_chunmianyesu",
     name: "春眠夜宿",
-    description: "安稳生活和健康事件更容易出现；第一次意外会先被慢节奏的生活缓冲下来。",
+    description: "安稳与健康更常出现，第一次意外会被慢生活缓冲。",
     category: "lifelong",
     tags: ["安稳", "健康"],
     positive: { physique: 1 },
@@ -155,7 +155,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_chuimuyanshi",
     name: "垂目言事",
-    description: "冲突、关系和职业谈判中更容易出现转圜空间。你擅长把话说到别人愿意听。",
+    description: "冲突和谈判更容易出现转圜，你擅长把话说到别人愿意听。",
     category: "prime",
     tags: ["社交", "说服"],
     positive: { appearance: 1, wealth: 1 },
@@ -167,7 +167,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_caomuyusheng",
     name: "草木有盛",
-    description: "生命力旺盛，运动和健康路线更常出现。第一次体质死亡不会直接结束，而是转为重伤。",
+    description: "生命力旺盛，第一次体质死亡会转为重伤。",
     category: "lifelong",
     tags: ["体质", "生长"],
     positive: { physique: 3 },
@@ -189,7 +189,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_chunmeiyishi",
     name: "纯美意识",
-    description: "你更容易靠近平静、创作和自我修复的事件；财富机会会稍微远离。",
+    description: "平静、创作与自我修复更容易靠近你，财富机会稍远。",
     category: "lifelong",
     tags: ["心性", "精神"],
     positive: { creativity: 1, luck: 1 },
@@ -201,7 +201,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_chuimoyunshi",
     name: "揣摩运势",
-    description: "你更容易遇见机会，也更能提前察觉坏偶然。第一次意外死亡会被预感改写。",
+    description: "你更容易遇见机会，第一次意外死亡会被预感改写。",
     category: "lifelong",
     tags: ["运势", "机遇"],
     positive: { luck: 2 },
@@ -222,7 +222,7 @@ export const TALENT_POOL: Talent[] = [
   {
     id: "t_cemayueshi",
     name: "策马远涉",
-    description: "行动、远行和冒险事件更容易出现。你更常看见高风险路线，也更容易靠行动取得收益。",
+    description: "行动、远行和冒险更常出现，高风险路线也更靠近你。",
     category: "prime",
     tags: ["行动", "冒险"],
     positive: { physique: 1, luck: 1 },

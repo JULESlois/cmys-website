@@ -77,6 +77,8 @@ export interface EventBase {
   chapterFlagsRequired?: Record<string, boolean | number | string>;
   chapterPriority?: number;
   storyArcId?: string;      // 主线篇章归属，仅用于管理/展示，不参与隐藏篇章过滤
+  /** 事件结算后推进的年龄数；默认 0，即事件本身不导致增龄。 */
+  ageDelta?: number;
 }
 
 export interface AnchorEvent extends EventBase {
@@ -141,6 +143,8 @@ export interface EventResult {
   chapterTransition?: string;
   talentEffects?: string[];
   holdAge?: boolean;
+  /** 事件结算后推进的年龄数；默认 0。 */
+  ageDelta?: number;
   endGame?: boolean;
 }
 
@@ -234,6 +238,7 @@ export type GamePhase =
   | { type: "save_choice" }
   | { type: "talent_selection" }
   | { type: "playing"; step: "aging" | "event_presenting" | "awaiting_choice" | "effect_resolving" }
+  | { type: "story_arc_summary"; arcId: string; nextAge: Age }
   | { type: "chapter_intro"; chapterId: string }
   | { type: "ending_prelude"; endingId: AttributeName }
   | { type: "dying"; cause: string }
@@ -267,6 +272,7 @@ export type GameAction =
   | { type: "RESOLVE_EVENT"; choiceIndex: number }
   | { type: "TRIGGER_DEATH"; cause: string }
   | { type: "DISMISS_RESULT" }
+  | { type: "DISMISS_STORY_ARC_SUMMARY" }
   | { type: "DISMISS_CHAPTER_INTRO" }
   | { type: "SHOW_RESULT" }
   | { type: "RESTART" }
