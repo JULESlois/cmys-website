@@ -161,7 +161,9 @@ travel: 10
 2. 如果处于 activeChapterId，优先抽取当前特殊篇章事件。
 3. 普通参数化事件按权重抽取。
 4. 同一事件在同一年龄不会重复触发。
-5. 无事件时进入 aging 状态，由 LifeAutoAdvance 自动推进。
+5. 每个年龄点最多触发 1 个普通参数化事件。
+6. 锚点、triggerEventId 强制事件和特殊篇章事件不受普通事件上限限制。
+7. 无事件或达到普通事件上限时进入 aging 状态，由 LifeAutoAdvance 自动推进。
 ```
 
 事件现在支持：
@@ -178,7 +180,7 @@ chapterFlagsRequired?: Record<string, boolean | number | string>
 chapterPriority?: number
 ```
 
-`ageDelta` 是事件级年龄推进属性。默认值为 `0`，即事件本身不会消耗年龄。只有显式写入 `ageDelta: 1`、`ageDelta: 3` 等时，关闭结果页后才推进年龄。
+`ageDelta` 是事件级年龄推进属性。默认值为 `0`，即事件本身不会直接消耗年龄。为了避免同一年龄刷空事件池，事件系统另有普通事件软上限：每个年龄点最多 1 个普通参数化事件；达到上限后自动推进年龄。只有显式写入 `ageDelta: 1`、`ageDelta: 3` 等时，关闭结果页后才立即推进指定年龄数。
 
 ## 当前选项效果规则
 

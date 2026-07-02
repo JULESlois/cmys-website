@@ -119,6 +119,9 @@ function lockAttributeEndingIfNeeded(state: GameState): GameState {
   if (state.attributeEndingId) return state;
   if (state.phase.type === "dying" || state.phase.type === "result" || state.phase.type === "ending_prelude") return state;
 
+  // 属性满值结局是人生终局，不应在少年/青年期因安全策略堆数值过早截断。
+  if ((state.age as number) < 60) return state;
+
   const ending = getAttributeEnding(state.attributes);
   if (!ending) return state;
 

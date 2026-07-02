@@ -152,6 +152,46 @@ function getAdjustedEventWeight(event: GameEvent, state: GameState): number {
   return Math.max(0.05, weight);
 }
 
+
+function getOrdinaryEventLimit(age: number): number {
+  // ageDelta 默认为 0 后，同一年龄可能连续抽取多个普通事件。
+  // 当前采用保守上限：每个年龄点最多 1 个普通参数化事件；
+  // 锚点、强制 triggerEventId 和特殊篇章事件不受此限制。
+  if (age <= 5) return 1;
+  return 1;
+}
+
+function isSpecialChapterEvent(event: GameEvent): boolean {
+  const tags = event.eventTags ?? [];
+  return Boolean(
+    event.chapterId ||
+    event.requiredChapter ||
+    event.triggerChapter ||
+    tags.includes("well") ||
+    tags.includes("yomi") ||
+    tags.includes("hidden"),
+  );
+}
+
+function isOrdinaryParametricEvent(event: GameEvent): boolean {
+  return event.type === "parametric" && !isSpecialChapterEvent(event);
+}
+
+function getSameAgeOrdinaryEventCount(state: GameState): number {
+  const age = state.age as number;
+  const eventsById = new Map(getAllEvents().map((event) => [event.id, event]));
+  return state.eventLog.reduce((count, entry) => {
+    if ((entry.age as number) !== age) return count;
+    const event = eventsById.get(entry.eventId);
+    if (!event || !isOrdinaryParametricEvent(event)) return count;
+    return count + 1;
+  }, 0);
+}
+
+function hasReachedOrdinaryEventLimit(state: GameState): boolean {
+  return getSameAgeOrdinaryEventCount(state) >= getOrdinaryEventLimit(state.age as number);
+}
+
 function weightedPick(events: GameEvent[], state: GameState): GameEvent | null {
   if (events.length === 0) return null;
   const totalWeight = events.reduce((sum, e) => sum + getAdjustedEventWeight(e, state), 0);
@@ -196,7 +236,11 @@ export function selectEvent(state: GameState): GameEvent | null {
     if (picked) return picked;
   }
 
-  return weightedPick(eligible, state);
+  const ordinaryCandidates = hasReachedOrdinaryEventLimit(state)
+    ? []
+    : eligible.filter(isOrdinaryParametricEvent);
+
+  return weightedPick(ordinaryCandidates, state);
 }
 
 // 判断当前年龄是否应该触发事件
