@@ -2,6 +2,45 @@
 
 > 目标：为 `/life` 增加类似 galgame 剧情树的“篇章树”能力，使关键事件、隐藏触发器、异常剧情和特殊结局可以被系统化组织。篇章树不是替代现实人生主线，而是在现实主线下增加隐藏分歧。
 
+
+## 当前落地状态（2026-07-01）
+
+篇章树已从设计稿进入可运行状态。当前实现重点如下：
+
+```text
+主线篇章：src/data/life/story-arcs.ts
+隐藏篇章：src/data/life/chapters.ts
+井下事件：src/data/life/events-chapters.ts
+黄泉债事件：src/data/life/events-yomi.ts
+篇章状态：GameState.chapter
+篇章入口页：LifeChapterIntro
+篇章结算页：LifeStoryArcSummary
+```
+
+当前已落地隐藏篇章：
+
+```text
+well_otherworld / 沉没异生篇
+yomi_debt       / 沉命余赊篇
+```
+
+当前事件调度优先级与早期设计略有差异：
+
+```text
+1. 当前年龄锚点事件优先。
+2. 当前 activeChapterId 下的特殊篇章事件优先。
+3. 满足条件的参数化事件按权重抽取。
+4. 事件默认不推进年龄；只有显式 ageDelta 才消耗年龄。
+5. 同一事件同一年龄不重复触发。
+6. 无事件年份不再显示普通继续页，而是自动推进。
+7. 主线篇章切换显示一次简化结算页。
+8. 特殊篇章入口拥有独立 chapter_intro，因此跳过主线结算页并直接切换音乐。
+```
+
+本设计文档后续可继续用于扩展新篇章，但实现细节应以 `docs/life-event-registry.md` 的当前状态为准。
+
+---
+
 ## 1. 设计定位
 
 当前 `/life` 是现实人生模拟器，但其标题、文本、事件命名已经带有明显的诗性、怪诞和象征色彩。篇章树系统建议将游戏定位升级为：
@@ -212,7 +251,7 @@ effects: {
 2. 当前 activeChapterId 下的篇章事件
 3. 满足触发条件的篇章入口事件
 4. 普通参数化事件
-5. 无事件则展示年龄推进页
+5. 无事件则进入 aging 状态，由 LifeAutoAdvance 自动推进
 ```
 
 如果当前处于篇章内：

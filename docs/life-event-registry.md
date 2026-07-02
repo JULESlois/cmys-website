@@ -1,6 +1,10 @@
 # `/life` 事件注册表与剧情树维护说明
 
-当前 `/life` 已接入统一事件注册表：
+本文记录当前 `/life` 事件、篇章、音乐、天赋与流程状态。更新时间：2026-07-01。
+
+## 当前入口文件
+
+统一事件注册表：
 
 ```text
 src/data/life/events-registry.ts
@@ -12,22 +16,42 @@ src/data/life/events-registry.ts
 src/data/life/events-anchors.ts
 src/data/life/events-parametric.ts
 src/data/life/events-chapters.ts
+src/data/life/events-yomi.ts
+```
+
+其中 `events-parametric.ts` 现在只是参数化事件聚合入口，具体事件已拆到：
+
+```text
+src/data/life/parametric-events/childhood.ts
+src/data/life/parametric-events/youth.ts
+src/data/life/parametric-events/midlife.ts
+src/data/life/parametric-events/elder.ts
+src/data/life/parametric-events/relationships.ts
+src/data/life/parametric-events/wealth.ts
+src/data/life/parametric-events/luck.ts
+src/data/life/parametric-events/career.ts
+src/data/life/parametric-events/meme.ts
 ```
 
 事件引擎入口：
 
 ```text
 src/engine/events.ts
+src/engine/reducer.ts
 ```
 
-事件引擎现在通过以下函数读取事件：
+核心读取函数：
 
 ```ts
 getAllLifeEvents()
 getAnchorLifeEvents()
+getEventsByStoryArc(storyArcId)
+getEventsByHiddenChapter(chapterId)
+getEventPackById(id)
+getEventRegistrySummary()
 ```
 
-## 主线篇章树
+## 当前主线篇章
 
 主线篇章定义在：
 
@@ -47,9 +71,9 @@ src/data/life/story-arcs.ts
 迟暮影深篇 / 晚年篇        61~100
 ```
 
-这些主线篇章只作为底层维护结构使用，不改变当前 UI。
+主线篇章现在不只是维护结构：篇章结尾会显示一次简化结算页，内容仅保留当前篇章名、年龄、属性和继续按钮。普通无事件年份不会显示“旅程仍在继续”页，而是由 `LifeAutoAdvance` 自动推进。
 
-## 隐藏篇章树
+## 当前隐藏篇章
 
 隐藏篇章定义在：
 
@@ -61,163 +85,263 @@ src/data/life/chapters.ts
 
 ```text
 src/data/life/events-chapters.ts
+src/data/life/events-yomi.ts
 ```
 
 当前已有：
 
 ```text
 沉没异生篇 / well_otherworld
+沉命余赊篇 / yomi_debt
 ```
 
-## 新增主线事件
+特殊篇章有独立入口页。进入特殊篇章时不显示主线篇章结算页，音乐也直接切换到特殊篇章曲目。
 
-新增现实主线事件时，优先放入：
+## 当前事件统计
 
-```text
-src/data/life/events-parametric.ts
-```
-
-事件会按年龄自动归属到主线篇章。跨阶段事件可以手动指定：
-
-```ts
-storyArcId: "arc_university"
-```
-
-## 新增隐藏篇章事件
-
-新增隐藏篇章事件时，放入：
-
-```text
-src/data/life/events-chapters.ts
-```
-
-通常需要写明：
-
-```ts
-chapterId: "well_otherworld"
-requiredChapter: "well_otherworld"
-```
-
-## 注册表工具
-
-`events-registry.ts` 提供：
-
-```ts
-getAllLifeEvents()
-getAnchorLifeEvents()
-getEventsByStoryArc(storyArcId)
-getEventsByHiddenChapter(chapterId)
-getEventPackById(id)
-getEventRegistrySummary()
-```
-
-## 当前统计
+按当前 `getEventRegistrySummary()` 统计：
 
 ```text
 初梦幼生篇：7 个事件
-春苗幼生篇：23 个事件
-沉默应试篇：6 个事件
-出门远涉篇：37 个事件
+春苗幼生篇：24 个事件
+沉默应试篇：14 个事件
+出门远涉篇：43 个事件
 城暮游生篇：6 个事件
 承命应世篇：40 个事件
 迟暮影深篇：25 个事件
-沉没异生篇：31 个相关事件（含入口）
+沉没异生篇：33 个相关事件（含入口）
 沉命余赊篇：15 个相关事件（含入口）
 ```
 
 总计：
 
 ```text
-172 个事件
+204 个事件
 ```
 
-## 后续拆文件建议
-
-当前只是注册表级归档，尚未物理拆分旧事件文件。后续可以逐步迁移为：
+其中近期新增：
 
 ```text
-events-infant.ts
-events-elementary.ts
-events-middle-school.ts
-events-university.ts
-events-young-adult.ts
-events-midlife.ts
-events-elder.ts
-events-hidden-well.ts
-events-hidden-dream.ts
-events-hidden-abyss.ts
+14 个中文互联网 / 二次元梗事件
+28 个梗事件选项
 ```
 
-## 命名规则
+梗事件统一使用 `meme` 标签，并以低到中等权重、单次触发为主，避免挤压主线人生事件。
 
-新增篇章名与事件标题应尽量遵循 CMYS 四字结构。篇章名可以在四字标题后追加“篇”。
+## 当前主要标签覆盖
 
+高频标签包括：
 
-## 黄泉债篇
+```text
+social: 31
+danger: 28
+pressure: 23
+elder: 22
+creation: 19
+wealth: 18
+health: 17
+career: 17
+hidden: 17
+yomi: 15
+meme: 14
+family: 13
+lonely: 12
+comfort: 11
+travel: 10
+```
 
-新增 `沉命余赊篇 / 黄泉债篇`，入口事件为 `p_yomi_receipt`。当 `yomi_debt >= 2` 时可触发，进入后消费并推进黄泉债相关事件。
+天赋权重系统依赖 `eventTags`。新增事件时应优先补充准确标签，而不是只依赖年龄范围。
 
+## 当前事件选择规则
 
-## 特殊篇章属性规则
+事件系统当前行为：
 
-特殊篇章事件默认不需要修改六维属性。优先使用 `chapterFlags`、`relationshipEffect`、`exitChapter`、`completeChapterId` 和 `triggerChapterId` 表达剧情推进。只有当选择明确产生现实身体代价、长期伤害或外部资源代价时，才写入六维属性变化。
+```text
+1. 当前年龄锚点事件优先。
+2. 如果处于 activeChapterId，优先抽取当前特殊篇章事件。
+3. 普通参数化事件按权重抽取。
+4. 同一事件在同一年龄不会重复触发。
+5. 无事件时进入 aging 状态，由 LifeAutoAdvance 自动推进。
+```
 
-## 篇章入场动画
-
-特殊篇章可以在 `src/data/life/chapters.ts` 中配置 `entryAnimation`：
+事件现在支持：
 
 ```ts
-entryAnimation: {
-  enabled: true,
-  chars: ["沉", "没", "异", "生"],
-  subtitle: "井底没有水，只有向下的楼梯。",
-  durationMs: 3400,
-  motif: "well",
-}
+eventTags?: string[]
+ageDelta?: number
+cooldownYears?: number
+chapterId?: string
+requiredChapter?: string
+excludedChapter?: string
+triggerChapter?: string
+chapterFlagsRequired?: Record<string, boolean | number | string>
+chapterPriority?: number
 ```
 
-流程为：进入篇章选项结算 -> 展示结果文本 -> 关闭结果页 -> 播放篇章入场动画 -> 渐出 -> 同年龄继续篇章事件。篇章入场动画使用纯黑底白字，不复用 `/life` 初始进入页的逐字动画。未配置或 `enabled: false` 的篇章不会播放动画。
+`ageDelta` 是事件级年龄推进属性。默认值为 `0`，即事件本身不会消耗年龄。只有显式写入 `ageDelta: 1`、`ageDelta: 3` 等时，关闭结果页后才推进年龄。
 
+## 当前选项效果规则
 
-### 特殊天赋与井下门槛
+事件选项支持：
 
-天赋现在区分普通天赋与特殊天赋。特殊天赋是路线门票，不以属性加成为主。当前抽取规则为：开局只随机展示 3 个候选天赋，玩家只能选择 1 个；候选中最多出现 1 个特殊天赋。
+```ts
+attributes?: Partial<Record<AttributeName, number>>
+grantTalents?: string[]
+removeTalents?: string[]
+triggerEventId?: string
+triggerChapterId?: string
+setChapterFlags?: Record<string, boolean | number | string>
+exitChapter?: boolean
+completeChapterId?: string
+holdAge?: boolean
+relationshipEffect?: { targetId: string; change: number }
+careerLevelDelta?: number
+isLethal?: boolean
+forceLethal?: boolean
+```
 
-当前样板特殊天赋为 `t_jingtingyusheng / 沉鸣余声`。该天赋允许玩家安全进入《沉没异生篇》。`p_kid_well / 沉没影深` 与 `p_kid_well_dream / 沉梦又深` 保留原有入口描述和选项文本，但对应危险选项现在使用条件分支：拥有 `沉鸣余声` 时沿用原进入篇章结果；没有该天赋时，同一选择会直接进入强制死亡，不走濒死转化。
+`conditionalEffects` 已接入，同一个选项可以根据天赋条件解析为不同后果。井下入口使用该机制区分“有特殊天赋安全入篇章”和“无特殊天赋强制死亡”。
 
-事件系统为此新增 `conditionalEffects`：同一个选项可以根据 `requiredTalents` / `excludedTalents` 解析为不同的真实后果。默认分支仍使用原 `effects/resultText`，命中条件分支时使用该分支的 `effects/resultText` 替换默认结果。
+`triggerEventId` 已接入 reducer。选项或天赋死亡改写写入 `triggerEventId` 后，系统会先展示当前结果，关闭后在同一年龄立刻呈现目标事件。
 
-`triggerEventId` 现已接入 reducer。选项或天赋死亡改写写入 `triggerEventId` 后，不会跳过当前结果页；系统会先展示当前结果，关闭后在同一年龄立刻呈现目标事件。
+## 当前天赋规则
 
-事件现在支持 `eventTags`。天赋可以通过 `effects.eventWeightTags` 按标签调整事件权重，例如 `沉鸣余声` 会提高 `well` 标签事件权重，`持命余赊` 会提高 `yomi` 标签事件权重。
+天赋选择规则：
 
-新增样板特殊天赋 `t_mingsheweiqing / 持命余赊`。该天赋提供死亡改写：第一次 `accident` 类型死亡不会直接结束，而是写入 `yomi_debt: 2`，显示赊命结果，并通过 `triggerEventId: "p_yomi_receipt"` 跳转到黄泉债收据事件。
+```text
+开局随机展示 3 个候选。
+玩家只能选择 1 个。
+候选中最多出现 1 个特殊天赋。
+特殊天赋不显示“特殊”徽标，描述保持隐晦。
+每个天赋展示描述压缩为 1 句话。
+```
 
-现有普通天赋也已功能化，不再只提供属性加减：
+特殊天赋：
 
-- `出马应试`：提高考试、学习、压力事件权重。
-- `沉默有诗`：提高创作、孤独、记忆事件权重，略微降低社交事件权重。
-- `辞母远涉`：提高远行、冒险、职业迁移事件权重，降低家庭牵绊事件权重。
-- `长眠月食`：提高危险、压力与意志事件权重，并可将第一次意外死亡改写为濒死。
-- `仓满盈实`：提高财富、投资、安稳事件权重，并可将第一次家境属性死亡改写为动用积蓄。
-- `春苗雨苏`：提高童年、成长、健康、学习和运动事件权重。
-- `春眠夜宿`：提高健康和安稳事件权重，降低危险、疾病和压力事件权重，并可缓冲第一次意外死亡。
-- `垂目言事`：提高社交、说服和职业事件权重，降低孤独事件权重。
-- `草木有盛`：提高体质、运动、健康和冒险事件权重，并可将第一次体质属性死亡改写为重伤。
-- `纯美意识`：提高平静、创作、运势和安稳事件权重，降低财富事件权重。
-- `揣摩运势`：提高运势、机会和风险事件权重，降低危险事件权重，并可将第一次意外死亡改写为预感避险。
-- `策马远涉`：提高冒险、远行、运动和危险事件权重，降低学习事件权重。
+```text
+沉鸣余声：提高井相关事件权重，并允许安全进入沉没异生篇。
+持命余赊：提高黄泉债相关事件权重，并将第一次 accident 死亡改写为黄泉债入口。
+```
 
-主线事件已补充 `eventTags`，覆盖学习、考试、创作、孤独、远行、健康、财富、危险、社交、职业、运势等标签，使普通天赋的事件权重修正能够实际参与事件池选择。
+普通天赋已功能化：除初始属性外，也通过 `eventWeightTags`、持续结算修饰和死亡改写参与一局游戏。
 
-### 天赋持续效果
+## 当前死亡改写规则
 
-天赋现在不仅在开局选择时影响初始属性，也会在对应年龄段持续修饰事件结算。持续效果只作用于事件已经产生变化的属性：正向天赋会放大对应收益或缓冲对应损失，负向天赋会削弱对应收益或加重对应损失。这样可以让天赋参与事件结算，同时避免每个事件无条件追加属性导致数值爆炸。结果页会通过 `talentEffects` 展示天赋参与，例如“天赋「出马应试」影响智力+1”。
+`TalentDeathConversion` 支持：
 
-## 数值平衡规则
+```ts
+deathType?: DeathType | "any"
+attribute?: AttributeName
+maxUses?: number
+resultText: string
+attributes?: Partial<Record<AttributeName, number>>
+setChapterFlags?: Record<string, boolean | number | string>
+triggerEventId?: string
+triggerChapterId?: string
+```
 
-属性数值平衡应在事件数据中手动完成，不在结算层自动追加机会成本。主线互动选择如果存在纯正面收益，需要直接修改对应事件的 `attributes`，让选择在文本与数值上同时体现代价、取舍或风险。当前主线互动选择已完成一轮显式代价补充；初始属性区间为 10~20，事件使用适配低初始值的温和缩放表；正收益推动长期成长，负收益保留取舍但避免轻微代价在早期直接致死。特殊篇章仍默认不强制修改六维属性，优先通过 `chapterFlags`、关系变化、篇章进入/退出和结局状态表达代价。
+即死选项流程：
 
-## 六维满值结局触发
+```text
+isLethal 选项
+-> 如果不是 forceLethal，先尝试天赋死亡改写
+-> 再尝试普通濒死转化
+-> 最后直接死亡
+```
 
-六维属性达到 100 且尚未锁定满值结局时，会锁定对应满值结局，并进入 `ending_prelude` 前置结算页。该页使用与死亡前置页一致的“标题 + 触发文本 + 查看结局”节奏，而不是复用普通事件结果页。玩家点击查看结局后进入最终结算页。触发检查已收敛到 reducer 层统一出口，覆盖普通事件选择、自动事件、`LOAD_SAVE`、天赋选择和婴幼期自动成长等路径。结算页优先使用已锁定的 `attributeEndingId`，并显示满值结局专属描述、风味文本和人生亮点。
+因此 `持命余赊` 可以拦截带 `accident` 标签的非强制即死选项，并触发黄泉债收据事件。
+
+## 当前音乐系统
+
+`/life` 已接入自适应 BGM：
+
+```text
+src/components/LifeMusicPlayer.tsx
+src/data/life/music.ts
+public/musics/life/README.md
+```
+
+当前模式：
+
+```ts
+LIFE_MUSIC_MODE = "netease_outer_url"
+```
+
+播放选择规则：
+
+```text
+选天赋 / 存档选择：life_menu
+普通主线：按 currentArcId 播放年龄段篇章曲
+chapter_intro 或 activeChapterId=well_otherworld：chapter_well
+chapter_intro 或 activeChapterId=yomi_debt：chapter_yomi
+死亡页：death
+结局页：ending
+```
+
+普通事件、危险事件、疾病事件不再临时切歌。音乐只在进入游戏、主线篇章切换、特殊篇章进入和游戏结束时切换。切换使用渐入渐出，曲名显示 2 秒，标题格式为 `原标题 (English)`。
+
+## 新增事件维护规则
+
+新增普通事件不再直接写入 `events-parametric.ts`。应按主题放入：
+
+```text
+src/data/life/parametric-events/childhood.ts
+src/data/life/parametric-events/youth.ts
+src/data/life/parametric-events/midlife.ts
+src/data/life/parametric-events/elder.ts
+src/data/life/parametric-events/relationships.ts
+src/data/life/parametric-events/wealth.ts
+src/data/life/parametric-events/luck.ts
+src/data/life/parametric-events/career.ts
+src/data/life/parametric-events/meme.ts
+```
+
+新增文件或新增导出数组后，需要在 `src/data/life/events-parametric.ts` 中聚合导入。
+
+新增隐藏篇章事件优先放入：
+
+```text
+src/data/life/events-chapters.ts
+src/data/life/events-yomi.ts
+```
+
+新增事件建议遵循：
+
+```text
+标题尽量是 CMYS 四字结构。
+每个事件优先 2 个选项，除非有明确剧情必要。
+默认不写 ageDelta。
+数值以小幅波动为主，重大人生事件才使用大幅变动。
+特殊篇章默认少改六维属性，优先使用 chapterFlags、关系、篇章状态。
+梗事件应转化为人生场景，不直接堆网络语录。
+```
+
+## 当前拆文件状态
+
+`events-parametric.ts` 已完成物理拆分。当前聚合入口保持不变：
+
+```text
+src/data/life/events-parametric.ts
+```
+
+具体参数化事件按年龄段和主题维护在：
+
+```text
+src/data/life/parametric-events/childhood.ts
+src/data/life/parametric-events/youth.ts
+src/data/life/parametric-events/midlife.ts
+src/data/life/parametric-events/elder.ts
+src/data/life/parametric-events/relationships.ts
+src/data/life/parametric-events/wealth.ts
+src/data/life/parametric-events/luck.ts
+src/data/life/parametric-events/career.ts
+src/data/life/parametric-events/meme.ts
+```
+
+后续如果新增隐藏篇章文件，可继续拆分：
+
+```text
+events-hidden-well.ts
+events-hidden-yomi.ts
+events-hidden-dream.ts
+```
