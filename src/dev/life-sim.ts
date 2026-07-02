@@ -28,6 +28,7 @@ type RunSummary = {
   uniqueEventCount: number;
   stepCount: number;
   deathType?: string;
+  deathAttribute?: string;
   attributeEndingId?: string;
   talents: string[];
   unlockedChapters: string[];
@@ -48,6 +49,7 @@ type Aggregate = {
   seed: number;
   terminalKinds: Record<string, number>;
   deathTypes: Record<string, number>;
+  deathAttributes: Record<string, number>;
   attributeEndings: Record<string, number>;
   avgAge: number;
   medianAge: number;
@@ -339,6 +341,7 @@ function summarizeRun(strategy: Strategy, runIndex: number, seed: number, state:
     uniqueEventCount: uniqueEventIds.size,
     stepCount,
     deathType: state.deathRecord?.deathType,
+    deathAttribute: state.deathRecord?.attribute,
     attributeEndingId: state.attributeEndingId ?? undefined,
     talents: state.talents.map((talent) => talent.name),
     unlockedChapters: state.chapter.unlockedChapterIds,
@@ -416,6 +419,7 @@ function topEntries(record: Record<string, number>, limit = 12): Array<{ id: str
 function aggregate(strategy: Strategy, seed: number, runs: RunSummary[]): Aggregate {
   const terminalKinds: Record<string, number> = {};
   const deathTypes: Record<string, number> = {};
+  const deathAttributes: Record<string, number> = {};
   const attributeEndings: Record<string, number> = {};
   const ageBuckets: Record<string, number> = {};
   const eventCounts: Record<string, number> = {};
@@ -428,6 +432,7 @@ function aggregate(strategy: Strategy, seed: number, runs: RunSummary[]): Aggreg
   for (const run of runs) {
     inc(terminalKinds, run.terminalKind);
     inc(deathTypes, run.deathType);
+    inc(deathAttributes, run.deathAttribute);
     inc(attributeEndings, run.attributeEndingId);
     inc(ageBuckets, ageBucket(run.age));
 
@@ -449,6 +454,7 @@ function aggregate(strategy: Strategy, seed: number, runs: RunSummary[]): Aggreg
     seed,
     terminalKinds,
     deathTypes,
+    deathAttributes,
     attributeEndings,
     avgAge: average(runs.map((run) => run.age)),
     medianAge: median(runs.map((run) => run.age)),
@@ -484,7 +490,7 @@ function formatAggregate(aggregate: Aggregate): string {
   return [
     `\n== ${aggregate.strategy} ==`,
     `runs=${aggregate.runs} seed=${aggregate.seed}`,
-    `terminal=${JSON.stringify(aggregate.terminalKinds)} deathTypes=${JSON.stringify(aggregate.deathTypes)} attributeEndings=${JSON.stringify(aggregate.attributeEndings)}`,
+    `terminal=${JSON.stringify(aggregate.terminalKinds)} deathTypes=${JSON.stringify(aggregate.deathTypes)} deathAttributes=${JSON.stringify(aggregate.deathAttributes)} attributeEndings=${JSON.stringify(aggregate.attributeEndings)}`,
     `age avg/median=${round(aggregate.avgAge)}/${round(aggregate.medianAge)} events avg/median=${round(aggregate.avgEvents)}/${round(aggregate.medianEvents)} uniqueAvg=${round(aggregate.avgUniqueEvents)}`,
     `specialChapterRate=${round(aggregate.specialChapterRate * 100)}% avgMemeEvents=${round(aggregate.avgMemeEvents)} avgNearDeath=${round(aggregate.avgLethalChoicesEncountered)}`,
     `ageBuckets=${JSON.stringify(aggregate.ageBuckets)}`,

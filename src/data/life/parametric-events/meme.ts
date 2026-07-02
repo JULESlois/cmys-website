@@ -26,7 +26,7 @@ export const MEME_PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "限定卡池最后一天，你看着还差二十抽的大保底，耳边仿佛响起了纸片人的低语：来都来了。理智在门口敲门，钱包在屋里装死。",
     minAge: createAge(16), maxAge: createAge(45), weight: 1, eventTags: ["meme", "otaku", "wealth", "luck", "risk"], maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "氪到出金为止", effects: { attributes: { luck: 2, wealth: -6, physique: -1 } }, resultText: "金光亮起的那一刻你像被世界原谅。三分钟后账单短信亮起，你又像被世界精准报复。快乐是真的，贫穷也是真的。" },
+      { text: "氪到出金为止", effects: { attributes: { luck: 2, wealth: -4, physique: -1 } }, resultText: "金光亮起的那一刻你像被世界原谅。三分钟后账单短信亮起，你又像被世界精准报复。快乐是真的，贫穷也是真的。" },
       { text: "截图许愿，等复刻", effects: { attributes: { intelligence: 1, luck: -1 } }, resultText: "你把角色立绘截图设成壁纸，告诉自己这叫长期主义。屏幕里的她微笑着看你，仿佛也知道你只是没钱。" },
     ],
   },

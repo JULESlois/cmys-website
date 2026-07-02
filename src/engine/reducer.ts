@@ -359,7 +359,7 @@ function advanceYears(state: GameState, delta: number, options: { skipStoryArcSu
       return {
         ...currentState,
         phase: { type: "dying", cause: deathCheck.cause! },
-        deathRecord: { age: currentState.age, cause: deathCheck.cause!, deathType: deathCheck.deathType ?? "attribute" },
+        deathRecord: { age: currentState.age, cause: deathCheck.cause!, deathType: deathCheck.deathType ?? "attribute", attribute: deathCheck.attribute },
       };
     }
 
@@ -370,7 +370,7 @@ function advanceYears(state: GameState, delta: number, options: { skipStoryArcSu
       return {
         ...currentState,
         phase: { type: "dying", cause: randomDeath.cause! },
-        deathRecord: { age: currentState.age, cause: randomDeath.cause!, deathType: randomDeath.deathType ?? "accident" },
+        deathRecord: { age: currentState.age, cause: randomDeath.cause!, deathType: randomDeath.deathType ?? "accident", attribute: randomDeath.attribute },
       };
     }
 
@@ -501,7 +501,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             return {
               ...convertedState,
               phase: { type: "dying", cause: convertedDeathCheck.cause! },
-              deathRecord: { age: convertedState.age, cause: convertedDeathCheck.cause!, deathType: convertedDeathCheck.deathType ?? "attribute" },
+              deathRecord: { age: convertedState.age, cause: convertedDeathCheck.cause!, deathType: convertedDeathCheck.deathType ?? "attribute", attribute: convertedDeathCheck.attribute },
             };
           }
           return lockAttributeEndingIfNeeded(convertedState);
@@ -639,7 +639,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         return {
           ...resolvedState,
           phase: { type: "dying", cause: postDeathCheck.cause! },
-          deathRecord: { age: resolvedState.age, cause: postDeathCheck.cause!, deathType: postDeathCheck.deathType ?? "attribute" },
+          deathRecord: { age: resolvedState.age, cause: postDeathCheck.cause!, deathType: postDeathCheck.deathType ?? "attribute", attribute: postDeathCheck.attribute },
         };
       }
 

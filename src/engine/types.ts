@@ -295,6 +295,8 @@ export interface DeathRecord {
   age: Age;
   cause: string;
   deathType: DeathType;
+  /** deathType=attribute 时记录具体耗尽/低于阈值的属性。 */
+  attribute?: AttributeName;
 }
 
 export interface GameResult {

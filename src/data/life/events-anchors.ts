@@ -210,7 +210,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "那一年流感大流行。学校里每天都有同学被接走。你开始发烧，体温计的数字越来越高。",
     minAge: createAge(11), maxAge: createAge(11), triggerAge: 11,
     choices: [
-      { text: "在家硬扛，不去医院", effects: { attributes: {}, isLethal: true }, resultText: "高烧到第四天的时候，开始呼吸困难。等我被送进急诊的时候已经严重肺炎。这场流感带走了很多老人和孩子——你是其中之一。" },
+      { text: "在家硬扛，不去医院", effects: { attributes: { physique: -4, luck: -3, intelligence: -1 } }, resultText: "高烧到第四天的时候，呼吸开始变得困难。等我被送进急诊时已经发展成严重肺炎。医生把我从鬼门关拽了回来，但那场病像在骨头里钉了一根钉子——此后很久，我一到冬天就咳得停不下来。" },
       { text: "第一时间去卫生所", effects: { attributes: { physique: 2, luck: 1, intelligence: -1} }, resultText: "妈妈带我去卫生所挂了水。高烧到第三天退了，我瘦了一圈，但活了下来。桌上有同学送来的笔记，我在病床上翻了翻——落下的课，还能补回来。命只有一次。" },
     ],
   },
@@ -221,7 +221,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "毕业旅行的最后一晚，你和朋友在异乡的海滩上喝醉了。有人提议游到那个发光的浮标那边——月光很美，海浪很温柔。",
     minAge: createAge(23), maxAge: createAge(23), triggerAge: 23,
     choices: [
-      { text: "脱了衣服跳进海里", effects: { attributes: {}, isLethal: true }, resultText: "海水在晚上比看起来远，也比看起来冷。游到一半时腿抽筋了。朋友们以为我在开玩笑。天亮的时候救援队才找到我。二十三岁的夏天，永远停在了那片看似温柔的海里。" },
+      { text: "脱了衣服跳进海里", effects: { attributes: { physique: -6, luck: -4, creativity: -1 } }, resultText: "海水在晚上比看起来远，也比看起来冷。游到一半时腿抽筋了，朋友们终于发现不对，把我拖回岸边时我已经呛得说不出话。那晚之后，我再也没觉得月光下的海温柔。" },
       { text: "躺在沙滩上看星星就好", effects: { attributes: { creativity: 2, luck: 1, wealth: -1} }, resultText: "我仰躺在温热的沙滩上，夜空像一口倒扣的锅盖满了芝麻。朋友们陆续睡了，我一个人醒着听海浪。那个晚上我用手机备忘录写了一首诗——很幼稚，但很真实。活着真好。" },
     ],
   },
@@ -254,7 +254,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "一个'海外高薪'的工作机会摆在面前。面试官很专业，合同上的数字好得不像真的。他们说公司在东南亚——到了就能签正式合同。",
     minAge: createAge(21), maxAge: createAge(26), triggerAge: 24,
     choices: [
-      { text: "买了机票出发", effects: { attributes: {}, isLethal: true }, resultText: "下了飞机后有辆面包车来接我。车越开越偏，手机被收走，护照被扣下。后面的事像一场醒不来的噩梦。我的故事停在了二十四岁，再也没有人见过我。" },
+      { text: "买了机票出发", effects: { attributes: { wealth: -6, physique: -3, luck: -4, intelligence: -1 } }, resultText: "下了飞机后有辆面包车来接我。车越开越偏，手机被收走，护照也被扣下。后来我靠一通求救电话逃了出来，回国时只剩一只破背包和很长一段不愿提起的沉默。那不是高薪机会，是一口会吞人的井。" },
       { text: "上网查一下这家公司", effects: { attributes: { intelligence: 1, luck: 1, physique: -1} }, resultText: "我在谷歌上搜了那个公司名——第三页就出现了'诈骗'两个字。我又搜了那栋大楼，街景图和面试时看到的完全不一样。我关上聊天窗口，把这个'机会'拉黑了。好险——有些幸运不是天上掉的馅饼，是你比别人多花了几分钟怀疑。" },
     ],
   },

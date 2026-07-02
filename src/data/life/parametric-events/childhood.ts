@@ -158,7 +158,7 @@ export const CHILDHOOD_LETHAL_EVENTS: ParametricEvent[] = [
     description: "冬天湖面结了一层薄冰。伙伴们在冰面上嬉戏打闹，喊着你的名字让你也下来。冰面发出咯吱咯吱的声响。",
     minAge: createAge(8), maxAge: createAge(13), weight: 2, eventTags: ["danger", "accident", "childhood"], maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "跑到冰面上加入他们", effects: { attributes: {}, isLethal: true }, resultText: "冰面在我脚下裂开，刺骨的湖水瞬间吞没了我。最后的记忆是同伴们变了调的尖叫声——然后世界沉入了黑暗。" },
+      { text: "跑到冰面上加入他们", effects: { attributes: { physique: -4, luck: -3, creativity: -1 } }, resultText: "冰面在我脚下裂开，刺骨的湖水瞬间吞没了我。大人们把我拖上岸时，我的嘴唇已经冻得发紫。后来每到冬天，我都会想起冰面碎开的声音——像一张白纸被命运撕开。" },
       { text: "在岸边看着就好", effects: { attributes: { intelligence: 1, physique: 1, creativity: -1} }, resultText: "我在岸边找了块石头坐下，看着他们在冰面上追逐打闹。冰面确实在响——我皱了皱眉。后来听说安全员来把人赶走了，还好没出事。" },
     ],
   },
@@ -208,7 +208,7 @@ export const CHILDHOOD_LETHAL_EVENTS: ParametricEvent[] = [
     description: "你想爬上邻居家的房顶放风筝。瓦片被晒得滚烫，你赤着脚踩上去，有一种说不出的兴奋。更高处的风景，总是让人着迷。",
     minAge: createAge(10), maxAge: createAge(14), weight: 2, eventTags: ["danger", "adventure", "physique"], maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "踮脚够更高的屋檐", effects: { attributes: {}, isLethal: true }, resultText: "我踮起脚尖去够更高的屋檐，指尖刚碰到檐角的瞬间瓦片松动了。身体失去平衡向后仰去——天空在旋转，瓦片在坠落，我听到的最后声音是风筝线轴砸在地上的闷响。" },
+      { text: "踮脚够更高的屋檐", effects: { attributes: { physique: -4, luck: -2, intelligence: -1 } }, resultText: "我踮起脚尖去够更高的屋檐，指尖刚碰到檐角，瓦片就松了。身体向后仰去，天空在旋转。醒来时我躺在医院，腿上打着厚厚的石膏。风筝没有飞起来，倒是我从此知道了屋顶不是云。" },
       { text: "坐下来慢慢放风筝", effects: { attributes: { creativity: 2, luck: 1, physique: -1} }, resultText: "我坐在屋脊上，风吹着风筝越飞越高。这角度真好——整个村子都在脚下，远山在夕阳里像一幅水墨画。我觉得自己像一个坐在世界屋顶上的国王。" },
     ],
   },
