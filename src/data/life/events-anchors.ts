@@ -168,8 +168,8 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "五十五岁，秋收冬藏之时。你盘点一生的收成——事业、家庭、友情。哪些是你的骄傲，哪些又是你的遗憾？人到这个年纪，终于学会了与自己的不完美和解。",
     minAge: createAge(55), maxAge: createAge(55), triggerAge: 55,
     choices: [
-      { text: "知足常乐，享受晚年", effects: { attributes: { luck: 1, creativity: 2, wealth: -2} } },
-      { text: "人生还长，继续耕耘", effects: { attributes: { intelligence: 1, physique: -1, wealth: 1 } } },
+      { text: "知足常乐，享受晚年", effects: { attributes: { luck: 1, creativity: 2, wealth: -2} }, resultText: "你把账本合上，把院子里的躺椅搬到阳光下。年轻时总觉得还差一点，到了这个年纪才明白，能慢慢吃饭、慢慢说话、慢慢看一场雨，本身就是收成。" },
+      { text: "人生还长，继续耕耘", effects: { attributes: { intelligence: 1, physique: -1, wealth: 1 } }, resultText: "你没有急着把自己交给晚年。你重新整理经验、联系旧友、继续做还能做的事。身体偶尔抗议，但你心里很清楚：收成不是终点，土地还在。" },
     ],
   },
 
@@ -179,8 +179,8 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "你老了。某个黄昏，你坐在老屋的门槛上，夕阳把一切都镀成了金色。这一生，值了吗？",
     minAge: createAge(65), maxAge: createAge(70), triggerAge: 68,
     choices: [
-      { text: "这一生没有遗憾", effects: { attributes: { luck: 1, creativity: 2, intelligence: -2} } },
-      { text: "还有太多未完成的事", effects: { attributes: { intelligence: 1, physique: -1 } } },
+      { text: "这一生没有遗憾", effects: { attributes: { luck: 1, creativity: 2, intelligence: -2} }, resultText: "你望着夕阳，忽然发现很多旧痛已经不再尖锐。那些走错的路、说错的话、来不及挽回的人，都被暮色慢慢收拢。你未必真的没有遗憾，只是终于愿意放过自己。" },
+      { text: "还有太多未完成的事", effects: { attributes: { intelligence: 1, physique: -1 } }, resultText: "你掰着手指数那些还没做完的事，数到后来自己先笑了。身体不如从前，心却仍不肯停。也许人活着就是这样：明知道时间有限，还是想再往前走一点。" },
     ],
   },
   {
@@ -188,8 +188,8 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "你抱起了孙子。那双清澈的眼睛让你想起了很久以前的自己——那个也曾对世界充满好奇的婴儿。",
     minAge: createAge(70), maxAge: createAge(78), triggerAge: 73,
     choices: [
-      { text: "把一生的故事讲给他听", effects: { attributes: { creativity: 4, luck: 1, wealth: -2} } },
-      { text: "给他最好的物质条件", effects: { attributes: { wealth: -2, luck: 1, appearance: 2 } } },
+      { text: "把一生的故事讲给他听", effects: { attributes: { creativity: 4, luck: 1, wealth: -2} }, resultText: "你给他讲小时候的井、年轻时的雨夜和那些差点走错的路。他听不全懂，却一直睁大眼睛。讲到最后你才发现，故事不是为了证明自己精彩，而是把火递给后来的人。" },
+      { text: "给他最好的物质条件", effects: { attributes: { wealth: -2, luck: 1, appearance: 2 } }, resultText: "你给他买了最好的书包、最软的鞋和一只会发光的玩具。钱包轻了不少，他却抱着玩具笑得很亮。你忽然明白，爱有时很俗，就是想让孩子少受一点苦。" },
     ],
   },
   {
@@ -197,8 +197,8 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "八旬高龄，你坐在棋盘前。对手是当年一起学棋的老友。你们下了一盘很慢的棋，每一步都在回味这一生。",
     minAge: createAge(78), maxAge: createAge(88), triggerAge: 82,
     choices: [
-      { text: "从容落子，不计胜负", effects: { attributes: { intelligence: 1, luck: 1, creativity: 2, physique: -2} } },
-      { text: "依然争胜，初心不改", effects: { attributes: { intelligence: 1, physique: -1 } } },
+      { text: "从容落子，不计胜负", effects: { attributes: { intelligence: 1, luck: 1, creativity: 2, physique: -2} }, resultText: "你落子很慢，每一步都像在和旧日重逢。老友催你，你只是笑。棋局终了时你们都忘了谁赢，只记得茶已经凉了，窗外的光也安静地退到墙角。" },
+      { text: "依然争胜，初心不改", effects: { attributes: { intelligence: 1, physique: -1 } }, resultText: "你盯着棋盘，像年轻时盯着考卷、合同和人生的岔路。最后一手落下，老友笑骂你还是不肯让人。你也笑了：有些争胜不是不服老，而是不肯把热气交出去。" },
     ],
   },
 

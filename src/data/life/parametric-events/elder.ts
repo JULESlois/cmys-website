@@ -142,7 +142,7 @@ export const ELDER_PARAMETRIC_EVENTS: ParametricEvent[] = [
     statRequirements: { intelligence: 6 },
     choices: [
       { text: "'好好活着就是答案'", effects: { attributes: { intelligence: 1, luck: 1, physique: -1} } , resultText: "孩子歪着头想了想，似懂非懂地跑开了。你望着他的背影，想起自己也曾问过同样的问题。如今你终于有了答案——不是用语言，而是用这一生。"},
-      { text: "讲一个故事来回答", effects: { attributes: { creativity: 3, intelligence: 1, physique: -1} } },
+      { text: "讲一个故事来回答", effects: { attributes: { creativity: 3, intelligence: 1, physique: -1} }, resultText: "你给他讲一个很长的故事：有井、有雨、有远行，也有很多没能说出口的告别。孩子听到一半跑去追蝴蝶，你却不生气。故事说出口的那一刻，就已经找到了去处。" },
     ],
   },
   {
@@ -150,8 +150,8 @@ export const ELDER_PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你感到身体越来越轻。床前围满了熟悉的面孔，有人在哭，有人在轻声唤你的名字。你想说别难过，但已经发不出声音了。舞台的灯光，终于要灭了。",
     minAge: createAge(85), maxAge: createAge(100), weight: 3, eventTags: ["elder", "peace"], maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "微笑着闭上眼睛", effects: { attributes: { luck: 1, creativity: 2 }, isLethal: true } },
-      { text: "留下最后的嘱托", effects: { attributes: { intelligence: 1, appearance: 2 }, isLethal: true } },
+      { text: "微笑着闭上眼睛", effects: { attributes: { luck: 1, creativity: 2 }, isLethal: true }, resultText: "你用最后的力气弯了弯嘴角。哭声变得很远，灯光也变得很轻。你像是终于走完一场漫长演出，谢幕时没有遗憾，只把安静留给了众人。" },
+      { text: "留下最后的嘱托", effects: { attributes: { intelligence: 1, appearance: 2 }, isLethal: true }, resultText: "你断断续续交代了几句话：别争、别怨、好好吃饭。声音越来越轻，最后只剩手指微微动了一下。家人围在床边，明白那就是你的告别。" },
     ],
   },
   {
@@ -159,7 +159,7 @@ export const ELDER_PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你感到大限将至。这一生的画面如走马灯般闪过。有人说人在死前会看到一生的闪回。",
     minAge: createAge(85), maxAge: createAge(99), weight: 3, eventTags: ["elder", "memory"], maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "坦然面对", effects: { attributes: {}, isLethal: false } },
+      { text: "坦然面对", effects: { attributes: { luck: 1, creativity: 1, physique: -1 }, isLethal: false }, resultText: "你没有抗拒那些闪回。它们像一盏盏小灯，从童年亮到暮年。你知道终点正在靠近，却也知道自己还在呼吸。于是你闭上眼，安静地睡了一觉。" },
     ],
   },
 ];
