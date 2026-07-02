@@ -38,6 +38,7 @@ function deserializeState(json: string): GameState {
     chapter: syncStoryArcForAge(normalizeChapterState(raw.chapter), raw.age ?? 0),
     pendingEventId: raw.pendingEventId ?? null,
     pendingChapterIntroId: raw.pendingChapterIntroId ?? null,
+    pendingChoiceOrder: raw.pendingChoiceOrder ?? (raw.pendingChoices?.map((_: unknown, index: number) => index) ?? null),
     attributeEndingId: raw.attributeEndingId ?? null,
     nearDeathCount: raw.nearDeathCount ?? 0,
   };

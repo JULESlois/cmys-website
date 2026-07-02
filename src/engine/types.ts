@@ -255,7 +255,10 @@ export interface GameState {
   eventLog: ResolvedEvent[];
   triggeredEventIds: EventTriggerRecord;  // 改: 从 Set<string> 变为 Record<string, number>
   currentEvent: GameEvent | null;
+  /** 展示给玩家的选项顺序，可能不同于事件原始 choices 顺序。 */
   pendingChoices: EventChoice[] | null;
+  /** pendingChoices[展示索引] -> currentEvent.choices[原始索引]。 */
+  pendingChoiceOrder: number[] | null;
   lastResult: EventResult | null;
   /** 结果页关闭后强制触发的事件 id，用于 triggerEventId 与天赋死亡改写。 */
   pendingEventId: string | null;

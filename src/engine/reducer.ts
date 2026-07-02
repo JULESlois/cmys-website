@@ -1,6 +1,6 @@
 // src/engine/reducer.ts
 import {
-  type GameState, type GameAction, type Attributes, type AttributeName, type Age, type GameEvent, type DeathType,
+  type GameState, type GameAction, type Attributes, type AttributeName, type Age, type GameEvent, type DeathType, type EventChoice,
   attr, createAge,
 } from "./types";
 import { checkDeath, checkRandomDeath, applyNaturalDecay, type DeathCheck } from "./death";
@@ -50,6 +50,7 @@ export function createInitialState(talents: string[] = []): GameState {
     triggeredEventIds: {},
     currentEvent: null,
     pendingChoices: null,
+    pendingChoiceOrder: null,
     lastResult: null,
     pendingEventId: null,
     pendingChapterIntroId: null,
@@ -133,10 +134,36 @@ function lockAttributeEndingIfNeeded(state: GameState): GameState {
     phase: { type: "ending_prelude", endingId: ending.attribute },
     currentEvent: null,
     pendingChoices: null,
+    pendingChoiceOrder: null,
     lastResult: null,
   };
 }
 
+
+
+function getChoiceOrder(choiceCount: number): number[] {
+  const order = Array.from({ length: choiceCount }, (_, index) => index);
+  for (let index = order.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [order[index], order[swapIndex]] = [order[swapIndex], order[index]];
+  }
+  return order;
+}
+
+function createChoicePresentation(choices: EventChoice[]): Pick<GameState, "pendingChoices" | "pendingChoiceOrder"> {
+  const pendingChoiceOrder = getChoiceOrder(choices.length);
+  return {
+    pendingChoiceOrder,
+    pendingChoices: pendingChoiceOrder.map((choiceIndex) => choices[choiceIndex]),
+  };
+}
+
+function clearPendingChoicePresentation(): Pick<GameState, "pendingChoices" | "pendingChoiceOrder"> {
+  return {
+    pendingChoices: null,
+    pendingChoiceOrder: null,
+  };
+}
 
 function getNumberFlag(state: GameState, key: string): number {
   const value = state.chapter.chapterFlags[key];
@@ -180,7 +207,7 @@ function presentSpecificEvent(state: GameState, event: GameEvent): GameState {
     ...state,
     pendingEventId: null,
     currentEvent: event,
-    pendingChoices: event.choices,
+    ...createChoicePresentation(event.choices),
     phase: { type: "playing", step: "event_presenting" },
   };
 }
@@ -230,6 +257,7 @@ function applyTalentDeathConversion(state: GameState, deathCheck: DeathCheck): G
         pendingChapterIntroId,
         currentEvent: null,
         pendingChoices: null,
+        pendingChoiceOrder: null,
         deathRecord: null,
         nearDeathCount: state.nearDeathCount + 1,
         phase: { type: "playing", step: "effect_resolving" },
@@ -282,7 +310,7 @@ function enterCurrentAge(state: GameState): GameState {
   return {
     ...state,
     currentEvent: event,
-    pendingChoices: event.choices,
+    ...createChoicePresentation(event.choices),
     phase: { type: "playing", step: "event_presenting" },
   };
 }
@@ -314,7 +342,7 @@ function enterChapterAtCurrentAge(state: GameState): GameState {
   return {
     ...state,
     currentEvent: event,
-    pendingChoices: event.choices,
+    ...createChoicePresentation(event.choices),
     phase: { type: "playing", step: "event_presenting" },
   };
 }
@@ -336,6 +364,7 @@ function advanceYears(state: GameState, delta: number, options: { skipStoryArcSu
         phase: { type: "story_arc_summary", arcId: currentArcId, nextAge: createAge(nextAge) },
         currentEvent: null,
         pendingChoices: null,
+        pendingChoiceOrder: null,
       };
     }
 
@@ -350,6 +379,7 @@ function advanceYears(state: GameState, delta: number, options: { skipStoryArcSu
       phase: { type: "playing", step: "aging" },
       currentEvent: null,
       pendingChoices: null,
+      pendingChoiceOrder: null,
     };
 
     const deathCheck = checkDeath(currentState);
@@ -401,13 +431,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         phase: { type: "playing", step: "aging" },
         currentEvent: null,
         pendingChoices: null,
+        pendingChoiceOrder: null,
       }, 1, { skipStoryArcSummary: true });
     }
 
     case "RESOLVE_EVENT": {
       if (!state.currentEvent || !state.pendingChoices) return state;
-      const choice = state.pendingChoices[action.choiceIndex];
-      if (!choice) return state;
+      const displayedChoice = state.pendingChoices[action.choiceIndex];
+      if (!displayedChoice) return state;
+      const sourceChoices = state.currentEvent.type === "procedural" ? state.pendingChoices : state.currentEvent.choices;
+      const originalChoiceIndex = state.pendingChoiceOrder?.[action.choiceIndex] ?? action.choiceIndex;
+      const choice = sourceChoices[originalChoiceIndex] ?? displayedChoice;
       const resolvedChoice = resolveChoiceByTalents(choice, state);
       const choiceEffects = resolvedChoice.effects;
       const resultText = resolvedChoice.resultText;
@@ -453,6 +487,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             chapter,
             currentEvent: null,
             pendingChoices: null,
+            pendingChoiceOrder: null,
           };
           const talentConvertedDeath = applyTalentDeathConversion(lethalChoiceState, {
             isDead: true,
@@ -487,6 +522,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             phase: { type: "playing", step: "effect_resolving" },
             currentEvent: null,
             pendingChoices: null,
+            pendingChoiceOrder: null,
             lastResult: {
               text: conversion.text,
               attributeChanges: combinedChanges,
@@ -525,6 +561,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           deathRecord: { age: state.age, cause: deathNarrative, deathType: "lethal_choice" },
           currentEvent: null,
           pendingChoices: null,
+          pendingChoiceOrder: null,
         };
       }
 
@@ -621,6 +658,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         phase: { type: "playing", step: "effect_resolving" },
         currentEvent: null,
         pendingChoices: null,
+        pendingChoiceOrder: null,
         lastResult: {
           text: resultText ?? `你选择了"${choice.text}"。`,
           attributeChanges: scaledAttributeChanges,
@@ -654,6 +692,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           phase: { type: "result" },
           currentEvent: null,
           pendingChoices: null,
+          pendingChoiceOrder: null,
         };
       }
 
@@ -663,6 +702,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         phase: { type: "playing", step: "aging" },
         currentEvent: null,
         pendingChoices: null,
+        pendingChoiceOrder: null,
       };
 
       if (clearedState.pendingChapterIntroId) {
@@ -694,6 +734,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         phase: { type: "playing", step: "aging" },
         currentEvent: null,
         pendingChoices: null,
+        pendingChoiceOrder: null,
       };
 
       if (clearedState.pendingEventId) {
@@ -734,6 +775,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         age: createAge(0),
         currentEvent: null,
         pendingChoices: null,
+        pendingChoiceOrder: null,
         lastResult: null,
       };
     }
@@ -756,6 +798,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         chapter: syncStoryArcForAge(normalizeChapterState(loaded.chapter), loaded.age as number),
         pendingEventId: loaded.pendingEventId ?? null,
         pendingChapterIntroId: loaded.pendingChapterIntroId ?? null,
+        pendingChoiceOrder: loaded.pendingChoiceOrder ?? (loaded.pendingChoices?.map((_, index) => index) ?? null),
         attributeEndingId: loaded.attributeEndingId ?? null,
         nearDeathCount: loaded.nearDeathCount ?? 0,
       };

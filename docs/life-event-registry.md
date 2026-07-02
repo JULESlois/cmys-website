@@ -182,6 +182,28 @@ chapterPriority?: number
 
 `ageDelta` 是事件级年龄推进属性。默认值为 `0`，即事件本身不会直接消耗年龄。为了避免同一年龄刷空事件池，事件系统另有普通事件软上限：每个年龄点最多 1 个普通参数化事件；达到上限后自动推进年龄。只有显式写入 `ageDelta: 1`、`ageDelta: 3` 等时，关闭结果页后才立即推进指定年龄数。
 
+
+## 当前选项展示规则
+
+事件选项进入展示前会随机化左右顺序：
+
+```text
+currentEvent.choices        保留事件原始顺序
+pendingChoiceOrder          记录展示索引到原始索引的映射
+pendingChoices              按 pendingChoiceOrder 生成，用于前端展示
+RESOLVE_EVENT.choiceIndex   表示玩家选择的展示索引
+```
+
+结算时使用：
+
+```text
+currentEvent.choices[pendingChoiceOrder[choiceIndex]]
+```
+
+因此点击、滑动、键盘选择看到的是随机左右顺序，但结算仍映射回事件原始选项。旧存档如果没有 `pendingChoiceOrder`，读取时会自动按 `[0, 1, ...]` 兼容。
+
+这样可以避免玩家通过“左边通常危险 / 右边通常安全”之类的方向经验游玩。
+
 ## 当前选项效果规则
 
 事件选项支持：
