@@ -170,6 +170,16 @@ function getNumberFlag(state: GameState, key: string): number {
   return typeof value === "number" ? value : 0;
 }
 
+
+function composeDeathConversionText(baseText: string | undefined, conversionText: string): string {
+  const base = baseText?.trim();
+  const conversion = conversionText.trim();
+  if (!base || base === conversion) return conversion;
+  return `${base}
+
+然而，这次死亡被改写了：${conversion}`;
+}
+
 function deathTypeMatches(expected: DeathType | "any" | undefined, actual: DeathType | undefined): boolean {
   if (!actual) return false;
   return !expected || expected === "any" || expected === actual;
@@ -262,7 +272,7 @@ function applyTalentDeathConversion(state: GameState, deathCheck: DeathCheck): G
         nearDeathCount: state.nearDeathCount + 1,
         phase: { type: "playing", step: "effect_resolving" },
         lastResult: {
-          text: conversion.resultText,
+          text: composeDeathConversionText(deathCheck.cause, conversion.resultText),
           attributeChanges,
           chapterTransition,
           talentEffects: [`天赋「${talent.name}」改写了${deathCheck.deathType === "accident" ? "意外死亡" : "死亡"}`],
@@ -437,11 +447,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "RESOLVE_EVENT": {
       if (!state.currentEvent || !state.pendingChoices) return state;
-      const displayedChoice = state.pendingChoices[action.choiceIndex];
-      if (!displayedChoice) return state;
-      const sourceChoices = state.currentEvent.type === "procedural" ? state.pendingChoices : state.currentEvent.choices;
-      const originalChoiceIndex = state.pendingChoiceOrder?.[action.choiceIndex] ?? action.choiceIndex;
-      const choice = sourceChoices[originalChoiceIndex] ?? displayedChoice;
+      const choice = state.pendingChoices[action.choiceIndex];
+      if (!choice) return state;
+      // pendingChoices 已经是玩家实际看到的展示顺序。
+      // 结算必须直接使用展示选项本身；否则 pendingChoiceOrder 与视图不同步时会出现
+      // “点击 A，结果却像 B”的错位。
       const resolvedChoice = resolveChoiceByTalents(choice, state);
       const choiceEffects = resolvedChoice.effects;
       const resultText = resolvedChoice.resultText;
@@ -524,7 +534,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             pendingChoices: null,
             pendingChoiceOrder: null,
             lastResult: {
-              text: conversion.text,
+              text: composeDeathConversionText(deathNarrative, conversion.text),
               attributeChanges: combinedChanges,
               chapterTransition: "黄泉债 +1",
               talentEffects,

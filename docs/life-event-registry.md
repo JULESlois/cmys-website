@@ -217,9 +217,13 @@ forceLethal 是否与 isLethal 配套
 events=204
 choices=401
 error=0
+choiceResolution checked=386
+choiceResolution mismatches=0
 ```
 
 warning 属于人工复查提示，不作为构建失败条件。隐藏篇章、黑色幽默和超现实文本可能会触发误报，需要按语境判断。
+
+`choiceResolution` 会强制反转左右选项顺序并调用 reducer，验证结果页文本是否包含玩家实际点击选项的 `resultText`。该项用于防止“点击 A，结果页显示 B”的回归。
 
 ## 当前选项展示规则
 

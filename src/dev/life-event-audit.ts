@@ -1,7 +1,9 @@
 declare const process: { argv: string[]; exitCode?: number };
 
 import { getAllLifeEvents } from "../data/life/events-registry";
-import type { AttributeName, EventChoice, EventChoiceEffects, GameEvent } from "../engine/types";
+import { createInitialState, gameReducer } from "../engine/reducer";
+import { attr } from "../engine/types";
+import type { AttributeName, EventChoice, EventChoiceEffects, GameEvent, GameState } from "../engine/types";
 
 type Severity = "error" | "warn" | "info";
 
@@ -181,12 +183,76 @@ function auditEvent(event: GameEvent): Issue[] {
   return issues;
 }
 
+
+type ChoiceResolutionAudit = {
+  checked: number;
+  mismatches: Array<{
+    eventId: string;
+    title: string;
+    displayIndex: number;
+    choiceText: string;
+    expected: string;
+    got: string;
+  }>;
+};
+
+function createAuditState(event: GameEvent, displayedChoices: EventChoice[]): GameState {
+  return {
+    ...createInitialState(),
+    phase: { type: "playing", step: "event_presenting" },
+    age: event.minAge,
+    attributes: {
+      appearance: attr(50),
+      intelligence: attr(50),
+      physique: attr(50),
+      wealth: attr(50),
+      creativity: attr(50),
+      luck: attr(50),
+    },
+    currentEvent: event,
+    pendingChoices: displayedChoices,
+    pendingChoiceOrder: [1, 0],
+  };
+}
+
+function auditChoiceResolution(events: GameEvent[]): ChoiceResolutionAudit {
+  const mismatches: ChoiceResolutionAudit["mismatches"] = [];
+  let checked = 0;
+
+  for (const event of events) {
+    if (event.type === "procedural" || event.choices.length < 2) continue;
+    const displayedChoices = [event.choices[1], event.choices[0]];
+    for (const displayIndex of [0, 1]) {
+      const expectedChoice = displayedChoices[displayIndex];
+      const expected = expectedChoice.resultText;
+      if (!expected) continue;
+      const next = gameReducer(createAuditState(event, displayedChoices), { type: "RESOLVE_EVENT", choiceIndex: displayIndex });
+      if (next.phase.type === "dying" || next.phase.type === "ending_prelude") continue;
+      const got = next.lastResult?.text ?? "";
+      checked += 1;
+      if (!got.includes(expected)) {
+        mismatches.push({
+          eventId: event.id,
+          title: event.title,
+          displayIndex,
+          choiceText: expectedChoice.text,
+          expected,
+          got,
+        });
+      }
+    }
+  }
+
+  return { checked, mismatches };
+}
+
 function main() {
   const options = parseArgs();
   const events = getAllLifeEvents();
   const ids = events.map((event) => event.id);
   const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
   const issues = events.flatMap(auditEvent);
+  const choiceResolution = auditChoiceResolution(events);
   for (const id of duplicateIds) {
     const event = events.find((item) => item.id === id)!;
     issues.push(issue(event, "error", "duplicate-event-id", `重复事件 id：${id}`));
@@ -202,6 +268,7 @@ function main() {
     choiceCount: events.reduce((sum, event) => sum + (event.type === "procedural" ? 0 : event.choices.length), 0),
     counts,
     issues,
+    choiceResolution,
   };
 
   if (options.json) {
@@ -209,6 +276,10 @@ function main() {
   } else {
     console.log(`events=${payload.eventCount} choices=${payload.choiceCount}`);
     console.log(`issues error=${counts.error} warn=${counts.warn} info=${counts.info}`);
+    console.log(`choiceResolution checked=${choiceResolution.checked} mismatches=${choiceResolution.mismatches.length}`);
+    for (const item of choiceResolution.mismatches.slice(0, 20)) {
+      console.log(`[error] choice-result-mismatch ${item.eventId} display=${item.displayIndex} ${item.choiceText} :: expected result text was not included in reducer output.`);
+    }
     for (const item of issues.filter((i) => options.strict ? i.severity !== "info" : i.severity !== "info").slice(0, 80)) {
       const choice = item.choiceIndex === undefined ? "" : ` choice=${item.choiceIndex}`;
       console.log(`[${item.severity}] ${item.rule} ${item.eventId}${choice} ${item.choiceText ?? ""} :: ${item.detail}`);
@@ -216,7 +287,7 @@ function main() {
     if (issues.length > 80) console.log(`... ${issues.length - 80} more issues. Use --json=true for full output.`);
   }
 
-  if (options.strict && counts.error > 0) process.exitCode = 1;
+  if (options.strict && (counts.error > 0 || choiceResolution.mismatches.length > 0)) process.exitCode = 1;
 }
 
 main();
