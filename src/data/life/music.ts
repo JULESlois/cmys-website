@@ -184,6 +184,10 @@ export function getLifeMusicPlaylist(mode: LifeMusicMode = LIFE_MUSIC_MODE): Lif
   });
 }
 
+function shouldUseOpeningBgmForArc(arcId: string | null | undefined): boolean {
+  return arcId === "arc_infant" || arcId === "arc_elementary";
+}
+
 export function selectLifeMusicId(state: GameState): string {
   if (state.phase.type === "dying") return "death";
   if (state.phase.type === "result" && state.deathRecord) return "death";
@@ -198,6 +202,12 @@ export function selectLifeMusicId(state: GameState): string {
 
   if (state.chapter.activeChapterId === "well_otherworld") return "chapter_well";
   if (state.chapter.activeChapterId === "yomi_debt") return "chapter_yomi";
+
+  if (state.phase.type === "story_arc_summary" && shouldUseOpeningBgmForArc(state.phase.arcId)) {
+    return "life_menu";
+  }
+
+  if (shouldUseOpeningBgmForArc(state.chapter.currentArcId)) return "life_menu";
 
   return state.chapter.currentArcId || "life_menu";
 }

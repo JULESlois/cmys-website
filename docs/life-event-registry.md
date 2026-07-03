@@ -337,14 +337,17 @@ LIFE_MUSIC_MODE = "netease_outer_url"
 
 ```text
 选天赋 / 存档选择：life_menu
-普通主线：按 currentArcId 播放年龄段篇章曲
+初梦幼生篇：life_menu（汐）
+春苗幼生篇：life_menu（汐）
+春苗幼生篇终章结算页：life_menu（汐）
+沉默应试篇开始后：按 currentArcId 播放年龄段篇章曲
 chapter_intro 或 activeChapterId=well_otherworld：chapter_well
 chapter_intro 或 activeChapterId=yomi_debt：chapter_yomi
 死亡页：death
 结局页：ending
 ```
 
-普通事件、危险事件、疾病事件不再临时切歌。音乐只在进入游戏、主线篇章切换、特殊篇章进入和游戏结束时切换。切换使用渐入渐出，曲名显示 2 秒，标题格式为 `原标题 (English)`。
+普通事件、危险事件、疾病事件不再临时切歌。音乐只在进入游戏、主线篇章切换、特殊篇章进入和游戏结束时切换。当前开局 BGM 延续到春苗幼生篇结束，进入沉默应试篇后才开始主线篇章曲切换。切换使用渐入渐出，曲名显示 2 秒，标题格式为 `原标题 (English)`。
 
 ## 新增事件维护规则
 
