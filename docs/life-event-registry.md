@@ -184,6 +184,46 @@ chapterPriority?: number
 
 
 
+
+## 当前随机选项语义审查工具
+
+已新增随机抽样语义审查脚本：
+
+```bash
+./node_modules/.bin/tsx src/dev/life-random-choice-review.ts --seed=20260703 --samples=80 --onlyReview=true
+```
+
+可输出 JSON：
+
+```bash
+./node_modules/.bin/tsx src/dev/life-random-choice-review.ts --seed=17 --samples=500 --json=true
+```
+
+该脚本会：
+
+```text
+1. 按随机种子抽取事件。
+2. 随机打乱选项展示顺序。
+3. 随机点击一个展示选项。
+4. 真实调用 reducer 得到结果页文本。
+5. 检查结果页是否包含被点击选项的 resultText。
+6. 使用语义标签、致死语义、属性收益/代价词做启发式判断。
+```
+
+本轮用该脚本发现 `events-anchors.ts` 中一批锚点事件结果文本串台：婴幼期、小学、围棋、暴雨、高中、高考、大学、初恋、毕业、壮年等事件的结果曾误接到其他年龄段事件。现已集中修复。
+
+当前 500 次随机抽样结果：
+
+```text
+seed=17
+samples=500
+ok=416
+review=84
+mismatch=0
+```
+
+`review` 是启发式提示，主要来自超现实篇章、隐喻文本或语义词典覆盖不足；`mismatch=0` 表示未发现结果页不包含被点击选项原始结果文本的硬错配。
+
 ## 当前事件文本审查工具
 
 已新增事件文本审查脚本：
