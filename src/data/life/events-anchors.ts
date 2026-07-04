@@ -221,7 +221,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "毕业旅行的最后一晚，你和朋友在异乡的海滩上喝醉了。有人提议游到那个发光的浮标那边——月光很美，海浪很温柔。",
     minAge: createAge(23), maxAge: createAge(23), triggerAge: 23,
     choices: [
-      { text: "脱了衣服跳进海里", effects: { attributes: { physique: -6, luck: -4, creativity: -1 } }, resultText: "海水在晚上比看起来远，也比看起来冷。游到一半时腿抽筋了，朋友们终于发现不对，把我拖回岸边时我已经呛得说不出话。那晚之后，我再也没觉得月光下的海温柔。" },
+      { text: "脱了衣服跳进海里", effects: { attributes: { physique: -6, luck: -4, creativity: -1 } }, resultText: "海水在晚上比看起来远，也比看起来冷。游到一半时腿抽筋了，朋友们终于发现不对，把我拖回岸边时我已经呛得说不出话。后来我在医院观察了一夜，肺里像还塞着盐水。那晚之后，我再也没觉得月光下的海温柔。" },
       { text: "躺在沙滩上看星星就好", effects: { attributes: { creativity: 2, luck: 1, wealth: -1} }, resultText: "我仰躺在温热的沙滩上，夜空像一口倒扣的锅盖满了芝麻。朋友们陆续睡了，我一个人醒着听海浪。那个晚上我用手机备忘录写了一首诗——很幼稚，但很真实。活着真好。" },
     ],
   },

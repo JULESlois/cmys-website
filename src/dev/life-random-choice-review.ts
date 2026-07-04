@@ -97,6 +97,7 @@ function parseArgs() {
     samples: Number(args.get("samples") ?? 40),
     json: args.get("json") === "true",
     onlyReview: args.get("onlyReview") === "true",
+    all: args.get("all") === "true",
   };
 }
 
@@ -151,11 +152,9 @@ function pick<T>(values: T[], rng: () => number): T {
   return values[Math.floor(rng() * values.length)];
 }
 
-function reviewOne(event: GameEvent, rng: () => number): ReviewItem | null {
+function reviewChoice(event: GameEvent, order: number[], displayIndex: number): ReviewItem | null {
   if (event.type === "procedural" || event.choices.length === 0) return null;
-  const order = shuffledOrder(event.choices.length, rng);
   const displayedChoices = order.map((index) => event.choices[index]);
-  const displayIndex = Math.floor(rng() * displayedChoices.length);
   const choice = displayedChoices[displayIndex];
   const choiceIndexInEvent = order[displayIndex];
   const next = gameReducer(createReviewState(event, displayedChoices, order), { type: "RESOLVE_EVENT", choiceIndex: displayIndex });
@@ -219,20 +218,42 @@ function reviewOne(event: GameEvent, rng: () => number): ReviewItem | null {
   };
 }
 
+function reviewOne(event: GameEvent, rng: () => number): ReviewItem | null {
+  if (event.type === "procedural" || event.choices.length === 0) return null;
+  const order = shuffledOrder(event.choices.length, rng);
+  const displayIndex = Math.floor(rng() * order.length);
+  return reviewChoice(event, order, displayIndex);
+}
+
+function reviewAllChoices(events: GameEvent[]): ReviewItem[] {
+  const items: ReviewItem[] = [];
+  for (const event of events) {
+    if (event.type === "procedural" || event.choices.length === 0) continue;
+    const order = Array.from({ length: event.choices.length }, (_, index) => index);
+    for (let displayIndex = 0; displayIndex < order.length; displayIndex++) {
+      const item = reviewChoice(event, order, displayIndex);
+      if (item) items.push(item);
+    }
+  }
+  return items;
+}
+
 function main() {
   const options = parseArgs();
   const rng = mulberry32(options.seed);
   const candidates = getAllLifeEvents().filter((event) => event.type !== "procedural" && event.choices.length > 0);
-  const items: ReviewItem[] = [];
-  for (let i = 0; i < options.samples; i++) {
-    const item = reviewOne(pick(candidates, rng), rng);
-    if (item) items.push(item);
+  const items: ReviewItem[] = options.all ? reviewAllChoices(candidates) : [];
+  if (!options.all) {
+    for (let i = 0; i < options.samples; i++) {
+      const item = reviewOne(pick(candidates, rng), rng);
+      if (item) items.push(item);
+    }
   }
 
   const visibleItems = options.onlyReview ? items.filter((item) => item.status !== "ok") : items;
   const summary = {
     seed: options.seed,
-    samples: options.samples,
+    samples: options.all ? items.length : options.samples,
     counts: {
       ok: items.filter((item) => item.status === "ok").length,
       review: items.filter((item) => item.status === "review").length,

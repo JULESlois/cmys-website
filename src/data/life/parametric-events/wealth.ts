@@ -29,7 +29,7 @@ export const WEALTH_PARAMETRIC_EVENTS: ParametricEvent[] = [
     minAge: createAge(32), maxAge: createAge(45), weight: 2, eventTags: ["wealth", "risk"], maxTriggers: 1, cooldownYears: 999,
     statRequirements: { wealth: 4 },
     choices: [
-      { text: "报警、清算、重新开始", effects: { attributes: { wealth: -20, intelligence: 1, luck: 1 } }, resultText: "我给律师打了电话，整理好所有的财务记录报了案。公司清算那天我站在空荡荡的办公室里抽了根烟——然后拨通了第一个新客户的电话。三年后我在同一栋楼里重新开了公司。那块玻璃上刻着的公司名换了一个字——但这次我学会了怎么看人。" },
+      { text: "报警、清算、重新开始", effects: { attributes: { wealth: -20, intelligence: 1, luck: 1 } }, resultText: "我给律师打了电话，整理好所有财务记录报了案。公司清算那天，办公室只剩几张被搬空的桌子和一地灰尘。欠款没有因为报警就消失，信用也不是一夜能修回来。后来我确实重新开始了，但那是很久以后的事——在此之前，我先学会了怎么把每一笔债一行一行还清。" },
       { text: "算了，认栽。找份工作安稳过", effects: { attributes: { wealth: -10, luck: 1, physique: 1 } }, resultText: "我拿了最后的工资走人。新工作薪水不高但稳定——不用再担心回款和工资。坐在格子间里有时候会想起以前创业的日子，像一场梦。说实话，有时晚上睡不着会想象——如果我没放弃会怎样？但没有如果了。" },
     ],
   },
