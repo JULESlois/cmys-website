@@ -47,7 +47,7 @@ const TAG_PATTERNS: Record<SemanticTag, string[]> = {
   travel: ["旅行", "机票", "机场", "出国", "远行", "徒步", "峡谷", "路", "车站"],
   crime: ["违法", "犯罪", "看守所", "报警", "警察", "公安", "刀", "催债", "高利贷", "传销"],
   old: ["老", "晚年", "爷爷", "退休", "拐杖", "暮", "床前", "孙"],
-  death: ["死", "死亡", "致命", "最后", "没再", "不再动", "呼吸", "走了", "失踪", "终点", "命"],
+  death: ["死亡", "致命", "带走", "没再站", "不再动", "呼吸机", "呼吸停", "失踪", "为时已晚", "猝死", "过劳死"],
   luck: ["运", "幸运", "机会", "偶然", "差点", "险", "巧", "命运"],
   creation: ["写", "画", "创作", "灵感", "作品", "故事", "诗", "设计", "想象", "日记"],
   social: ["朋友", "同学", "同事", "人群", "社交", "群", "评论", "弹幕", "饭局"],
@@ -72,7 +72,7 @@ const TAG_PATTERNS: Record<SemanticTag, string[]> = {
 const POSITIVE_WORDS = ["成功", "收获", "赢", "好", "改善", "幸运", "掌声", "成长", "完成", "活了下来", "机会", "温暖", "存给", "首付"];
 const NEGATIVE_WORDS = ["损", "亏", "伤", "病", "债", "赔", "失", "痛", "危险", "后悔", "逃", "医院", "空", "没剩", "清零", "被骗", "裂", "崩", "断", "冷", "摔"];
 const SURVIVAL_WORDS = ["活了下来", "救", "拖回", "拖上", "医院", "住院", "出院", "逃", "还在", "醒来", "命还在"];
-const DEATH_WORDS = ["死", "死亡", "致命", "带走", "没再站", "不再动", "呼吸机", "呼吸停", "失踪", "终点", "走了", "为时已晚", "猝死"];
+const DEATH_WORDS = ["死亡", "致命", "带走", "没再站", "不再动", "呼吸机", "呼吸停", "失踪", "为时已晚", "猝死", "过劳死"];
 
 function mulberry32(seed: number): () => number {
   let value = seed >>> 0;
@@ -172,10 +172,11 @@ function reviewOne(event: GameEvent, rng: () => number): ReviewItem | null {
     score -= 70;
   }
 
-  if (sourceTags.length >= 2 && tagOverlap.length === 0) {
+  const lethalDeathResult = Boolean(choice.effects.isLethal && resultTags.includes("death"));
+  if (!lethalDeathResult && sourceTags.length >= 2 && tagOverlap.length === 0) {
     reasons.push(`语义标签无交集：source=${sourceTags.join("/") || "none"} result=${resultTags.join("/") || "none"}`);
     score -= 30;
-  } else if (sourceTags.length >= 3 && tagOverlap.length === 1) {
+  } else if (!lethalDeathResult && sourceTags.length >= 3 && tagOverlap.length === 1) {
     reasons.push(`语义交集较弱：overlap=${tagOverlap.join("/")}`);
     score -= 10;
   }

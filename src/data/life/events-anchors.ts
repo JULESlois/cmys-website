@@ -265,7 +265,7 @@ export const ANCHOR_EVENTS: AnchorEvent[] = [
     description: "医生说你的肺部 CT 显示了一个阴影。可能是炎症，也可能是更糟的东西。'需要做穿刺活检才能确认。'他说话时没有看你的眼睛。",
     minAge: createAge(50), maxAge: createAge(50), triggerAge: 50,
     choices: [
-      { text: "拖延随访，害怕知道结果", effects: { attributes: { physique: -4, luck: -2 }, isLethal: false }, resultText: "我把检查申请单锁进抽屉。半年后症状出现了——那时肿瘤已经从早期发展到了中期。后来回想，那个没有打开的抽屉，才是真正致命的。" },
+      { text: "拖延随访，害怕知道结果", effects: { attributes: { physique: -4, luck: -2 }, isLethal: false }, resultText: "我把检查申请单锁进抽屉。半年后症状出现了——那时肿瘤已经从早期发展到了中期。后来回想，那个没有打开的抽屉，才是最沉重的转折。" },
       { text: "第二天就去做活检", effects: { attributes: { physique: -1, luck: 1 } }, resultText: "我深吸一口气，第二天早上第一个到达检验科。活检结果：良性炎症。医生说你再年轻五岁都没必要做这个检查——但我做了。有时候害怕是对的，但正因为害怕，才要勇敢。" },
     ],
   },

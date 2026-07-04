@@ -150,8 +150,8 @@ export const ELDER_PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "你感到身体越来越轻。床前围满了熟悉的面孔，有人在哭，有人在轻声唤你的名字。你想说别难过，但已经发不出声音了。舞台的灯光，终于要灭了。",
     minAge: createAge(85), maxAge: createAge(100), weight: 3, eventTags: ["elder", "peace"], maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "微笑着闭上眼睛", effects: { attributes: { luck: 1, creativity: 2 }, isLethal: true }, resultText: "你用最后的力气弯了弯嘴角。哭声变得很远，灯光也变得很轻。你像是终于走完一场漫长演出，谢幕时没有遗憾，只把安静留给了众人。" },
-      { text: "留下最后的嘱托", effects: { attributes: { intelligence: 1, appearance: 2 }, isLethal: true }, resultText: "你断断续续交代了几句话：别争、别怨、好好吃饭。声音越来越轻，最后只剩手指微微动了一下。家人围在床边，明白那就是你的告别。" },
+      { text: "微笑着闭上眼睛", effects: { attributes: { luck: 1, creativity: 2 }, isLethal: true }, resultText: "你用最后的力气弯了弯嘴角。哭声变得很远，灯光也变得很轻。你像是终于走完一场漫长演出。呼吸停了，谢幕时没有遗憾，只把安静留给了众人。" },
+      { text: "留下最后的嘱托", effects: { attributes: { intelligence: 1, appearance: 2 }, isLethal: true }, resultText: "你断断续续交代了几句话：别争、别怨、好好吃饭。声音越来越轻，最后只剩手指微微动了一下。呼吸停止时，家人围在床边，明白那就是你的告别。" },
     ],
   },
   {

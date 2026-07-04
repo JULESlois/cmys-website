@@ -202,7 +202,7 @@ export const MIDLIFE_LETHAL_EVENTS: ParametricEvent[] = [
     minAge: createAge(38), maxAge: createAge(52), weight: 2, eventTags: ["wealth", "debt", "pressure"], maxTriggers: 1, cooldownYears: 999,
     statRequirements: { wealth: 5 },
     choices: [
-      { text: "铤而走险，走朋友的'路子'", effects: { attributes: {}, isLethal: true }, resultText: "我在看守所里睡了最后一个晚上。有人说是'经济犯罪'，但对我来说这些词都太遥远了——我只是想让家人过得更好，结果连陪伴他们的权利都输掉了。铁门合上的声音，比所有讨债的电话都更响。" },
+      { text: "铤而走险，走朋友的'路子'", effects: { attributes: { wealth: -18, luck: -8, appearance: -6, intelligence: -1 } }, resultText: "我在看守所里睡了第一个晚上。有人说这是经济犯罪，但对我来说这些词都太遥远了——我只是想让家人过得更好，结果把信用、体面和陪伴他们的时间一起输掉了。铁门合上的声音，比所有讨债的电话都更响。" },
       { text: "卖掉一切，从头还债", effects: { attributes: { wealth: -15, intelligence: 1, luck: 1 } }, resultText: "我签了卖房合同，交出了车钥匙。搬进出租屋那天妻子哭了，我说'别哭，人还在呢'。之后的五年我白天上班晚上跑滴滴，一分一分地还。还清最后一笔债的时候我站在银行门口，感觉像刚出狱一样——自由了。" },
     ],
   },

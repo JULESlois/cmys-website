@@ -17,7 +17,7 @@ export const LUCK_PARAMETRIC_EVENTS: ParametricEvent[] = [
     description: "运势急转直下。比赛失利、朋友疏远、家里开始出现争吵——所有你在意的东西都在同时崩塌。你觉得自己像站在风暴中心的一根稻草，什么都抓不住。那些曾经的好运去哪了？",
     minAge: createAge(18), maxAge: createAge(25), weight: 2, eventTags: ["luck", "danger"], maxTriggers: 1, cooldownYears: 999,
     choices: [
-      { text: "闭门不出，一个人待着", effects: { attributes: { luck: -20, creativity: 2 } }, resultText: "我在出租屋里闷了两周，把窗帘拉得严严实实。翻了所有能翻的书，听遍了所有能听的歌——但心里那个黑洞还是越来越大。在最低谷的某天深夜，我在日记本上写了一句话：'只有当一切都不顺的时候，你才知道自己真正想要什么。'" },
+      { text: "闭门不出，一个人待着", effects: { attributes: { luck: -20, creativity: 2 } }, resultText: "我在出租屋里闷了两周，把窗帘拉得严严实实。翻了所有能翻的书，听遍了所有能听的歌——但心里那个黑洞还是越来越大。这两周里，我错过了比赛复盘、朋友的邀约和一个本可以补救的机会。最低谷的某天深夜，我在日记本上写了一句话：'只有当一切都不顺的时候，你才知道自己真正想要什么。'" },
       { text: "硬撑着笑对所有人", effects: { attributes: { luck: -12, appearance: 2, intelligence: 1 } }, resultText: "我假装什么都没发生——继续上课、继续社交、继续发朋友圈。但每晚关上门以后，我连洗澡的力气都没有。有一天在图书馆角落里，一个不太熟的同学递来一包纸巾。他什么都没说，但那一刻我差点崩溃。原来逞强比示弱累得多。" },
     ],
   },
