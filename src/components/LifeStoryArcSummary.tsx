@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { useLife } from "./LifeContext";
 import { LifeStatsBars } from "./LifeStatsBars";
 import { getStoryArcByAge, getStoryArcById } from "../data/life/story-arcs";
+import { getStoryArcNarrativeSummary } from "../engine/story-summary";
 
 export function LifeStoryArcSummary() {
   const { state, dispatch } = useLife();
@@ -9,6 +10,7 @@ export function LifeStoryArcSummary() {
   if (phase.type !== "story_arc_summary") return null;
 
   const arc = getStoryArcById(phase.arcId) ?? getStoryArcByAge(state.age);
+  const narrative = getStoryArcNarrativeSummary(state, phase.arcId);
 
   return (
     <motion.div
@@ -24,6 +26,29 @@ export function LifeStoryArcSummary() {
         <div className="text-center">
           <p className="font-serif text-8xl tracking-tighter">{state.age}</p>
           <p className="font-mono text-xs text-secondary mt-2">岁</p>
+        </div>
+      </div>
+
+      <div className="glass-panel border border-primary/10 px-5 py-5 text-left w-full space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-secondary/70">
+            {narrative.heading}
+          </p>
+          {narrative.motifs.map((motif) => (
+            <span
+              key={motif}
+              className="font-mono text-[10px] text-primary/50 border border-primary/10 px-2 py-0.5"
+            >
+              {motif}
+            </span>
+          ))}
+        </div>
+        <div className="space-y-3">
+          {narrative.paragraphs.map((paragraph, index) => (
+            <p key={index} className="font-serif text-sm leading-relaxed text-primary/75">
+              {paragraph}
+            </p>
+          ))}
         </div>
       </div>
 
