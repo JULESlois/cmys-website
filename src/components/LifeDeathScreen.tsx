@@ -78,11 +78,23 @@ export function LifeDeathScreen() {
         </motion.div>
       )}
 
+      {/* 满值结局描述 */}
+      {result.endingDescription && (
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 3.2, duration: 0.8 }}
+          className="font-serif text-lg text-white/75 text-center leading-relaxed max-w-xl"
+        >
+          {result.endingDescription}
+        </motion.p>
+      )}
+
       {/* 描述 */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 3.2, duration: 0.8 }}
+        transition={{ delay: result.endingDescription ? 3.4 : 3.2, duration: 0.8 }}
         className="font-mono text-base text-white/80"
       >
         {result.description}
@@ -95,8 +107,11 @@ export function LifeDeathScreen() {
         transition={{ delay: 3.6, duration: 1 }}
         className="font-serif text-2xl text-white/85 text-center leading-relaxed italic"
       >
-        {ENDING_FLAVOR_TEXTS[result.starRating]}
+        {result.flavorText ?? ENDING_FLAVOR_TEXTS[result.starRating]}
       </motion.p>
+
+
+
 
       {/* 高亮 */}
       {result.highlights.length > 0 && (

@@ -139,7 +139,7 @@ export function ReignsCard({ event, choices, age, onChoose, stageLabel }: Props)
           <div className="grid grid-cols-2 gap-3 pt-1">
             <button
               onClick={() => onChoose(0)}
-              className="flex items-center gap-2 p-3 border border-primary/15 text-left hover:border-blue-400/50 hover:bg-blue-50/30 transition-colors cursor-pointer"
+              className="flex items-center gap-2 p-3 text-left hover:bg-blue-50/30 transition-colors cursor-pointer"
             >
               <span className="font-mono text-[10px] text-blue-400/60 shrink-0">←</span>
               <span className="font-mono text-xs text-primary/70 leading-tight">
@@ -150,7 +150,7 @@ export function ReignsCard({ event, choices, age, onChoose, stageLabel }: Props)
             {rightChoice ? (
               <button
                 onClick={() => onChoose(1)}
-                className="flex items-center gap-2 p-3 border border-primary/15 text-right hover:border-amber-400/50 hover:bg-amber-50/30 transition-colors cursor-pointer"
+                className="flex items-center gap-2 p-3 text-right hover:bg-amber-50/30 transition-colors cursor-pointer"
               >
                 <span className="font-mono text-xs text-primary/70 leading-tight flex-1">
                   {rightChoice.text}

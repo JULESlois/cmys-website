@@ -1,17 +1,24 @@
 // src/engine/events.ts
 import type { GameState, GameEvent, AttributeName } from "./types";
-import { ANCHOR_EVENTS } from "../data/life/events-anchors";
-import { PARAMETRIC_EVENTS } from "../data/life/events-parametric";
+import { getActiveTalents } from "./talent";
+import { getAllLifeEvents, getAnchorLifeEvents } from "../data/life/events-registry";
 
 // 构建年龄段索引
+function getAllEvents(): GameEvent[] {
+  return getAllLifeEvents();
+}
+
 function buildEventIndex(): Map<number, GameEvent[]> {
-  const all: GameEvent[] = [...ANCHOR_EVENTS, ...PARAMETRIC_EVENTS];
+  const all: GameEvent[] = getAllEvents();
   const index = new Map<number, GameEvent[]>();
 
   for (const event of all) {
-    const decadeKey = Math.floor(event.minAge / 10) * 10;
-    if (!index.has(decadeKey)) index.set(decadeKey, []);
-    index.get(decadeKey)!.push(event);
+    const start = Math.floor((event.minAge as number) / 10) * 10;
+    const end = Math.floor((event.maxAge as number) / 10) * 10;
+    for (let decadeKey = start; decadeKey <= end; decadeKey += 10) {
+      if (!index.has(decadeKey)) index.set(decadeKey, []);
+      index.get(decadeKey)!.push(event);
+    }
   }
 
   return index;
@@ -24,12 +31,48 @@ function getEventIndex(): Map<number, GameEvent[]> {
   return eventIndexCache;
 }
 
+function matchesChapterFlags(
+  required: Record<string, boolean | number | string> | undefined,
+  flags: Record<string, boolean | number | string>,
+): boolean {
+  if (!required) return true;
+  for (const [key, expected] of Object.entries(required)) {
+    const actual = flags[key];
+    if (typeof expected === "number") {
+      if (typeof actual !== "number" || actual < expected) return false;
+    } else if (actual !== expected) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function isAnchorAtAge(event: GameEvent, age: number): boolean {
+  if (event.type !== "anchor") return false;
+  const triggers = Array.isArray(event.triggerAge) ? event.triggerAge : [event.triggerAge];
+  return triggers.includes(age);
+}
+
+export function hasAnchorAtAge(age: number): boolean {
+  return getAnchorLifeEvents().some((event) => isAnchorAtAge(event, age));
+}
+
 // 检查事件是否可触发
 function isEventEligible(event: GameEvent, state: GameState): boolean {
   const { age, attributes, triggeredEventIds, talents } = state;
 
   // 年龄范围
   if (age < event.minAge || age > event.maxAge) return false;
+
+  // 同一年龄内不重复触发同一个事件，避免默认不增龄后循环抽中。
+  if (triggeredEventIds[event.id] === (age as number)) return false;
+
+  // 篇章过滤
+  const activeChapterId = state.chapter?.activeChapterId ?? null;
+  if (event.requiredChapter && activeChapterId !== event.requiredChapter) return false;
+  if (event.excludedChapter && activeChapterId === event.excludedChapter) return false;
+  if (event.chapterId && activeChapterId !== event.chapterId) return false;
+  if (!matchesChapterFlags(event.chapterFlagsRequired, state.chapter?.chapterFlags ?? {})) return false;
 
   // 锚点事件：检查是否在精确年龄
   if (event.type === "anchor") {
@@ -78,36 +121,132 @@ export function getEligibleEvents(state: GameState): GameEvent[] {
   const index = getEventIndex();
   const decadeKey = Math.floor(state.age / 10) * 10;
 
-  // 查询当前 decade 和相邻 decade
-  const candidates: GameEvent[] = [];
+  // 查询当前 decade 和相邻 decade；跨 decade 建索引会产生重复，需要按 id 去重
+  const candidateMap = new Map<string, GameEvent>();
   for (const dk of [decadeKey - 10, decadeKey, decadeKey + 10]) {
     const events = index.get(dk);
-    if (events) candidates.push(...events);
+    if (events) {
+      for (const event of events) candidateMap.set(event.id, event);
+    }
   }
 
-  return candidates.filter((e) => isEventEligible(e, state));
+  return [...candidateMap.values()].filter((e) => isEventEligible(e, state));
 }
 
-// 加权随机选择事件
+function getAdjustedEventWeight(event: GameEvent, state: GameState): number {
+  let weight = event.weight ?? 1;
+  const eventTags = event.eventTags ?? [];
+  if (eventTags.length === 0) return weight;
+
+  for (const talent of getActiveTalents(state)) {
+    const tagWeights = talent.effects?.eventWeightTags;
+    if (!tagWeights) continue;
+    for (const tag of eventTags) {
+      const multiplier = tagWeights[tag];
+      if (typeof multiplier === "number" && Number.isFinite(multiplier)) {
+        weight *= multiplier;
+      }
+    }
+  }
+
+  return Math.max(0.05, weight);
+}
+
+
+function getOrdinaryEventLimit(age: number): number {
+  // ageDelta 默认为 0 后，同一年龄可能连续抽取多个普通事件。
+  // 当前采用保守上限：每个年龄点最多 1 个普通参数化事件；
+  // 锚点、强制 triggerEventId 和特殊篇章事件不受此限制。
+  if (age <= 5) return 1;
+  return 1;
+}
+
+function isSpecialChapterEvent(event: GameEvent): boolean {
+  const tags = event.eventTags ?? [];
+  return Boolean(
+    event.chapterId ||
+    event.requiredChapter ||
+    event.triggerChapter ||
+    tags.includes("well") ||
+    tags.includes("yomi") ||
+    tags.includes("hidden"),
+  );
+}
+
+function isOrdinaryParametricEvent(event: GameEvent): boolean {
+  return event.type === "parametric" && !isSpecialChapterEvent(event);
+}
+
+function getSameAgeOrdinaryEventCount(state: GameState): number {
+  const age = state.age as number;
+  const eventsById = new Map(getAllEvents().map((event) => [event.id, event]));
+  return state.eventLog.reduce((count, entry) => {
+    if ((entry.age as number) !== age) return count;
+    const event = eventsById.get(entry.eventId);
+    if (!event || !isOrdinaryParametricEvent(event)) return count;
+    return count + 1;
+  }, 0);
+}
+
+function hasReachedOrdinaryEventLimit(state: GameState): boolean {
+  return getSameAgeOrdinaryEventCount(state) >= getOrdinaryEventLimit(state.age as number);
+}
+
+function weightedPick(events: GameEvent[], state: GameState): GameEvent | null {
+  if (events.length === 0) return null;
+  const totalWeight = events.reduce((sum, e) => sum + getAdjustedEventWeight(e, state), 0);
+  let random = Math.random() * totalWeight;
+
+  for (const event of events) {
+    random -= getAdjustedEventWeight(event, state);
+    if (random <= 0) return event;
+  }
+
+  return events[0];
+}
+
+
+export function selectChapterEvent(state: GameState): GameEvent | null {
+  const activeChapterId = state.chapter?.activeChapterId ?? null;
+  if (!activeChapterId) return null;
+
+  const chapterEvents = getEligibleEvents(state)
+    .filter((event) => event.chapterId === activeChapterId || event.requiredChapter === activeChapterId)
+    .sort((a, b) => (b.chapterPriority ?? 0) - (a.chapterPriority ?? 0));
+
+  return weightedPick(chapterEvents, state);
+}
+
+// 加权随机选择事件；锚点与当前篇章事件优先
 export function selectEvent(state: GameState): GameEvent | null {
   const eligible = getEligibleEvents(state);
   if (eligible.length === 0) return null;
 
-  // 按权重加权随机
-  const totalWeight = eligible.reduce((sum, e) => sum + (e.weight ?? 1), 0);
-  let random = Math.random() * totalWeight;
+  const anchors = eligible
+    .filter((event) => event.type === "anchor")
+    .sort((a, b) => (b.chapterPriority ?? 0) - (a.chapterPriority ?? 0));
+  if (anchors.length > 0) return anchors[0];
 
-  for (const event of eligible) {
-    random -= event.weight ?? 1;
-    if (random <= 0) return event;
+  const activeChapterId = state.chapter?.activeChapterId ?? null;
+  if (activeChapterId) {
+    const chapterEvents = eligible
+      .filter((event) => event.chapterId === activeChapterId || event.requiredChapter === activeChapterId)
+      .sort((a, b) => (b.chapterPriority ?? 0) - (a.chapterPriority ?? 0));
+    const picked = weightedPick(chapterEvents, state);
+    if (picked) return picked;
   }
 
-  return eligible[0];
+  const ordinaryCandidates = hasReachedOrdinaryEventLimit(state)
+    ? []
+    : eligible.filter(isOrdinaryParametricEvent);
+
+  return weightedPick(ordinaryCandidates, state);
 }
 
 // 判断当前年龄是否应该触发事件
 export function shouldTriggerEvent(age: number): boolean {
   if (age <= 5) return false; // 婴幼期自动叙事，不走事件引擎
+  if (hasAnchorAtAge(age)) return true;
   if (age <= 30) return true;  // 少年/青年期每岁
   if (age <= 60) return (age - 31) % 3 === 0; // 壮年期每3年
   if (age <= 70) return (age - 61) % 3 === 0;

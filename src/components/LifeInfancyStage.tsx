@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLife } from "./LifeContext";
 import { ANCHOR_EVENTS } from "../data/life/events-anchors";
+import { scaleAttributeChanges } from "../engine/balance";
+import { applyTalentModifiers, getActiveTalents } from "../engine/talent";
+import { attr, createAge } from "../engine/types";
+import { getStoryArcByAge } from "../data/life/story-arcs";
 
 export function LifeInfancyStage() {
   const { state, dispatch } = useLife();
@@ -14,16 +18,20 @@ export function LifeInfancyStage() {
 
   useEffect(() => {
     if (narrationIndex >= infancyEvents.length) {
-      // 婴幼期结束，直接跳到 6 岁进入少年期
+      // 婴幼期结束，先停在 5 岁篇章结算，再进入少年期
       const timer = setTimeout(() => {
         // 应用所有婴幼期事件的自动效果到属性
         let newAttrs = { ...state.attributes };
         for (const e of infancyEvents) {
           if (e.choices[0]?.effects?.attributes) {
-            for (const [k, v] of Object.entries(e.choices[0].effects.attributes)) {
+            const scaled = applyTalentModifiers(
+              scaleAttributeChanges(e.choices[0].effects.attributes),
+              getActiveTalents(state),
+            ).changes;
+            for (const [k, v] of Object.entries(scaled)) {
               newAttrs = {
                 ...newAttrs,
-                [k]: Math.max(0, Math.min(100, newAttrs[k as keyof typeof newAttrs] + (v as number))),
+                [k]: attr(newAttrs[k as keyof typeof newAttrs] + (v as number)),
               };
             }
           }
@@ -32,15 +40,19 @@ export function LifeInfancyStage() {
           type: "LOAD_SAVE",
           state: {
             ...state,
-            age: 6 as import("../engine/types").Age,
+            age: createAge(5),
             attributes: newAttrs,
-            phase: { type: "playing", step: "aging" },
+            phase: { type: "story_arc_summary", arcId: getStoryArcByAge(5).id, nextAge: createAge(6) },
             eventLog: infancyEvents.map((e) => ({
               age: (e.triggerAge as number) as import("../engine/types").Age,
               eventId: e.id,
               title: e.title,
               choiceText: e.choices[0]?.text ?? "",
-              attributeChanges: e.choices[0]?.effects?.attributes ?? {},
+              attributeChanges: applyTalentModifiers(
+                scaleAttributeChanges(e.choices[0]?.effects?.attributes ?? {}),
+                getActiveTalents(state),
+              ).changes,
+              storyArcId: getStoryArcByAge(e.triggerAge as number).id,
             })),
             triggeredEventIds: Object.fromEntries(infancyEvents.map((e) => [e.id, 6])),
           },

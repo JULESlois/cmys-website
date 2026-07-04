@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { FORTUNES, Fortune } from "../constants/fortunes";
 import { cn } from "../lib/utils";
 import { toPng } from "html-to-image";
+import { FortuneHistory, addToHistory } from "./FortuneHistory";
 
 type AnimationStage = "idle" | "drawing" | "glitch" | "unfolding" | "settled";
 
@@ -86,6 +87,7 @@ export function FortuneSystem({ isOpen, onClose, onDailyFortuneSet, forceGenerat
   const [displayId, setDisplayId] = useState<string>("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showShareHint, setShowShareHint] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const startSequence = useCallback(async () => {
@@ -111,6 +113,7 @@ export function FortuneSystem({ isOpen, onClose, onDailyFortuneSet, forceGenerat
     }
     finalUniqueId = generateUniqueId(targetFortune.id);
     saveDailyFortune(targetFortune.id, finalUniqueId);
+    addToHistory(targetFortune.id, finalUniqueId);
 
     setFortune(targetFortune);
     setDisplayId(finalUniqueId);
@@ -235,7 +238,7 @@ export function FortuneSystem({ isOpen, onClose, onDailyFortuneSet, forceGenerat
                   Download
                   <motion.span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary group-hover:w-full transition-all duration-300" />
                 </button>
-                
+
                 <div className="w-[1px] h-3 bg-black/10" />
 
                 <button
@@ -243,6 +246,16 @@ export function FortuneSystem({ isOpen, onClose, onDailyFortuneSet, forceGenerat
                   className="group relative py-2 font-mono text-[10px] tracking-[0.3em] uppercase text-black transition-colors cursor-pointer"
                 >
                   Share
+                  <motion.span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary group-hover:w-full transition-all duration-300" />
+                </button>
+
+                <div className="w-[1px] h-3 bg-black/10" />
+
+                <button
+                  onClick={() => setShowHistory(true)}
+                  className="group relative py-2 font-mono text-[10px] tracking-[0.3em] uppercase text-black transition-colors cursor-pointer"
+                >
+                  History
                   <motion.span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary group-hover:w-full transition-all duration-300" />
                 </button>
               </div>
@@ -313,6 +326,8 @@ export function FortuneSystem({ isOpen, onClose, onDailyFortuneSet, forceGenerat
               </motion.div>
             )}
           </AnimatePresence>
+
+          <FortuneHistory isOpen={showHistory} onClose={() => setShowHistory(false)} />
         </motion.div>
       )}
     </AnimatePresence>
