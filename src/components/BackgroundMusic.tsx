@@ -406,7 +406,7 @@ export function BackgroundMusic({
         }}
         transition={{ type: "spring", stiffness: 350, damping: 30 }}
         className={cn(
-          "fixed bottom-8 left-8 z-[100] glass-panel border border-primary/10 text-black shadow-[0_12px_32px_rgba(0,0,0,0.16)] flex items-center overflow-hidden cursor-pointer"
+          "fixed bottom-8 left-8 z-[100] bg-white text-black glass-border flex items-center overflow-hidden cursor-pointer"
         )}
       >
         <AnimatePresence mode="wait">
