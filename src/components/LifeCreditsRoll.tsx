@@ -118,7 +118,7 @@ export function LifeCreditsRoll() {
 
           <section className="mb-16 text-center">
             <p className="mb-4 text-sm tracking-[0.28em] text-white/40 text-center">人生历程</p>
-            <div className="mx-auto w-[min(680px,100%)] space-y-4 text-left">
+            <div className="mx-auto w-fit max-w-full space-y-4 text-left sm:max-w-[680px]">
               {timeline.length > 0 ? timeline.map((event, index) => (
                 <p
                   key={`${event.age}-${event.eventId}-${index}`}
