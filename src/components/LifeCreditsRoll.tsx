@@ -116,22 +116,24 @@ export function LifeCreditsRoll() {
             </section>
           )}
 
-          <section className="space-y-4 mb-16 text-center">
-            <p className="text-sm tracking-[0.28em] text-white/40 text-center">人生历程</p>
-            {timeline.length > 0 ? timeline.map((event, index) => (
-              <p
-                key={`${event.age}-${event.eventId}-${index}`}
-                className="mx-auto max-w-[680px] text-center text-base leading-relaxed text-white/68"
-              >
-                <span>{event.age}岁</span>
-                <span className="px-3 text-white/28">/</span>
-                <span>{event.title}</span>
-                <span className="px-3 text-white/28">/</span>
-                <span>{event.choiceText}</span>
-              </p>
-            )) : (
-              <p className="text-base text-white/60 text-center">没有留下可被记录的片段。</p>
-            )}
+          <section className="mb-16 text-center">
+            <p className="mb-4 text-sm tracking-[0.28em] text-white/40 text-center">人生历程</p>
+            <div className="mx-auto w-[min(680px,100%)] space-y-4 text-left">
+              {timeline.length > 0 ? timeline.map((event, index) => (
+                <p
+                  key={`${event.age}-${event.eventId}-${index}`}
+                  className="text-left text-base leading-relaxed text-white/68"
+                >
+                  <span>{event.age}岁</span>
+                  <span className="px-3 text-white/28">/</span>
+                  <span>{event.title}</span>
+                  <span className="px-3 text-white/28">/</span>
+                  <span>{event.choiceText}</span>
+                </p>
+              )) : (
+                <p className="text-base text-white/60 text-left">没有留下可被记录的片段。</p>
+              )}
+            </div>
           </section>
 
           <section className="space-y-4 mb-16 text-center">
