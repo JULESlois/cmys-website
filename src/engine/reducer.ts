@@ -766,6 +766,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         deathRecord: { age: state.age, cause: action.cause, deathType: "accident" },
       };
 
+    case "SHOW_CREDITS_ROLL":
+      return { ...state, phase: { type: "life_credits_roll" } };
+
     case "SHOW_RESULT":
       return { ...state, phase: { type: "result" } };
 

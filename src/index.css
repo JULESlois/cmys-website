@@ -31,6 +31,10 @@
   .font-mono-fixed {
     font-family: var(--font-mono-fixed);
   }
+
+  .font-cinematic-serif {
+    font-family: "Noto Serif SC", "DM Serif Display", serif;
+  }
 }
 
 /* Hide default scrollbars for the visual lab experience */
@@ -95,3 +99,12 @@
   animation: ticker 30s linear infinite;
 }
 
+
+@keyframes cinematic-roll {
+  0% { transform: translate(-50%, 72vh); }
+  100% { transform: translate(-50%, -112%); }
+}
+
+.cinematic-roll {
+  animation: cinematic-roll 18s linear forwards;
+}

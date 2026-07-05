@@ -14,6 +14,7 @@ import { LifeIntro } from "./LifeIntro";
 import { LifeChapterIntro } from "./LifeChapterIntro";
 import { LifeMusicPlayer } from "./LifeMusicPlayer";
 import { LifeStoryArcSummary } from "./LifeStoryArcSummary";
+import { LifeCreditsRoll } from "./LifeCreditsRoll";
 import { getChapterById } from "../data/life/chapters";
 import { getAttributeEndingByAttribute } from "../data/life/attribute-endings";
 import { AnimatePresence, motion } from "motion/react";
@@ -210,7 +211,7 @@ export function LifeGame() {
               transition={{ delay: 1.2 }}
             >
               <button
-                onClick={() => dispatch({ type: "SHOW_RESULT" })}
+                onClick={() => dispatch({ type: "SHOW_CREDITS_ROLL" })}
                 className="px-6 py-2 border border-white/20 font-mono text-xs tracking-[0.2em] uppercase text-white/50 hover:border-white/50 hover:text-white/80 transition-colors"
               >
                 查看结局
@@ -218,6 +219,9 @@ export function LifeGame() {
             </motion.div>
           </motion.div>
         );
+
+      case "life_credits_roll":
+        return <LifeCreditsRoll />;
 
       case "result":
         return <LifeDeathScreen />;
@@ -227,7 +231,7 @@ export function LifeGame() {
     }
   };
 
-  const isEnding = state.phase.type === "dying" || state.phase.type === "ending_prelude" || state.phase.type === "result";
+  const isEnding = state.phase.type === "dying" || state.phase.type === "life_credits_roll" || state.phase.type === "ending_prelude" || state.phase.type === "result";
 
   return (
     <LifeContext.Provider value={ctx}>
@@ -262,8 +266,8 @@ export function LifeGame() {
           {isEnding && (
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: state.phase.type === "result" ? 1 : 0.85 }}
-              transition={{ duration: state.phase.type === "result" ? 1.2 : 0.8 }}
+              animate={{ opacity: state.phase.type === "result" || state.phase.type === "life_credits_roll" ? 1 : 0.85 }}
+              transition={{ duration: state.phase.type === "result" || state.phase.type === "life_credits_roll" ? 1.2 : 0.8 }}
               className="absolute inset-0 z-20 bg-black pointer-events-none"
             />
           )}

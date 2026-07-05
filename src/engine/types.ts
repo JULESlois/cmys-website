@@ -242,6 +242,7 @@ export type GamePhase =
   | { type: "chapter_intro"; chapterId: string }
   | { type: "ending_prelude"; endingId: AttributeName }
   | { type: "dying"; cause: string }
+  | { type: "life_credits_roll" }
   | { type: "result" };
 
 export interface GameState {
@@ -277,6 +278,7 @@ export type GameAction =
   | { type: "DISMISS_RESULT" }
   | { type: "DISMISS_STORY_ARC_SUMMARY" }
   | { type: "DISMISS_CHAPTER_INTRO" }
+  | { type: "SHOW_CREDITS_ROLL" }
   | { type: "SHOW_RESULT" }
   | { type: "RESTART" }
   | { type: "LOAD_SAVE"; state: GameState };
