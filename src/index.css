@@ -101,10 +101,10 @@
 
 
 @keyframes cinematic-roll {
-  0% { transform: translate(-50%, 72vh); }
-  100% { transform: translate(-50%, -112%); }
+  0% { transform: translateY(72vh); }
+  100% { transform: translateY(-112%); }
 }
 
 .cinematic-roll {
-  animation: cinematic-roll 18s linear forwards;
+  animation: cinematic-roll 32s linear forwards;
 }
