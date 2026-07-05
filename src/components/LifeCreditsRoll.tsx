@@ -30,13 +30,6 @@ function getDominantAttribute(attributes: Record<AttributeName, number>): string
   return `${ATTRIBUTE_LABELS[name]} ${value}`;
 }
 
-function formatAttributeChanges(changes: ResolvedEvent["attributeChanges"]): string {
-  const parts = (Object.entries(changes) as [AttributeName, number][])
-    .filter(([, value]) => value !== 0)
-    .map(([name, value]) => `${ATTRIBUTE_LABELS[name]}${value > 0 ? "+" : ""}${value}`);
-  return parts.length > 0 ? parts.join(" / ") : "无属性变化";
-}
-
 function buildTimeline(eventLog: ResolvedEvent[]): ResolvedEvent[] {
   if (eventLog.length <= MAX_TIMELINE_ITEMS) return eventLog;
 
@@ -95,10 +88,6 @@ export function LifeCreditsRoll() {
         跳过
       </button>
 
-      <div className="absolute inset-x-0 top-1/2 z-[71] flex justify-center px-8 -translate-y-1/2 pointer-events-none">
-        <div className="h-[1px] w-[min(720px,82vw)] bg-white/18" />
-      </div>
-
       <div className="cinematic-roll absolute inset-x-0 top-0 z-[72] flex justify-center px-8 text-center">
         <div className="w-[min(720px,82vw)] mx-auto text-center">
           <p className="font-mono text-[10px] tracking-[0.45em] uppercase text-white/35 mb-8 text-center">
@@ -127,23 +116,19 @@ export function LifeCreditsRoll() {
             </section>
           )}
 
-          <section className="space-y-7 mb-16 text-center">
+          <section className="space-y-4 mb-16 text-center">
             <p className="text-sm tracking-[0.28em] text-white/40 text-center">人生历程</p>
             {timeline.length > 0 ? timeline.map((event, index) => (
-              <div key={`${event.age}-${event.eventId}-${index}`} className="text-center mx-auto max-w-[640px] space-y-2">
-                <p className="font-mono text-[10px] tracking-[0.25em] text-white/35 text-center">
-                  {event.age} 岁
-                </p>
-                <p className="text-lg leading-relaxed text-white/74 text-center">
-                  {event.title}
-                </p>
-                <p className="text-sm leading-relaxed text-white/56 text-center">
-                  选择：{event.choiceText}
-                </p>
-                <p className="font-mono text-[10px] leading-relaxed text-white/35 text-center">
-                  {formatAttributeChanges(event.attributeChanges)}
-                </p>
-              </div>
+              <p
+                key={`${event.age}-${event.eventId}-${index}`}
+                className="mx-auto max-w-[680px] text-center text-base leading-relaxed text-white/68"
+              >
+                <span>{event.age}岁</span>
+                <span className="px-3 text-white/28">/</span>
+                <span>{event.title}</span>
+                <span className="px-3 text-white/28">/</span>
+                <span>{event.choiceText}</span>
+              </p>
             )) : (
               <p className="text-base text-white/60 text-center">没有留下可被记录的片段。</p>
             )}
