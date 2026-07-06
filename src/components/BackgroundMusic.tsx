@@ -53,6 +53,7 @@ export function BackgroundMusic({
   const [showPlayingStatus, setShowPlayingStatus] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [externalSong, setExternalSong] = useState<MusicTrack | null>(null);
   const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const statusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeFrameRef = useRef<number | null>(null);
@@ -65,7 +66,8 @@ export function BackgroundMusic({
     ? playlist.findIndex((song) => song.id === currentTrackId)
     : -1;
   const normalizedIndex = Math.min(currentSongIndex, playlist.length - 1);
-  const currentSong = playlist[controlledIndex >= 0 ? controlledIndex : normalizedIndex];
+  const playlistSong = playlist[controlledIndex >= 0 ? controlledIndex : normalizedIndex];
+  const currentSong = externalSong ?? playlistSong;
   const currentVolume = volume ?? currentSong.volume ?? DEFAULT_VOLUME;
 
   useEffect(() => {
@@ -352,6 +354,7 @@ export function BackgroundMusic({
     if (autoCloseTimerRef.current) {
       clearTimeout(autoCloseTimerRef.current);
     }
+    setExternalSong(null);
     setCurrentSongIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
     showCurrentTitle();
     if (isTouchDevice) {
@@ -367,6 +370,7 @@ export function BackgroundMusic({
     if (autoCloseTimerRef.current) {
       clearTimeout(autoCloseTimerRef.current);
     }
+    setExternalSong(null);
     setCurrentSongIndex((prev) => (prev + 1) % playlist.length);
     showCurrentTitle();
     if (isTouchDevice) {
@@ -383,6 +387,7 @@ export function BackgroundMusic({
       const detail = (event as CustomEvent<{
         action?: "next" | "prev" | "set" | "pause" | "resume";
         trackId?: string;
+        track?: MusicTrack;
       }>).detail;
       if (!detail?.action) return;
 
@@ -391,13 +396,21 @@ export function BackgroundMusic({
       }
 
       if (detail.action === "next") {
+        setExternalSong(null);
         setCurrentSongIndex((prev) => (prev + 1) % playlist.length);
         showCurrentTitle();
         return;
       }
 
       if (detail.action === "prev") {
+        setExternalSong(null);
         setCurrentSongIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
+        showCurrentTitle();
+        return;
+      }
+
+      if (detail.action === "set" && detail.track) {
+        setExternalSong(detail.track);
         showCurrentTitle();
         return;
       }
@@ -405,6 +418,7 @@ export function BackgroundMusic({
       if (detail.action === "set" && detail.trackId) {
         const nextIndex = playlist.findIndex((song) => song.id === detail.trackId);
         if (nextIndex >= 0) {
+          setExternalSong(null);
           setCurrentSongIndex(nextIndex);
           showCurrentTitle();
         }

@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_SONGS } from "./BackgroundMusic";
+import { DEFAULT_SONGS, type MusicTrack } from "./BackgroundMusic";
+import { getLifeMusicPlaylist } from "../data/life/music";
 
 interface FooterChaosShellProps {
   isOpen: boolean;
@@ -22,9 +23,52 @@ const INITIAL_LINES: ShellLine[] = [
 const HELP_LINES = [
   "available commands:",
   "help / about / life / fortune / gacha / music / ls / cd / pwd / echo / well / yomi / clear / exit",
-  "music: music list / music 1 / music play 2 / music next / music prev / music pause / music resume",
+  "music: music list / music 1 / music play 3 / music life_menu / music next / music prev / music pause / music resume",
   "filesystem: ls / ls logs / cd music / cd .. / pwd / echo <text>",
 ];
+
+
+interface ChaosMusicEntry {
+  commandId: string;
+  source: "home" | "life";
+  track: MusicTrack;
+}
+
+const LIFE_COMMAND_TRACKS: ChaosMusicEntry[] = getLifeMusicPlaylist().map((track) => ({
+  commandId: track.id,
+  source: "life",
+  track: {
+    id: `life:${track.id}`,
+    title: track.title,
+    artist: track.artist,
+    path: track.path,
+    volume: track.volume,
+    loop: track.loop,
+  },
+}));
+
+const CHAOS_MUSIC_LIBRARY: ChaosMusicEntry[] = [
+  ...DEFAULT_SONGS.map((track) => ({ commandId: track.id, source: "home" as const, track })),
+  ...LIFE_COMMAND_TRACKS,
+];
+
+function normalizeMusicQuery(value: string | undefined): string {
+  return (value ?? "").trim().toLowerCase();
+}
+
+function findChaosMusicEntry(value: string | undefined): ChaosMusicEntry | undefined {
+  const query = normalizeMusicQuery(value);
+  if (!query) return undefined;
+  const byNumber = Number(query);
+  if (Number.isInteger(byNumber) && byNumber >= 1 && byNumber <= CHAOS_MUSIC_LIBRARY.length) {
+    return CHAOS_MUSIC_LIBRARY[byNumber - 1];
+  }
+  return CHAOS_MUSIC_LIBRARY.find(({ commandId, track }) => {
+    const title = track.title.toLowerCase();
+    const artist = track.artist?.toLowerCase() ?? "";
+    return commandId.toLowerCase() === query || track.id.toLowerCase() === query || title === query || artist === query;
+  });
+}
 
 const VIRTUAL_FS: Record<string, string[]> = {
   "/": ["about.txt", "life", "fortune", "music", "well", "yomi", "logs", "void"],
@@ -61,7 +105,7 @@ function formatPath(path: string): string {
   return path === "/" ? "~" : `~${path}`;
 }
 
-function dispatchMusicCommand(detail: { action: "next" | "prev" | "set" | "pause" | "resume"; trackId?: string }) {
+function dispatchMusicCommand(detail: { action: "next" | "prev" | "set" | "pause" | "resume"; trackId?: string; track?: MusicTrack }) {
   window.dispatchEvent(new CustomEvent("cmys:home-music", { detail }));
 }
 
@@ -178,17 +222,17 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
 
         if (!sub) {
           output.push(
-            { kind: "output", text: "music commands: list / 1 / 2 / play <id> / next / prev / pause / resume" },
+            { kind: "output", text: "music commands: list / 1..N / play <id> / next / prev / pause / resume" },
             { kind: "output", text: "example: music list" },
-            { kind: "output", text: "example: music play 2" },
+            { kind: "output", text: "example: music play life_menu" },
           );
           break;
         }
 
         if (sub === "list") {
-          output.push(...DEFAULT_SONGS.map((song, index) => ({
+          output.push(...CHAOS_MUSIC_LIBRARY.map((entry, index) => ({
             kind: "output" as const,
-            text: `${index + 1}. ${song.title}${song.artist ? ` / ${song.artist}` : ""}`,
+            text: `${index + 1}. [${entry.source}] ${entry.track.title}${entry.track.artist ? ` / ${entry.track.artist}` : ""} (${entry.commandId})`,
           })));
           break;
         }
@@ -200,18 +244,20 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
         }
 
         const requestedTrack = sub === "play" || sub === "set" ? value : sub;
-        const track = DEFAULT_SONGS.find((song, index) => (
-          song.id.toLowerCase() === requestedTrack || String(index + 1) === requestedTrack
-        ));
+        const entry = findChaosMusicEntry(requestedTrack);
 
-        if (!track) {
+        if (!entry) {
           output.push({ kind: "error", text: `music: track '${requestedTrack ?? ""}' not found` });
           output.push({ kind: "system", text: "try: music list" });
           break;
         }
 
-        dispatchMusicCommand({ action: "set", trackId: track.id });
-        output.push({ kind: "system", text: `now routing audio to: ${track.title}` });
+        if (entry.source === "home") {
+          dispatchMusicCommand({ action: "set", trackId: entry.track.id });
+        } else {
+          dispatchMusicCommand({ action: "set", track: entry.track });
+        }
+        output.push({ kind: "system", text: `now routing audio to: [${entry.source}] ${entry.track.title}` });
         break;
       }
       case "well":
