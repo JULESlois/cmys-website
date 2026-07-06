@@ -5,7 +5,7 @@ import { BackgroundMusic } from "../components/BackgroundMusic";
 export function HomePage() {
   return (
     <>
-      <BackgroundMusic />
+      <BackgroundMusic enableExternalMusicControl />
       <Hero />
       <Timeline />
     </>

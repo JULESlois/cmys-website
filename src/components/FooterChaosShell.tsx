@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { DEFAULT_SONGS } from "./BackgroundMusic";
 
 interface FooterChaosShellProps {
   isOpen: boolean;
@@ -20,11 +21,48 @@ const INITIAL_LINES: ShellLine[] = [
 
 const HELP_LINES = [
   "available commands:",
-  "help / about / life / fortune / music / well / yomi / clear / exit",
+  "help / about / life / fortune / music / ls / cd / pwd / echo / well / yomi / clear / exit",
+  "music: music list / music 1 / music play 2 / music next / music prev / music pause / music resume",
+  "filesystem: ls / ls logs / cd well / cd .. / pwd / echo <text>",
 ];
 
-function normalizeCommand(value: string): string {
-  return value.trim().toLowerCase();
+const VIRTUAL_FS: Record<string, string[]> = {
+  "/": ["about.txt", "life", "fortune", "music", "well", "yomi", "logs", "void"],
+  "/life": ["mortality.sim", "save.record", "death.log"],
+  "/fortune": ["daily.oracle", "probability.txt"],
+  "/music": ["shuttle.device", "playlist.cache", "volume.lock"],
+  "/well": ["echo_0001", "rope.broken", "waterline"],
+  "/yomi": ["debt.record", "receipt.null", "delay.form"],
+  "/logs": ["boot.log", "dream.log", "noise.log"],
+  "/void": [],
+};
+
+function splitCommand(value: string): string[] {
+  return value.trim().split(/\s+/).filter(Boolean);
+}
+
+function resolvePath(currentPath: string, target = "."): string {
+  if (!target || target === ".") return currentPath;
+  const parts = target.startsWith("/") ? [] : currentPath.split("/").filter(Boolean);
+
+  for (const segment of target.split("/")) {
+    if (!segment || segment === ".") continue;
+    if (segment === "..") {
+      parts.pop();
+      continue;
+    }
+    parts.push(segment);
+  }
+
+  return `/${parts.join("/")}`.replace(/\/$/, "") || "/";
+}
+
+function formatPath(path: string): string {
+  return path === "/" ? "~" : `~${path}`;
+}
+
+function dispatchMusicCommand(detail: { action: "next" | "prev" | "set" | "pause" | "resume"; trackId?: string }) {
+  window.dispatchEvent(new CustomEvent("cmys:home-music", { detail }));
 }
 
 export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
@@ -34,8 +72,9 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
   const [input, setInput] = useState("");
   const [lines, setLines] = useState<ShellLine[]>(INITIAL_LINES);
   const [lineId, setLineId] = useState(INITIAL_LINES.length + 1);
+  const [cwd, setCwd] = useState("/");
 
-  const prompt = useMemo(() => "cmys@chaos:~$", []);
+  const prompt = useMemo(() => `cmys@chaos:${formatPath(cwd)}$`, [cwd]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -56,16 +95,18 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
   };
 
   const runCommand = (rawCommand: string) => {
-    const command = normalizeCommand(rawCommand);
-    if (!command) return;
+    const trimmed = rawCommand.trim();
+    const args = splitCommand(rawCommand);
+    const root = args[0]?.toLowerCase();
+    if (!root) return;
 
-    if (command === "clear") {
+    if (root === "clear") {
       setLines(INITIAL_LINES);
       setLineId(INITIAL_LINES.length + 1);
       return;
     }
 
-    if (command === "exit") {
+    if (root === "exit") {
       appendLines([
         { kind: "input", text: `${prompt} ${rawCommand}` },
         { kind: "system", text: "closing chaos node..." },
@@ -76,7 +117,7 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
 
     const output: Array<Omit<ShellLine, "id">> = [{ kind: "input", text: `${prompt} ${rawCommand}` }];
 
-    switch (command) {
+    switch (root) {
       case "help":
         output.push(...HELP_LINES.map((text) => ({ kind: "output" as const, text })));
         break;
@@ -85,6 +126,32 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
           { kind: "output", text: "CMYS.TOP is not a portfolio." },
           { kind: "output", text: "It is a quiet machine pretending to be one." },
         );
+        break;
+      case "pwd":
+        output.push({ kind: "output", text: cwd });
+        break;
+      case "ls": {
+        const targetPath = resolvePath(cwd, args[1] ?? ".");
+        const entries = VIRTUAL_FS[targetPath];
+        if (!entries) {
+          output.push({ kind: "error", text: `ls: cannot access '${args[1] ?? targetPath}': no such node` });
+          break;
+        }
+        output.push({ kind: "output", text: entries.length > 0 ? entries.join("    ") : "<empty>" });
+        break;
+      }
+      case "cd": {
+        const targetPath = resolvePath(cwd, args[1] ?? "/");
+        if (!Object.prototype.hasOwnProperty.call(VIRTUAL_FS, targetPath)) {
+          output.push({ kind: "error", text: `cd: ${args[1] ?? ""}: no such node` });
+          break;
+        }
+        setCwd(targetPath);
+        output.push({ kind: "system", text: `cwd changed to ${targetPath}` });
+        break;
+      }
+      case "echo":
+        output.push({ kind: "output", text: trimmed.replace(/^echo\s*/i, "") || "" });
         break;
       case "life":
         output.push(
@@ -104,12 +171,48 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
         appendLines(output);
         window.setTimeout(() => navigate("/gacha"), 260);
         return;
-      case "music":
-        output.push(
-          { kind: "output", text: "audio shuttle online." },
-          { kind: "output", text: "current track memory unstable." },
-        );
+      case "music": {
+        const sub = args[1]?.toLowerCase();
+        const value = args[2]?.toLowerCase();
+
+        if (!sub) {
+          output.push(
+            { kind: "output", text: "music commands: list / 1 / 2 / play <id> / next / prev / pause / resume" },
+            { kind: "output", text: "example: music list" },
+            { kind: "output", text: "example: music play 2" },
+          );
+          break;
+        }
+
+        if (sub === "list") {
+          output.push(...DEFAULT_SONGS.map((song, index) => ({
+            kind: "output" as const,
+            text: `${index + 1}. ${song.title}${song.artist ? ` / ${song.artist}` : ""}`,
+          })));
+          break;
+        }
+
+        if (sub === "next" || sub === "prev" || sub === "pause" || sub === "resume") {
+          dispatchMusicCommand({ action: sub });
+          output.push({ kind: "system", text: `music ${sub} signal sent.` });
+          break;
+        }
+
+        const requestedTrack = sub === "play" || sub === "set" ? value : sub;
+        const track = DEFAULT_SONGS.find((song, index) => (
+          song.id.toLowerCase() === requestedTrack || String(index + 1) === requestedTrack
+        ));
+
+        if (!track) {
+          output.push({ kind: "error", text: `music: track '${requestedTrack ?? ""}' not found` });
+          output.push({ kind: "system", text: "try: music list" });
+          break;
+        }
+
+        dispatchMusicCommand({ action: "set", trackId: track.id });
+        output.push({ kind: "system", text: `now routing audio to: ${track.title}` });
         break;
+      }
       case "well":
         output.push(
           { kind: "output", text: "井下没有回声。" },
@@ -123,7 +226,7 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
         );
         break;
       default:
-        output.push({ kind: "error", text: `unknown command: ${command}` });
+        output.push({ kind: "error", text: `unknown command: ${root}` });
         output.push({ kind: "system", text: "type \"help\" to list commands" });
         break;
     }
