@@ -21,9 +21,9 @@ const INITIAL_LINES: ShellLine[] = [
 
 const HELP_LINES = [
   "available commands:",
-  "help / about / life / fortune / music / ls / cd / pwd / echo / well / yomi / clear / exit",
+  "help / about / life / fortune / gacha / music / ls / cd / pwd / echo / well / yomi / clear / exit",
   "music: music list / music 1 / music play 2 / music next / music prev / music pause / music resume",
-  "filesystem: ls / ls logs / cd well / cd .. / pwd / echo <text>",
+  "filesystem: ls / ls logs / cd music / cd .. / pwd / echo <text>",
 ];
 
 const VIRTUAL_FS: Record<string, string[]> = {
@@ -163,6 +163,7 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
         window.setTimeout(() => navigate("/life"), 260);
         return;
       case "fortune":
+      case "gacha":
         output.push(
           { kind: "output", text: "route: /gacha" },
           { kind: "output", text: "probability is not faith, but it behaves similarly." },
