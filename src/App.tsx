@@ -61,7 +61,7 @@ function AppContent({
   onDailyFortuneSet: (f: Fortune | null) => void
 }) {
   const location = useLocation();
-  const showFooter = location.pathname !== "/gacha" && location.pathname !== "/life";
+  const showFooter = location.pathname === "/";
   const showDecorativeScrollbar = location.pathname !== "/life";
 
   return (
