@@ -27,6 +27,65 @@
   }
 }
 
+
+@layer components {
+  .life-text-action {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.15rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(26, 26, 26, 0.72);
+    cursor: pointer;
+    transition: color 180ms ease, transform 180ms ease;
+  }
+
+  .life-text-action::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 2.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.32;
+    transform: translateX(-50%);
+    transition: width 180ms ease, opacity 180ms ease;
+  }
+
+  .life-text-action:hover {
+    color: var(--color-primary);
+    transform: translateY(-1px);
+  }
+
+  .life-text-action:hover::after,
+  .life-text-action:focus-visible::after {
+    width: 100%;
+    opacity: 0.72;
+  }
+
+  .life-text-action:focus-visible {
+    outline: none;
+  }
+
+  .life-text-action-muted {
+    color: rgba(136, 136, 136, 0.72);
+  }
+
+  .life-text-action-light {
+    color: rgba(255, 255, 255, 0.58);
+  }
+
+  .life-text-action-light:hover {
+    color: rgba(255, 255, 255, 0.88);
+  }
+}
+
 @layer utilities {
   .font-mono-fixed {
     font-family: var(--font-mono-fixed);

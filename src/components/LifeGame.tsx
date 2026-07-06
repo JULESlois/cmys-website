@@ -99,7 +99,7 @@ export function LifeGame() {
                   const saved = loadGame();
                   if (saved) dispatch({ type: "LOAD_SAVE", state: saved });
                 }}
-                className="px-6 py-2 border border-primary font-mono text-xs tracking-[0.2em] uppercase hover:bg-primary hover:text-canvas transition-colors"
+                className="life-text-action"
               >
                 继续上次旅程
               </button>
@@ -108,7 +108,7 @@ export function LifeGame() {
                   clearSave();
                   dispatch({ type: "RESTART" });
                 }}
-                className="px-6 py-2 border border-primary/30 font-mono text-xs tracking-[0.2em] uppercase text-secondary hover:border-primary/60 hover:text-primary transition-colors"
+                className="life-text-action life-text-action-muted"
               >
                 重新开始
               </button>
@@ -183,7 +183,7 @@ export function LifeGame() {
             >
               <button
                 onClick={() => dispatch({ type: "SHOW_RESULT" })}
-                className="px-6 py-2 border border-white/20 font-mono text-xs tracking-[0.2em] uppercase text-white/50 hover:border-white/50 hover:text-white/80 transition-colors"
+                className="life-text-action life-text-action-light"
               >
                 查看结局
               </button>
@@ -212,7 +212,7 @@ export function LifeGame() {
             >
               <button
                 onClick={() => dispatch({ type: "SHOW_CREDITS_ROLL" })}
-                className="px-6 py-2 border border-white/20 font-mono text-xs tracking-[0.2em] uppercase text-white/50 hover:border-white/50 hover:text-white/80 transition-colors"
+                className="life-text-action life-text-action-light"
               >
                 查看结局
               </button>

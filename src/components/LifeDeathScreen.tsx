@@ -218,7 +218,7 @@ export function LifeDeathScreen() {
       >
         <button
           onClick={() => dispatch({ type: "RESTART" })}
-          className="px-8 py-3 border border-white/40 font-mono text-sm tracking-[0.3em] uppercase text-white/80 hover:bg-white hover:text-black transition-colors"
+          className="life-text-action life-text-action-light text-sm tracking-[0.3em]"
         >
           再来一局
         </button>
