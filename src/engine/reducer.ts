@@ -100,19 +100,21 @@ function hasExcludedTalentIds(state: GameState, excluded: string[] | undefined):
   return excluded.some((talentId) => talentIds.has(talentId));
 }
 
-function resolveChoiceByTalents(choice: import("./types").EventChoice, state: GameState): Pick<import("./types").EventChoice, "effects" | "resultText"> {
+function resolveChoiceByTalents(choice: import("./types").EventChoice, state: GameState): Pick<import("./types").EventChoice, "effects" | "resultText" | "resultPresentation"> {
   for (const conditional of choice.conditionalEffects ?? []) {
     if (!hasTalentIds(state, conditional.requiredTalents)) continue;
     if (hasExcludedTalentIds(state, conditional.excludedTalents)) continue;
     return {
       effects: conditional.effects,
       resultText: conditional.resultText ?? choice.resultText,
+      resultPresentation: conditional.resultPresentation ?? choice.resultPresentation,
     };
   }
 
   return {
     effects: choice.effects,
     resultText: choice.resultText,
+    resultPresentation: choice.resultPresentation,
   };
 }
 
@@ -455,6 +457,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const resolvedChoice = resolveChoiceByTalents(choice, state);
       const choiceEffects = resolvedChoice.effects;
       const resultText = resolvedChoice.resultText;
+      const resultPresentation = resolvedChoice.resultPresentation;
 
       const talentModifierResult = applyTalentModifiers(
         scaleAttributeChanges(choiceEffects.attributes ?? {}),
@@ -538,6 +541,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
               attributeChanges: combinedChanges,
               chapterTransition: "黄泉债 +1",
               talentEffects,
+              presentation: resultPresentation ?? { tone: "yomi", enter: "sink", text: "subtitle", durationMs: 1400 },
               holdAge: false,
               ageDelta: getEventAgeDelta(event),
             },
@@ -674,6 +678,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           attributeChanges: scaledAttributeChanges,
           chapterTransition,
           talentEffects,
+          presentation: resultPresentation,
           holdAge: shouldHoldAge,
           ageDelta: getEventAgeDelta(event),
         },
