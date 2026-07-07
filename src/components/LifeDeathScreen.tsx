@@ -218,7 +218,7 @@ export function LifeDeathScreen() {
       >
         <button
           onClick={() => dispatch({ type: "RESTART" })}
-          className="life-text-action life-text-action-light text-sm tracking-[0.3em]"
+          className="font-mono text-sm tracking-[0.3em] text-white/60"
         >
           再来一局
         </button>

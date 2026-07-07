@@ -32,7 +32,7 @@ export function LifeStoryArcSummary() {
 
       <button
         onClick={() => dispatch({ type: "DISMISS_STORY_ARC_SUMMARY" })}
-        className="life-text-action"
+        className="font-mono text-xs tracking-[0.2em] text-primary/70"
       >
         继续
       </button>

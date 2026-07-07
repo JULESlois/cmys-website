@@ -130,7 +130,7 @@ export function LifeEventResult({ result, onDismiss }: Props) {
           animate={{ opacity: 1 }}
           transition={{ delay: hasScene ? 1.55 : 0.6 }}
           onClick={onDismiss}
-          className={hasScene ? "life-text-action life-text-action-light" : "life-text-action"}
+          className={hasScene ? "font-mono text-xs tracking-[0.2em] text-white/60" : "font-mono text-xs tracking-[0.2em] text-primary/70"}
         >
           继续
         </motion.button>

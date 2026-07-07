@@ -97,7 +97,7 @@ export function LifeInfancyStage() {
         </p>
         <button
           onClick={() => setNarrationIndex(infancyEvents.length)}
-          className="life-text-action life-text-action-muted mt-2 text-[10px] tracking-[0.18em]"
+          className="font-mono mt-2 text-[10px] tracking-[0.18em] text-secondary/60"
         >
           跳过
         </button>

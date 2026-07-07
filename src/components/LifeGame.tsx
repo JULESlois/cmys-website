@@ -99,7 +99,7 @@ export function LifeGame() {
                   const saved = loadGame();
                   if (saved) dispatch({ type: "LOAD_SAVE", state: saved });
                 }}
-                className="life-text-action"
+                className="font-mono text-xs tracking-[0.2em] text-primary/70"
               >
                 继续上次旅程
               </button>
@@ -108,7 +108,7 @@ export function LifeGame() {
                   clearSave();
                   dispatch({ type: "RESTART" });
                 }}
-                className="life-text-action life-text-action-muted"
+                className="font-mono text-xs tracking-[0.2em] text-secondary/60"
               >
                 重新开始
               </button>
@@ -183,7 +183,7 @@ export function LifeGame() {
             >
               <button
                 onClick={() => dispatch({ type: "SHOW_RESULT" })}
-                className="life-text-action life-text-action-light"
+                className="font-mono text-xs tracking-[0.2em] text-white/60"
               >
                 查看结局
               </button>
@@ -212,7 +212,7 @@ export function LifeGame() {
             >
               <button
                 onClick={() => dispatch({ type: "SHOW_CREDITS_ROLL" })}
-                className="life-text-action life-text-action-light"
+                className="font-mono text-xs tracking-[0.2em] text-white/60"
               >
                 查看结局
               </button>
