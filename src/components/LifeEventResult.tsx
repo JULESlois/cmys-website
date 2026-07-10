@@ -28,27 +28,9 @@ function largestSwing(result: EventResult): number {
 function inferPresentation(result: EventResult): EventResultPresentation | null {
   if (result.presentation) return result.presentation;
 
-  const text = `${result.text} ${result.chapterTransition ?? ""}`;
-  const physiqueDrop = result.attributeChanges.physique ?? 0;
-  const luckDrop = result.attributeChanges.luck ?? 0;
-
-  if (/井|沉没|异生|井下|水声|回声/.test(text)) {
-    return { tone: "well", enter: "sink", text: "subtitle", durationMs: 1400 };
-  }
-  if (/黄泉|赊|延期|账|债/.test(text)) {
-    return { tone: "yomi", enter: "sink", text: "subtitle", durationMs: 1400 };
-  }
-  if (/事故|危险|坠|撞|火|溺|终局/.test(text) || luckDrop <= -6) {
-    return { tone: "danger", enter: "flash", text: "subtitle", durationMs: 950 };
-  }
-  if (/病|痛|医院|体检|咳|药|衰|昏|烧/.test(text) || physiqueDrop <= -5) {
-    return { tone: "illness", enter: "blur", text: "subtitle", durationMs: 1500 };
-  }
-  if (largestDrop(result) <= -7) {
-    return { tone: "death", enter: "fade", text: "subtitle", durationMs: 1200 };
-  }
-  if (largestSwing(result) >= 8) {
-    return { tone: "memory", enter: "fade", text: "fade-up", durationMs: 1000 };
+  // 特殊演出优先由事件显式配置，黄泉债作为系统级事件保留兜底。
+  if (result.chapterTransition?.includes("黄泉债")) {
+    return { tone: "yomi", enter: "fade", text: "subtitle", durationMs: 700 };
   }
 
   return null;
@@ -75,7 +57,7 @@ export function LifeEventResult({ result, onDismiss }: Props) {
         <motion.p
           initial={{ opacity: 0, y: textAnimation === "subtitle" ? 8 : 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: hasScene ? 0.35 : 0.1, duration: hasScene ? 0.9 : 0.45 }}
+          transition={{ delay: hasScene ? 0.2 : 0.05, duration: 0.4 }}
           className={`font-serif text-lg leading-relaxed text-center ${hasScene ? "text-white/82 drop-shadow-[0_2px_18px_rgba(0,0,0,0.75)]" : "text-primary/80"}`}
         >
           {result.text}
@@ -85,7 +67,7 @@ export function LifeEventResult({ result, onDismiss }: Props) {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: hasScene ? 0.95 : 0.2, duration: 0.45 }}
+            transition={{ delay: hasScene ? 0.45 : 0.15, duration: 0.3 }}
             className="flex flex-wrap justify-center gap-3"
           >
             {changes.map(([key, val]) => (
@@ -103,7 +85,7 @@ export function LifeEventResult({ result, onDismiss }: Props) {
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: hasScene ? 1.15 : 0.3, duration: 0.45 }}
+            transition={{ delay: hasScene ? 0.55 : 0.2, duration: 0.3 }}
             className="flex flex-col items-center gap-1 text-center"
           >
             {talentEffects.map((effect, index) => (
@@ -118,7 +100,7 @@ export function LifeEventResult({ result, onDismiss }: Props) {
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: hasScene ? 1.3 : 0.35, duration: 0.45 }}
+            transition={{ delay: hasScene ? 0.65 : 0.25, duration: 0.3 }}
             className={`font-mono text-[10px] tracking-[0.22em] uppercase ${hasScene ? "text-white/45" : "text-secondary/70"}`}
           >
             {result.chapterTransition}
@@ -128,7 +110,7 @@ export function LifeEventResult({ result, onDismiss }: Props) {
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: hasScene ? 1.55 : 0.6 }}
+          transition={{ delay: hasScene ? 0.85 : 0.35 }}
           onClick={onDismiss}
           className={hasScene ? "font-mono text-xs tracking-[0.2em] text-white/60" : "font-mono text-xs tracking-[0.2em] text-primary/70"}
         >

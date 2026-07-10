@@ -1,4 +1,5 @@
 // src/components/LifeResultBackground.tsx
+import { motion } from "motion/react";
 import type { EventResultPresentation } from "../engine/types";
 
 interface LifeResultBackgroundProps {
@@ -19,8 +20,12 @@ export function LifeResultBackground({ presentation }: LifeResultBackgroundProps
   const tone = presentation.tone ?? "neutral";
 
   return (
-    <div
+    <motion.div
       aria-hidden="true"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
       className="fixed inset-0 z-[35] pointer-events-none overflow-hidden"
       style={{ background: TONE_BACKGROUNDS[tone] }}
     >
@@ -31,6 +36,6 @@ export function LifeResultBackground({ presentation }: LifeResultBackgroundProps
           className="absolute inset-0 h-full w-full object-cover opacity-45 mix-blend-screen"
         />
       )}
-    </div>
+    </motion.div>
   );
 }
