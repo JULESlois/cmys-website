@@ -3,35 +3,31 @@ import type { EventTriggerRecord, GameState } from "./types";
 import { normalizeChapterState, syncStoryArcForAge } from "./chapters";
 
 const SAVE_KEY = "cmys_life_autosave";
+const SAVE_VERSION = 2;
 
 interface SaveData {
+  version: number;
   state: GameState;
   timestamp: number;
 }
 
-/** 序列化：EventTriggerRecord 直接 JSON 可序列化，无需特殊处理 */
-function serializeState(state: GameState): string {
-  return JSON.stringify({
-    ...state,
-    // triggeredEventIds 是 Record<string, number>，JSON 原生支持
-    currentEvent: state.currentEvent,
-    pendingChoices: state.pendingChoices,
-  });
+export interface SaveMetadata {
+  age: number;
+  timestamp: number | null;
+  storyArcId: string;
+  activeChapterId: string | null;
 }
 
-function deserializeState(json: string): GameState {
-  const raw = JSON.parse(json);
-  // triggeredEventIds 在 JSON 中就是普通对象，直接使用
-  // 兼容旧 Set 格式：如果是数组则转为 Record
+function normalizeState(raw: any): GameState {
   let triggered: EventTriggerRecord = {};
   if (Array.isArray(raw.triggeredEventIds)) {
-    // 旧格式：Set 序列化成的数组
     for (const id of raw.triggeredEventIds) {
       triggered[id] = raw.age ?? 0;
     }
   } else if (raw.triggeredEventIds && typeof raw.triggeredEventIds === "object") {
     triggered = raw.triggeredEventIds;
   }
+
   return {
     ...raw,
     triggeredEventIds: triggered,
@@ -44,48 +40,91 @@ function deserializeState(json: string): GameState {
   };
 }
 
+function parseSave(json: string): { state: GameState; timestamp: number | null } {
+  const raw = JSON.parse(json);
+
+  // v2：带时间戳的包装结构。
+  if (raw && typeof raw === "object" && raw.state) {
+    return {
+      state: normalizeState(raw.state),
+      timestamp: typeof raw.timestamp === "number" ? raw.timestamp : null,
+    };
+  }
+
+  // 兼容旧版直接保存 GameState 的格式。
+  return {
+    state: normalizeState(raw),
+    timestamp: null,
+  };
+}
+
+function writeSave(state: GameState): void {
+  const data: SaveData = {
+    version: SAVE_VERSION,
+    state,
+    timestamp: Date.now(),
+  };
+  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+}
+
 /**
- * 在关键年龄节点自动存档。
- * 存档年龄点：6岁（小学）、18岁（成年）、31岁（而立）、61岁（退休）。
+ * 保存人生进度。
+ * 默认只在关键年龄保存；force=true 用于事件展示、事件结算、篇章切换和终局等关键节点。
  */
-export function saveGame(state: GameState): void {
-  const SAVE_CHECKPOINTS = [6, 18, 31, 61];
-  if (!SAVE_CHECKPOINTS.includes(state.age as number)) return;
+export function saveGame(state: GameState, force = false): void {
+  const checkpoints = [6, 18, 31, 61];
+  if (!force && !checkpoints.includes(state.age as number)) return;
 
   try {
-    const data: SaveData = { state, timestamp: Date.now() };
-    localStorage.setItem(SAVE_KEY, serializeState(state));
+    writeSave(state);
   } catch {
-    // localStorage 满或不可用，静默失败
+    // localStorage 满或不可用，静默失败。
   }
 }
 
-/** 检查是否存在存档 */
 export function hasSave(): boolean {
   try {
-    return localStorage.getItem(SAVE_KEY) !== null;
+    const json = localStorage.getItem(SAVE_KEY);
+    if (!json) return false;
+    parseSave(json);
+    return true;
   } catch {
+    clearSave();
     return false;
   }
 }
 
-/** 读取存档，解析失败时自动清除无效存档 */
 export function loadGame(): GameState | null {
   try {
     const json = localStorage.getItem(SAVE_KEY);
     if (!json) return null;
-    return deserializeState(json);
+    return parseSave(json).state;
   } catch {
     clearSave();
     return null;
   }
 }
 
-/** 清除存档 */
+export function getSaveMetadata(): SaveMetadata | null {
+  try {
+    const json = localStorage.getItem(SAVE_KEY);
+    if (!json) return null;
+    const { state, timestamp } = parseSave(json);
+    return {
+      age: state.age as number,
+      timestamp,
+      storyArcId: state.chapter.currentArcId,
+      activeChapterId: state.chapter.activeChapterId,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export function clearSave(): void {
   try {
     localStorage.removeItem(SAVE_KEY);
   } catch {
-    // 静默失败
+    // 静默失败。
   }
 }

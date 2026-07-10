@@ -2,7 +2,7 @@
 import { useReducer, useEffect, useState } from "react";
 import type { GameAction } from "../engine/types";
 import { createInitialState, gameReducer } from "../engine/reducer";
-import { saveGame, hasSave, loadGame, clearSave } from "../engine/autosave";
+import { saveGame, hasSave, loadGame, clearSave, getSaveMetadata } from "../engine/autosave";
 import { LifeContext, type LifeContextValue } from "./LifeContext";
 import { LifeTalentPicker } from "./LifeTalentPicker";
 import { LifeInfancyStage } from "./LifeInfancyStage";
@@ -17,7 +17,19 @@ import { LifeStoryArcSummary } from "./LifeStoryArcSummary";
 import { LifeCreditsRoll } from "./LifeCreditsRoll";
 import { getChapterById } from "../data/life/chapters";
 import { getAttributeEndingByAttribute } from "../data/life/attribute-endings";
+import { getStoryArcById } from "../data/life/story-arcs";
 import { AnimatePresence, motion } from "motion/react";
+
+function formatSaveTimestamp(timestamp: number | null): string {
+  if (!timestamp) return "旧版记录";
+  return new Date(timestamp).toLocaleString("zh-CN", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
 
 export function LifeGame() {
   const [state, dispatch] = useReducer(
@@ -32,6 +44,7 @@ export function LifeGame() {
   );
 
   const [intro, setIntro] = useState<"show" | "fade" | "hide">("show");
+  const [saveMetadata] = useState(() => getSaveMetadata());
 
   useEffect(() => {
     const html = document.documentElement;
@@ -52,10 +65,31 @@ export function LifeGame() {
     };
   }, []);
 
-  // 年龄段切换时自动保存
+  // 在年龄检查点、事件展示/结算、篇章切换与终局自动保存。
   useEffect(() => {
-    saveGame(state);
-  }, [state.age]);
+    const phase = state.phase;
+    const force =
+      (phase.type === "playing" && (
+        phase.step === "event_presenting" ||
+        phase.step === "effect_resolving" ||
+        (state.age === 0 && state.talents.length > 0)
+      )) ||
+      phase.type === "story_arc_summary" ||
+      phase.type === "chapter_intro" ||
+      phase.type === "dying" ||
+      phase.type === "life_credits_roll" ||
+      phase.type === "ending_prelude" ||
+      phase.type === "result";
+
+    saveGame(state, force);
+  }, [state]);
+
+  // 开始全新人生时清除上一段人生的自动存档。
+  useEffect(() => {
+    if (state.phase.type === "talent_selection" && state.age === 0 && state.eventLog.length === 0) {
+      clearSave();
+    }
+  }, [state.phase.type, state.age, state.eventLog.length]);
 
   // 任意键触发"继续"
   useEffect(() => {
@@ -93,6 +127,16 @@ export function LifeGame() {
           <div className="flex flex-col items-center gap-8">
             <h2 className="font-serif text-3xl tracking-tighter">沉默一生</h2>
             <p className="font-mono text-xs text-secondary">发现上次的旅程记录</p>
+            {saveMetadata && (
+              <div className="flex flex-col items-center gap-2 font-mono text-[10px] tracking-[0.12em] text-secondary/65">
+                <p>
+                  {saveMetadata.age} 岁 · {saveMetadata.activeChapterId
+                    ? getChapterById(saveMetadata.activeChapterId)?.name ?? saveMetadata.activeChapterId
+                    : getStoryArcById(saveMetadata.storyArcId)?.name ?? saveMetadata.storyArcId}
+                </p>
+                <p>保存于 {formatSaveTimestamp(saveMetadata.timestamp)}</p>
+              </div>
+            )}
             <div className="flex gap-4 mt-4">
               <button
                 onClick={() => {

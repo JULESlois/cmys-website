@@ -154,6 +154,10 @@ export interface EventChoice {
 export interface EventResult {
   text: string;
   attributeChanges: Partial<Record<AttributeName, number>>;
+  /** 本次变化后对应属性的当前值，仅记录本次发生变化的属性。 */
+  attributeValues?: Partial<Record<AttributeName, number>>;
+  /** 关系、职业、天赋等非属性系统反馈。 */
+  systemEffects?: string[];
   chapterTransition?: string;
   talentEffects?: string[];
   presentation?: EventResultPresentation;

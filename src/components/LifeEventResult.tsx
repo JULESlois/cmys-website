@@ -40,6 +40,7 @@ export function LifeEventResult({ result, onDismiss }: Props) {
   const changes = Object.entries(result.attributeChanges) as [AttributeName, number][];
   const hasChanges = changes.length > 0;
   const talentEffects = result.talentEffects ?? [];
+  const systemEffects = result.systemEffects ?? [];
   const presentation = inferPresentation(result);
   const hasScene = Boolean(presentation && presentation.tone !== "neutral");
   const textAnimation = presentation?.text ?? "fade-up";
@@ -76,6 +77,22 @@ export function LifeEventResult({ result, onDismiss }: Props) {
                 className={`font-mono text-sm tabular-nums ${hasScene ? "text-white/58" : val > 0 ? "text-green-700" : val < 0 ? "text-red-700" : "text-secondary"}`}
               >
                 {LABELS[key]} {val > 0 ? "+" : ""}{val}
+                {result.attributeValues?.[key] !== undefined ? ` · 现为 ${result.attributeValues[key]}` : ""}
+              </span>
+            ))}
+          </motion.div>
+        )}
+
+        {systemEffects.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: hasScene ? 0.55 : 0.2, duration: 0.3 }}
+            className="flex flex-col items-center gap-1 text-center"
+          >
+            {systemEffects.map((effect, index) => (
+              <span key={`${effect}-${index}`} className={`font-mono text-[10px] ${hasScene ? "text-white/52" : "text-primary/60"}`}>
+                {effect}
               </span>
             ))}
           </motion.div>
