@@ -82,55 +82,6 @@ function mergeAttributeChanges(
   return next;
 }
 
-function getChangedAttributeValues(
-  attrs: Attributes,
-  changes: Partial<Record<AttributeName, number>>,
-): Partial<Record<AttributeName, number>> {
-  const values: Partial<Record<AttributeName, number>> = {};
-  for (const key of Object.keys(changes) as AttributeName[]) values[key] = attrs[key];
-  return values;
-}
-
-function formatDelta(value: number): string {
-  return value > 0 ? `+${value}` : String(value);
-}
-
-function buildSystemEffects(
-  state: GameState,
-  relationships: GameState["relationships"],
-  career: GameState["career"],
-  talents: GameState["talents"],
-  effects: import("./types").EventChoiceEffects,
-): string[] {
-  const feedback: string[] = [];
-
-  if (effects.relationshipEffect) {
-    const { targetId } = effects.relationshipEffect;
-    const before = state.relationships.find((item) =>
-      item.id === targetId || (targetId === "confidant" && item.tag === "confidant")
-    );
-    const after = before ? relationships.find((item) => item.id === before.id) : undefined;
-    if (before && after && before.affinity !== after.affinity) {
-      feedback.push(`关系 · ${after.name} ${formatDelta(after.affinity - before.affinity)} · 现为 ${after.affinity}`);
-    }
-  }
-
-  if (state.career && career && state.career.level !== career.level) {
-    feedback.push(`职业 · ${career.title} ${formatDelta(career.level - state.career.level)} · 现为 ${career.level}级`);
-  }
-
-  const previousTalentIds = new Set(state.talents.map((talent) => talent.id));
-  const nextTalentIds = new Set(talents.map((talent) => talent.id));
-  for (const talent of talents) {
-    if (!previousTalentIds.has(talent.id)) feedback.push(`获得天赋 · ${talent.name}`);
-  }
-  for (const talent of state.talents) {
-    if (!nextTalentIds.has(talent.id)) feedback.push(`失去天赋 · ${talent.name}`);
-  }
-
-  return feedback;
-}
-
 function getEventAgeDelta(event: GameEvent | null | undefined): number {
   const raw = event?.ageDelta ?? 0;
   if (!Number.isFinite(raw)) return 0;
@@ -326,7 +277,6 @@ function applyTalentDeathConversion(state: GameState, deathCheck: DeathCheck): G
         lastResult: {
           text: composeDeathConversionText(deathCheck.cause, conversion.resultText),
           attributeChanges,
-          attributeValues: getChangedAttributeValues(convertedAttributes, attributeChanges),
           chapterTransition,
           talentEffects: [`天赋「${talent.name}」改写了${deathCheck.deathType === "accident" ? "意外死亡" : "死亡"}`],
           holdAge: false,
@@ -590,7 +540,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             lastResult: {
               text: composeDeathConversionText(deathNarrative, conversion.text),
               attributeChanges: combinedChanges,
-              attributeValues: getChangedAttributeValues(attrs, combinedChanges),
               chapterTransition: "黄泉债 +1",
               talentEffects,
               presentation: resultPresentation ?? { tone: "yomi", enter: "sink", text: "subtitle", durationMs: 1400 },
@@ -693,8 +642,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         chapterTransition = chapterTransition ?? `离开${getChapterName(exited) ?? "篇章"}`;
       }
 
-      const systemEffects = buildSystemEffects(state, relationships, career, talents, choiceEffects);
-
       const shouldHoldAge = choiceEffects.holdAge
         ?? Boolean(chapter.activeChapterId && (event.chapterId || choiceEffects.triggerChapterId));
 
@@ -730,8 +677,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         lastResult: {
           text: resultText ?? `你选择了"${choice.text}"。`,
           attributeChanges: scaledAttributeChanges,
-          attributeValues: getChangedAttributeValues(attrs, scaledAttributeChanges),
-          systemEffects,
           chapterTransition,
           talentEffects,
           presentation: resultPresentation,
