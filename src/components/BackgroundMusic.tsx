@@ -12,7 +12,7 @@ export interface MusicTrack {
   loop?: boolean;
 }
 
-const DEFAULT_SONGS: MusicTrack[] = [
+export const DEFAULT_SONGS: MusicTrack[] = [
   { id: "1", title: "Luv(sic.) Part 3", artist: "MC赵小六", path: "/musics/Luv(sic.) Part 3 (feat. MC赵小六).mp3" },
   { id: "2", title: "The Great Gig in the Sky", artist: "Pink Floyd", path: "/musics/The Great Gig in the Sky.mp4" },
 ];
@@ -31,6 +31,7 @@ interface BackgroundMusicProps {
   titleDisplayMs?: number;
   fadeOutMs?: number;
   fadeInMs?: number;
+  enableExternalMusicControl?: boolean;
 }
 
 export function BackgroundMusic({
@@ -44,6 +45,7 @@ export function BackgroundMusic({
   titleDisplayMs = 3000,
   fadeOutMs = 500,
   fadeInMs = 700,
+  enableExternalMusicControl = false,
 }: BackgroundMusicProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -51,6 +53,7 @@ export function BackgroundMusic({
   const [showPlayingStatus, setShowPlayingStatus] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [externalSong, setExternalSong] = useState<MusicTrack | null>(null);
   const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const statusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeFrameRef = useRef<number | null>(null);
@@ -63,7 +66,8 @@ export function BackgroundMusic({
     ? playlist.findIndex((song) => song.id === currentTrackId)
     : -1;
   const normalizedIndex = Math.min(currentSongIndex, playlist.length - 1);
-  const currentSong = playlist[controlledIndex >= 0 ? controlledIndex : normalizedIndex];
+  const playlistSong = playlist[controlledIndex >= 0 ? controlledIndex : normalizedIndex];
+  const currentSong = externalSong ?? playlistSong;
   const currentVolume = volume ?? currentSong.volume ?? DEFAULT_VOLUME;
 
   useEffect(() => {
@@ -350,6 +354,7 @@ export function BackgroundMusic({
     if (autoCloseTimerRef.current) {
       clearTimeout(autoCloseTimerRef.current);
     }
+    setExternalSong(null);
     setCurrentSongIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
     showCurrentTitle();
     if (isTouchDevice) {
@@ -365,6 +370,7 @@ export function BackgroundMusic({
     if (autoCloseTimerRef.current) {
       clearTimeout(autoCloseTimerRef.current);
     }
+    setExternalSong(null);
     setCurrentSongIndex((prev) => (prev + 1) % playlist.length);
     showCurrentTitle();
     if (isTouchDevice) {
@@ -373,6 +379,73 @@ export function BackgroundMusic({
       }, 2000);
     }
   };
+
+  useEffect(() => {
+    if (!enableExternalMusicControl) return;
+
+    const handleExternalMusicCommand = (event: Event) => {
+      const detail = (event as CustomEvent<{
+        action?: "next" | "prev" | "set" | "pause" | "resume";
+        trackId?: string;
+        track?: MusicTrack;
+      }>).detail;
+      if (!detail?.action) return;
+
+      if ((detail.action === "next" || detail.action === "prev" || detail.action === "set") && lockTrackSelection) {
+        return;
+      }
+
+      if (detail.action === "next") {
+        setExternalSong(null);
+        setCurrentSongIndex((prev) => (prev + 1) % playlist.length);
+        showCurrentTitle();
+        return;
+      }
+
+      if (detail.action === "prev") {
+        setExternalSong(null);
+        setCurrentSongIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
+        showCurrentTitle();
+        return;
+      }
+
+      if (detail.action === "set" && detail.track) {
+        setExternalSong(detail.track);
+        showCurrentTitle();
+        return;
+      }
+
+      if (detail.action === "set" && detail.trackId) {
+        const nextIndex = playlist.findIndex((song) => song.id === detail.trackId);
+        if (nextIndex >= 0) {
+          setExternalSong(null);
+          setCurrentSongIndex(nextIndex);
+          showCurrentTitle();
+        }
+        return;
+      }
+
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      if (detail.action === "pause") {
+        audio.pause();
+        setIsPlaying(false);
+        showCurrentTitle(1600);
+        return;
+      }
+
+      if (detail.action === "resume") {
+        audio.play().then(() => {
+          setIsPlaying(true);
+          showCurrentTitle();
+        }).catch(() => {});
+      }
+    };
+
+    window.addEventListener("cmys:home-music", handleExternalMusicCommand);
+    return () => window.removeEventListener("cmys:home-music", handleExternalMusicCommand);
+  }, [enableExternalMusicControl, lockTrackSelection, playlist, titleDisplayMs]);
 
   const expandedWidth = hideSkipControls ? 220 : 260;
 
@@ -406,7 +479,7 @@ export function BackgroundMusic({
         }}
         transition={{ type: "spring", stiffness: 350, damping: 30 }}
         className={cn(
-          "fixed bottom-8 left-8 z-[100] bg-white text-black shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center overflow-hidden cursor-pointer"
+          "fixed bottom-8 left-8 z-[100] bg-white text-black glass-border flex items-center overflow-hidden cursor-pointer"
         )}
       >
         <AnimatePresence mode="wait">

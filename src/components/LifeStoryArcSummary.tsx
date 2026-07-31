@@ -27,11 +27,12 @@ export function LifeStoryArcSummary() {
         </div>
       </div>
 
+
       <LifeStatsBars attributes={state.attributes} />
 
       <button
         onClick={() => dispatch({ type: "DISMISS_STORY_ARC_SUMMARY" })}
-        className="px-6 py-2 border border-primary font-mono text-xs tracking-[0.2em] uppercase hover:bg-primary hover:text-canvas transition-colors"
+        className="font-mono text-xs tracking-[0.2em] text-primary/70"
       >
         继续
       </button>

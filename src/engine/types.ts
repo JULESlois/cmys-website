@@ -122,16 +122,30 @@ export interface EventChoiceEffects {
   forceLethal?: boolean;
 }
 
+export type EventResultTone = "neutral" | "memory" | "well" | "yomi" | "death" | "illness" | "danger";
+export type EventResultEnterAnimation = "fade" | "flash" | "sink" | "blur";
+export type EventResultTextAnimation = "fade-up" | "subtitle";
+
+export interface EventResultPresentation {
+  tone?: EventResultTone;
+  enter?: EventResultEnterAnimation;
+  text?: EventResultTextAnimation;
+  cgSrc?: string;
+  durationMs?: number;
+}
+
 export interface ConditionalChoiceEffect {
   requiredTalents?: string[];
   excludedTalents?: string[];
   effects: EventChoiceEffects;
   resultText?: string;
+  resultPresentation?: EventResultPresentation;
 }
 
 export interface EventChoice {
   text: string;
   resultText?: string;
+  resultPresentation?: EventResultPresentation;
   effects: EventChoiceEffects;
   /** 根据天赋等条件改写同一个选择的真实后果。命中后使用该分支替换默认 effects/resultText。 */
   conditionalEffects?: ConditionalChoiceEffect[];
@@ -142,6 +156,7 @@ export interface EventResult {
   attributeChanges: Partial<Record<AttributeName, number>>;
   chapterTransition?: string;
   talentEffects?: string[];
+  presentation?: EventResultPresentation;
   holdAge?: boolean;
   /** 事件结算后推进的年龄数；默认 0。 */
   ageDelta?: number;
@@ -242,6 +257,7 @@ export type GamePhase =
   | { type: "chapter_intro"; chapterId: string }
   | { type: "ending_prelude"; endingId: AttributeName }
   | { type: "dying"; cause: string }
+  | { type: "life_credits_roll" }
   | { type: "result" };
 
 export interface GameState {
@@ -277,6 +293,7 @@ export type GameAction =
   | { type: "DISMISS_RESULT" }
   | { type: "DISMISS_STORY_ARC_SUMMARY" }
   | { type: "DISMISS_CHAPTER_INTRO" }
+  | { type: "SHOW_CREDITS_ROLL" }
   | { type: "SHOW_RESULT" }
   | { type: "RESTART" }
   | { type: "LOAD_SAVE"; state: GameState };

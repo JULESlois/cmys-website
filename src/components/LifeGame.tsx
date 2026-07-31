@@ -2,7 +2,7 @@
 import { useReducer, useEffect, useState } from "react";
 import type { GameAction } from "../engine/types";
 import { createInitialState, gameReducer } from "../engine/reducer";
-import { saveGame, hasSave, loadGame, clearSave } from "../engine/autosave";
+import { saveGame, hasSave, loadGame, clearSave, getSaveMetadata } from "../engine/autosave";
 import { LifeContext, type LifeContextValue } from "./LifeContext";
 import { LifeTalentPicker } from "./LifeTalentPicker";
 import { LifeInfancyStage } from "./LifeInfancyStage";
@@ -14,9 +14,22 @@ import { LifeIntro } from "./LifeIntro";
 import { LifeChapterIntro } from "./LifeChapterIntro";
 import { LifeMusicPlayer } from "./LifeMusicPlayer";
 import { LifeStoryArcSummary } from "./LifeStoryArcSummary";
+import { LifeCreditsRoll } from "./LifeCreditsRoll";
 import { getChapterById } from "../data/life/chapters";
 import { getAttributeEndingByAttribute } from "../data/life/attribute-endings";
+import { getStoryArcById } from "../data/life/story-arcs";
 import { AnimatePresence, motion } from "motion/react";
+
+function formatSaveTimestamp(timestamp: number | null): string {
+  if (!timestamp) return "旧版记录";
+  return new Date(timestamp).toLocaleString("zh-CN", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
 
 export function LifeGame() {
   const [state, dispatch] = useReducer(
@@ -31,6 +44,7 @@ export function LifeGame() {
   );
 
   const [intro, setIntro] = useState<"show" | "fade" | "hide">("show");
+  const [saveMetadata] = useState(() => getSaveMetadata());
 
   useEffect(() => {
     const html = document.documentElement;
@@ -51,10 +65,31 @@ export function LifeGame() {
     };
   }, []);
 
-  // 年龄段切换时自动保存
+  // 在年龄检查点、事件展示/结算、篇章切换与终局自动保存。
   useEffect(() => {
-    saveGame(state);
-  }, [state.age]);
+    const phase = state.phase;
+    const force =
+      (phase.type === "playing" && (
+        phase.step === "event_presenting" ||
+        phase.step === "effect_resolving" ||
+        (state.age === 0 && state.talents.length > 0)
+      )) ||
+      phase.type === "story_arc_summary" ||
+      phase.type === "chapter_intro" ||
+      phase.type === "dying" ||
+      phase.type === "life_credits_roll" ||
+      phase.type === "ending_prelude" ||
+      phase.type === "result";
+
+    saveGame(state, force);
+  }, [state]);
+
+  // 开始全新人生时清除上一段人生的自动存档。
+  useEffect(() => {
+    if (state.phase.type === "talent_selection" && state.age === 0 && state.eventLog.length === 0) {
+      clearSave();
+    }
+  }, [state.phase.type, state.age, state.eventLog.length]);
 
   // 任意键触发"继续"
   useEffect(() => {
@@ -92,13 +127,23 @@ export function LifeGame() {
           <div className="flex flex-col items-center gap-8">
             <h2 className="font-serif text-3xl tracking-tighter">沉默一生</h2>
             <p className="font-mono text-xs text-secondary">发现上次的旅程记录</p>
+            {saveMetadata && (
+              <div className="flex flex-col items-center gap-2 font-mono text-[10px] tracking-[0.12em] text-secondary/65">
+                <p>
+                  {saveMetadata.age} 岁 · {saveMetadata.activeChapterId
+                    ? getChapterById(saveMetadata.activeChapterId)?.name ?? saveMetadata.activeChapterId
+                    : getStoryArcById(saveMetadata.storyArcId)?.name ?? saveMetadata.storyArcId}
+                </p>
+                <p>保存于 {formatSaveTimestamp(saveMetadata.timestamp)}</p>
+              </div>
+            )}
             <div className="flex gap-4 mt-4">
               <button
                 onClick={() => {
                   const saved = loadGame();
                   if (saved) dispatch({ type: "LOAD_SAVE", state: saved });
                 }}
-                className="px-6 py-2 border border-primary font-mono text-xs tracking-[0.2em] uppercase hover:bg-primary hover:text-canvas transition-colors"
+                className="font-mono text-xs tracking-[0.2em] text-primary/70"
               >
                 继续上次旅程
               </button>
@@ -107,7 +152,7 @@ export function LifeGame() {
                   clearSave();
                   dispatch({ type: "RESTART" });
                 }}
-                className="px-6 py-2 border border-primary/30 font-mono text-xs tracking-[0.2em] uppercase text-secondary hover:border-primary/60 hover:text-primary transition-colors"
+                className="font-mono text-xs tracking-[0.2em] text-secondary/60"
               >
                 重新开始
               </button>
@@ -182,7 +227,7 @@ export function LifeGame() {
             >
               <button
                 onClick={() => dispatch({ type: "SHOW_RESULT" })}
-                className="px-6 py-2 border border-white/20 font-mono text-xs tracking-[0.2em] uppercase text-white/50 hover:border-white/50 hover:text-white/80 transition-colors"
+                className="font-mono text-xs tracking-[0.2em] text-white/60"
               >
                 查看结局
               </button>
@@ -210,14 +255,17 @@ export function LifeGame() {
               transition={{ delay: 1.2 }}
             >
               <button
-                onClick={() => dispatch({ type: "SHOW_RESULT" })}
-                className="px-6 py-2 border border-white/20 font-mono text-xs tracking-[0.2em] uppercase text-white/50 hover:border-white/50 hover:text-white/80 transition-colors"
+                onClick={() => dispatch({ type: "SHOW_CREDITS_ROLL" })}
+                className="font-mono text-xs tracking-[0.2em] text-white/60"
               >
                 查看结局
               </button>
             </motion.div>
           </motion.div>
         );
+
+      case "life_credits_roll":
+        return <LifeCreditsRoll />;
 
       case "result":
         return <LifeDeathScreen />;
@@ -227,7 +275,7 @@ export function LifeGame() {
     }
   };
 
-  const isEnding = state.phase.type === "dying" || state.phase.type === "ending_prelude" || state.phase.type === "result";
+  const isEnding = state.phase.type === "dying" || state.phase.type === "life_credits_roll" || state.phase.type === "ending_prelude" || state.phase.type === "result";
 
   return (
     <LifeContext.Provider value={ctx}>
@@ -262,8 +310,8 @@ export function LifeGame() {
           {isEnding && (
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: state.phase.type === "result" ? 1 : 0.85 }}
-              transition={{ duration: state.phase.type === "result" ? 1.2 : 0.8 }}
+              animate={{ opacity: state.phase.type === "result" || state.phase.type === "life_credits_roll" ? 1 : 0.85 }}
+              transition={{ duration: state.phase.type === "result" || state.phase.type === "life_credits_roll" ? 1.2 : 0.8 }}
               className="absolute inset-0 z-20 bg-black pointer-events-none"
             />
           )}

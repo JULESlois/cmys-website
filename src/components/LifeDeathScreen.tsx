@@ -5,6 +5,7 @@ import { computeResult } from "../engine/ending";
 import { ENDING_FLAVOR_TEXTS } from "../data/life/endings";
 import { ALL_ACHIEVEMENTS } from "../data/life/achievements";
 import type { DeathType } from "../engine/types";
+import { clearSave } from "../engine/autosave";
 
 const DEATH_TYPE_LABELS: Record<DeathType, string> = {
   attribute: "（属性衰竭致死）",
@@ -217,8 +218,11 @@ export function LifeDeathScreen() {
         transition={{ delay: 6.5, duration: 0.8 }}
       >
         <button
-          onClick={() => dispatch({ type: "RESTART" })}
-          className="px-8 py-3 border border-white/40 font-mono text-sm tracking-[0.3em] uppercase text-white/80 hover:bg-white hover:text-black transition-colors"
+          onClick={() => {
+            clearSave();
+            dispatch({ type: "RESTART" });
+          }}
+          className="font-mono text-sm tracking-[0.3em] text-white/60"
         >
           再来一局
         </button>

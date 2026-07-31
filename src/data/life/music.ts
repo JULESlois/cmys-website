@@ -190,6 +190,7 @@ function shouldUseOpeningBgmForArc(arcId: string | null | undefined): boolean {
 
 export function selectLifeMusicId(state: GameState): string {
   if (state.phase.type === "dying") return "death";
+  if (state.phase.type === "life_credits_roll" && state.deathRecord) return "death";
   if (state.phase.type === "result" && state.deathRecord) return "death";
   if (state.phase.type === "ending_prelude") return "ending";
   if (state.phase.type === "result" && state.attributeEndingId) return "ending";

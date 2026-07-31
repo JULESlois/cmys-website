@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue } from "moti
 import { cn } from "../lib/utils";
 import React, { useRef, useEffect, useState } from "react";
 import { AsciiEarth } from "./AsciiEarth";
+import { FooterChaosShell } from "./FooterChaosShell";
 
 function FooterArt({ isCenter }: { isCenter: boolean }) {
   return (
@@ -43,6 +44,7 @@ function FooterArt({ isCenter }: { isCenter: boolean }) {
 export function Footer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [cstTime, setCstTime] = useState<string>("");
+  const [isChaosShellOpen, setIsChaosShellOpen] = useState(false);
   
   const currentYear = new Date().getFullYear();
 
@@ -104,11 +106,23 @@ export function Footer() {
          <span className="font-mono text-[10px] text-white/30 tracking-widest">
             © {currentYear} CMYS.TOP / ALL RIGHTS RESERVED
          </span>
-         <div className="flex gap-8">
+         <div className="flex flex-wrap items-center justify-center gap-8">
             <span className="font-mono text-[10px] text-white/20">35°18' N, 113°54' E</span>
             <span className="font-mono text-[10px] text-white/20">V. 2026.04</span>
+            <button
+              onClick={() => setIsChaosShellOpen(true)}
+              className="font-mono text-[10px] tracking-widest text-white/15 hover:text-white/65 transition-colors uppercase"
+              aria-label="Open chaos node shell"
+            >
+              CHAOS_NODE
+            </button>
          </div>
       </div>
+
+      <FooterChaosShell
+        isOpen={isChaosShellOpen}
+        onClose={() => setIsChaosShellOpen(false)}
+      />
 
       {/* 1px decorative wireframe lines */}
       <div className="absolute inset-0 pointer-events-none border-x border-white/5" />
