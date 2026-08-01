@@ -11,6 +11,7 @@ import { DecorativeScrollbar } from "./components/DecorativeScrollbar";
 import { FortuneSystem } from "./components/FortuneSystem";
 import { Fortune } from "./constants/fortunes";
 import { HomePage } from "./pages/HomePage";
+import { AboutPage } from "./pages/AboutPage";
 import { GachaPage } from "./pages/GachaPage";
 import { LifePage } from "./pages/LifePage";
 
@@ -61,7 +62,7 @@ function AppContent({
   onDailyFortuneSet: (f: Fortune | null) => void
 }) {
   const location = useLocation();
-  const showFooter = location.pathname === "/";
+  const showFooter = location.pathname === "/" || location.pathname === "/about";
   const showDecorativeScrollbar = location.pathname !== "/life";
 
   return (
@@ -71,6 +72,7 @@ function AppContent({
       <main className="relative z-20 min-h-screen bg-canvas text-primary font-sans selection:bg-primary selection:text-canvas">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route
             path="/gacha"
             element={

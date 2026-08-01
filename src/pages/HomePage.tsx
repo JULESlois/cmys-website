@@ -1,13 +1,13 @@
-import { Hero } from "../components/Hero";
-import { Timeline } from "../components/Timeline";
 import { BackgroundMusic } from "../components/BackgroundMusic";
+import { HomeQuoteScreen } from "../components/HomeQuoteScreen";
+import { fortuneQuotes, lifeQuotes } from "../data/homeQuotes";
 
 export function HomePage() {
   return (
     <>
       <BackgroundMusic enableExternalMusicControl />
-      <Hero />
-      <Timeline />
+      <HomeQuoteScreen quotes={fortuneQuotes} />
+      <HomeQuoteScreen quotes={lifeQuotes} alignRight />
     </>
   );
 }
