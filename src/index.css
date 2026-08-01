@@ -39,6 +39,22 @@
   }
 }
 
+.desktop-hover-nav {
+  display: none;
+  opacity: 0;
+}
+
+@media (min-width: 768px) and (any-hover: hover) and (any-pointer: fine) {
+  .desktop-hover-nav {
+    display: flex;
+  }
+
+  .header-hover-reveal:hover .desktop-hover-nav,
+  .header-hover-reveal:focus-within .desktop-hover-nav {
+    opacity: 1;
+  }
+}
+
 /* Hide default scrollbars for the visual lab experience */
 ::-webkit-scrollbar {
   display: none;

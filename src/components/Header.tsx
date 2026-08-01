@@ -21,8 +21,8 @@ export function Header() {
   const headerOpacity = useTransform(scrollYProgress, [0.85, 0.9], [1, isGachaPage ? 1 : 0]);
 
   const navLinks: NavLinkItem[] = [
-    { name: "纯墨韵声", path: "/about" },
-    { name: "驰鸣羽势", path: "/about#roots" },
+    { name: "纯墨韵声", path: "/about#roots" },
+    { name: "驰鸣羽势", path: "/about#growth" },
     { name: "聪明一世", path: "/gacha" },
     { name: "沉默一生", path: "/life" },
   ];
@@ -53,13 +53,13 @@ export function Header() {
   return (
     <motion.header
       style={{ height, y: headerY, opacity: headerOpacity }}
-      className={`group/header fixed top-0 left-0 w-full z-50 flex items-center border-b border-primary/10 px-6 overflow-hidden transition-all duration-300 ${
+      className={`header-hover-reveal fixed top-0 left-0 w-full z-50 flex items-center border-b border-primary/10 px-6 overflow-hidden transition-all duration-300 ${
         isLifePage ? "hidden" : ""
       }`}
     >
       <div className="w-full grid grid-cols-3 items-center h-full">
         {/* Left Nav */}
-        <nav className="hidden md:flex gap-8 items-center h-full opacity-0 transition-opacity duration-300 group-hover/header:opacity-100 group-focus-within/header:opacity-100">
+        <nav className="desktop-hover-nav gap-8 items-center h-full transition-opacity duration-300">
           {!isGachaPage && showNavLinks && navLinks.slice(0, 2).map((link) => (
             <NavLink
               key={link.name}
@@ -100,7 +100,7 @@ export function Header() {
         </motion.div>
 
         {/* Right Nav */}
-        <nav className="hidden md:flex gap-8 items-center justify-end h-full opacity-0 transition-opacity duration-300 group-hover/header:opacity-100 group-focus-within/header:opacity-100">
+        <nav className="desktop-hover-nav gap-8 items-center justify-end h-full transition-opacity duration-300">
           {!isGachaPage && showNavLinks && navLinks.slice(2).map((link) => (
             <NavLink
               key={link.name}
