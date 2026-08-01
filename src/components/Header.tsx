@@ -53,13 +53,13 @@ export function Header() {
   return (
     <motion.header
       style={{ height, y: headerY, opacity: headerOpacity }}
-      className={`fixed top-0 left-0 w-full z-50 flex items-center border-b border-primary/10 px-4 md:px-6 overflow-hidden transition-all duration-300 ${
+      className={`group/header fixed top-0 left-0 w-full z-50 flex items-center border-b border-primary/10 px-6 overflow-hidden transition-all duration-300 ${
         isLifePage ? "hidden" : ""
       }`}
     >
-      <div className="w-full flex flex-col md:grid md:grid-cols-3 items-center justify-center h-full pt-1 md:pt-0">
+      <div className="w-full grid grid-cols-3 items-center h-full">
         {/* Left Nav */}
-        <nav className="hidden md:flex gap-8 items-center h-full">
+        <nav className="hidden md:flex gap-8 items-center h-full opacity-0 transition-opacity duration-300 group-hover/header:opacity-100 group-focus-within/header:opacity-100">
           {!isGachaPage && showNavLinks && navLinks.slice(0, 2).map((link) => (
             <NavLink
               key={link.name}
@@ -69,11 +69,12 @@ export function Header() {
             />
           ))}
         </nav>
+        <div className="md:hidden" />
 
         {/* Center Logo */}
         <motion.div
           style={{ scale: logoScale }}
-          className={`flex justify-center items-center mt-1 md:mt-0 ${isLifePage ? "md:opacity-0 pointer-events-none" : ""}`}
+          className={`flex justify-center items-center ${isLifePage ? "md:opacity-0 pointer-events-none" : ""}`}
         >
           <button 
             onClick={() => {
@@ -83,7 +84,7 @@ export function Header() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }}
-            className="font-serif text-[28px] sm:text-4xl md:text-5xl tracking-tighter text-primary group overflow-hidden cursor-pointer"
+            className="font-serif text-4xl sm:text-5xl tracking-tighter text-primary group overflow-hidden cursor-pointer"
           >
             <motion.span 
               className="inline-block"
@@ -97,24 +98,9 @@ export function Header() {
             </motion.span>
           </button>
         </motion.div>
-        
-        {/* Mobile Nav */}
-        {!isGachaPage && showNavLinks && (
-          <nav className="flex md:hidden gap-3 sm:gap-5 w-full justify-center items-center mt-auto pb-1">
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.name}
-                name={link.name}
-                onClick={() => handleNavClick(link)}
-                isActive={isActiveLink(link)}
-                isMobile
-              />
-            ))}
-          </nav>
-        )}
 
         {/* Right Nav */}
-        <nav className="hidden md:flex gap-8 items-center justify-end h-full">
+        <nav className="hidden md:flex gap-8 items-center justify-end h-full opacity-0 transition-opacity duration-300 group-hover/header:opacity-100 group-focus-within/header:opacity-100">
           {!isGachaPage && showNavLinks && navLinks.slice(2).map((link) => (
             <NavLink
               key={link.name}
@@ -124,6 +110,7 @@ export function Header() {
             />
           ))}
         </nav>
+        <div className="md:hidden" />
       </div>
       
       <motion.div
@@ -137,27 +124,24 @@ export function Header() {
 function NavLink({ 
   name, 
   onClick, 
-  isActive,
-  isMobile
+  isActive
 }: { 
   name: string; 
   onClick: () => void; 
   isActive?: boolean;
-  isMobile?: boolean;
   key?: string;
 }) {
   return (
     <button 
       onClick={onClick}
       className={cn(
-        "relative font-mono tracking-[0.1em] md:tracking-[0.2em] transition-colors cursor-pointer",
-        isMobile ? "py-1 text-[11px] sm:text-xs" : "py-2 text-xs",
+        "relative py-2 font-mono text-xs tracking-[0.2em] transition-colors cursor-pointer",
         isActive ? "text-primary" : "text-secondary"
       )}
     >
       {name}
       <motion.span 
-        className="absolute bottom-0 md:bottom-1 left-0 h-[1px] bg-primary"
+        className="absolute bottom-1 left-0 h-[1px] bg-primary"
         initial={{ width: isActive ? "100%" : 0 }}
         animate={{ width: isActive ? "100%" : 0 }}
         transition={{ duration: 0.4, ease: "circOut" }}
