@@ -186,7 +186,7 @@ export function AsciiEarth() {
   return (
     <div 
       ref={containerRef}
-      className="w-full h-full flex items-center justify-center font-mono text-[8px] leading-none tracking-tight text-white/70 whitespace-pre will-change-contents"
+      className="flex h-full w-full items-center justify-center whitespace-pre font-mono text-[5px] leading-none text-white/70 will-change-contents sm:text-[6px] xl:text-[7px]"
       style={{ fontFamily: "monospace" }}
     />
   );

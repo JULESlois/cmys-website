@@ -106,18 +106,6 @@
   z-index: 10;
 }
 
-@keyframes ticker {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.animate-ticker {
-  display: flex;
-  width: fit-content;
-  animation: ticker 30s linear infinite;
-}
-
-
 @keyframes cinematic-roll {
   0% { transform: translateY(72vh); }
   100% { transform: translateY(-112%); }
