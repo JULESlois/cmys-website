@@ -19,7 +19,7 @@ export function HomeQuoteScreen({ quotes, headingLevel, alignRight = false }: Ho
   const Heading = headingLevel;
 
   return (
-    <div className="min-h-[100svh] snap-always snap-start flex flex-col justify-center px-6 md:px-12 bg-canvas">
+    <div className="min-h-[100svh] snap-always snap-start flex flex-col justify-center px-6 md:px-12">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
