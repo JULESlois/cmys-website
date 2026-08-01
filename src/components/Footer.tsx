@@ -8,7 +8,21 @@ export function Footer() {
 
   return (
     <footer className="noise-bg relative flex min-h-[100svh] snap-always snap-start flex-col overflow-hidden border-t border-white/10 bg-dark text-[#F0F0F0]">
-      <div className="relative z-10 grid w-full flex-1 grid-cols-1 items-center gap-8 px-6 py-12 sm:px-8 md:px-16 md:py-16 lg:grid-cols-[minmax(0,1.35fr)_minmax(260px,0.65fr)]">
+      <div className="relative z-20 flex min-h-14 items-center justify-end border-b border-white/10 px-6 py-4 sm:px-8 md:px-16">
+        <div className="flex flex-wrap items-center justify-end gap-x-8 gap-y-2">
+          <span className="font-mono text-[10px] text-white/25">35°18' N, 113°54' E</span>
+          <span className="font-mono text-[10px] text-white/25">V. 2026.04</span>
+          <button
+            onClick={() => setIsChaosShellOpen(true)}
+            className="font-mono text-[10px] uppercase text-white/25 transition-colors hover:text-white/70 focus-visible:text-white/70 focus-visible:outline-none"
+            aria-label="Open chaos node shell"
+          >
+            CHAOS_NODE
+          </button>
+        </div>
+      </div>
+
+      <div className="relative z-10 grid w-full flex-1 auto-rows-max content-center grid-cols-1 items-center gap-8 px-6 py-10 sm:px-8 md:px-16 md:py-12 lg:auto-rows-auto lg:grid-cols-[minmax(0,1.35fr)_minmax(260px,0.65fr)] lg:content-stretch">
         <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left">
           <h2 className="font-serif text-6xl leading-none sm:text-7xl lg:text-8xl xl:text-9xl">
             CMYS.TOP
@@ -28,21 +42,10 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="relative z-20 flex flex-col items-center gap-5 border-t border-white/10 px-6 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-6 sm:px-8 lg:flex-row lg:justify-between lg:py-7 lg:pl-80 lg:pr-16">
+      <div className="relative z-20 flex min-h-16 items-center justify-center border-t border-white/10 px-6 py-6 sm:px-8 md:justify-start md:px-16 md:py-7">
         <span className="font-mono text-[10px] text-white/35">
           © {currentYear} CMYS.TOP / ALL RIGHTS RESERVED
         </span>
-        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-          <span className="font-mono text-[10px] text-white/25">35°18' N, 113°54' E</span>
-          <span className="font-mono text-[10px] text-white/25">V. 2026.04</span>
-          <button
-            onClick={() => setIsChaosShellOpen(true)}
-            className="font-mono text-[10px] uppercase text-white/25 transition-colors hover:text-white/70 focus-visible:text-white/70 focus-visible:outline-none"
-            aria-label="Open chaos node shell"
-          >
-            CHAOS_NODE
-          </button>
-        </div>
       </div>
 
       <FooterChaosShell
