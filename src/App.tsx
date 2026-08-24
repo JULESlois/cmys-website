@@ -14,6 +14,7 @@ import { HomePage } from "./pages/HomePage";
 import { AboutPage } from "./pages/AboutPage";
 import { GachaPage } from "./pages/GachaPage";
 import { LifePage } from "./pages/LifePage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 const STORAGE_DATE_KEY = "esu_fortune_date";
 const STORAGE_KEY = "esu_fortune_daily";
@@ -83,6 +84,7 @@ function AppContent({
             }
           />
           <Route path="/life" element={<LifePage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       {showFooter && <Footer />}
