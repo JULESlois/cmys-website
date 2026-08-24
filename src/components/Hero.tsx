@@ -1,34 +1,28 @@
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
 import { backgroundWords } from "../data";
 
-export function Hero() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+const BACKGROUND_WORD_COUNT = 42;
 
+export function Hero() {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-canvas snap-always snap-start">
-      {/* Background Text Cloud */}
-      <div className="absolute inset-0 z-0 flex flex-wrap content-start opacity-[0.03] select-none text-primary pointer-events-none overflow-hidden">
-        {mounted && Array.from({ length: 150 }).map((_, i) => {
+      <div className="absolute inset-x-6 inset-y-[14vh] z-0 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 content-center gap-x-6 gap-y-5 opacity-[0.025] select-none text-primary pointer-events-none overflow-hidden sm:inset-x-10 md:inset-x-[8vw]">
+        {Array.from({ length: BACKGROUND_WORD_COUNT }).map((_, i) => {
           const word = backgroundWords[i % backgroundWords.length];
           return (
             <motion.span
-              key={i}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
+              key={`${word}-${i}`}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
               transition={{
-                delay: i * 0.01 + Math.random() * 0.5,
-                duration: 1,
-                repeat: Infinity,
-                repeatType: "reverse",
-                repeatDelay: Math.random() * 5 + 2
+                duration: 1.4,
+                delay: Math.min(i * 0.025, 0.8),
+                ease: [0.22, 1, 0.36, 1],
               }}
-              className="text-2xl sm:text-4xl lg:text-5xl font-mono mx-2 my-1 whitespace-nowrap"
-              style={{
-                marginLeft: `${Math.random() * 20}px`,
-                marginRight: `${Math.random() * 20}px`
-              }}
+              className={`whitespace-nowrap font-mono text-sm sm:text-base lg:text-lg ${
+                i % 3 === 1 ? "text-center" : i % 3 === 2 ? "text-right" : "text-left"
+              }`}
             >
               {word}
             </motion.span>
@@ -36,38 +30,36 @@ export function Hero() {
         })}
       </div>
 
-      {/* Main Content */}
       <div className="relative z-10 w-full max-w-4xl px-6">
         <motion.div
-          initial={{ y: 50, opacity: 0, filter: "blur(10px)" }}
-          whileInView={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: false, amount: 0.5 }}
-          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
           className="text-center"
         >
-          <h1 className="text-6xl sm:text-7xl lg:text-9xl font-bold tracking-tighter text-primary mix-blend-difference mb-6" style={{ fontVariantLigatures: 'no-common-ligatures' }}>
-            <span className="block text-2xl sm:text-4xl font-normal tracking-normal mb-4 font-mono text-secondary">你好，我叫</span>
+          <h1 className="text-6xl sm:text-7xl lg:text-9xl font-bold tracking-tighter text-primary mb-6" style={{ fontVariantLigatures: "no-common-ligatures" }}>
+            <span className="block text-xl sm:text-3xl font-normal tracking-normal mb-4 font-mono text-secondary">你好，我叫</span>
             CMYS
           </h1>
-          <motion.div 
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 0.3 }}
             viewport={{ once: false, amount: 0.5 }}
-            transition={{ duration: 1.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="h-[1px] w-32 bg-primary mx-auto opacity-30 mt-8 mb-4"
+            transition={{ duration: 1.4, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="h-[1px] w-32 bg-primary mx-auto mt-8 mb-4"
           />
         </motion.div>
       </div>
-      
-      {/* Scroll Indicator */}
-      <motion.div 
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+
+      <motion.div
+        className="absolute bottom-12 left-1/2 -translate-x-1/2"
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        whileInView={{ opacity: 0.65 }}
         viewport={{ once: false, amount: 0.5 }}
-        transition={{ delay: 2, duration: 1 }}
+        transition={{ delay: 1.1, duration: 1 }}
       >
-        <span className="text-xs font-mono text-secondary">SCROLL</span>
+        <span className="text-[10px] tracking-[0.28em] font-mono text-secondary">SCROLL</span>
       </motion.div>
     </section>
   );
