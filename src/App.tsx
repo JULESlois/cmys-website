@@ -16,45 +16,25 @@ import { GachaPage } from "./pages/GachaPage";
 import { LifePage } from "./pages/LifePage";
 import { LabPage } from "./pages/LabPage";
 import { FragmentsPage } from "./pages/FragmentsPage";
+import { SignalPage } from "./pages/SignalPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 
 const STORAGE_DATE_KEY = "esu_fortune_date";
 const STORAGE_KEY = "esu_fortune_daily";
 
 const ROUTE_METADATA: Record<string, { title: string; description: string }> = {
-  "/": {
-    title: "CMYS — 聪明一世",
-    description: "聪明一世，草木一生。CMYS 的个人网站与兴趣实验入口。",
-  },
-  "/about": {
-    title: "CMYS — 草木一生",
-    description: "草木一生。关于 CMYS、时间，以及一路留下的片段。",
-  },
-  "/gacha": {
-    title: "CMYS — 揣摩运势",
-    description: "揣摩运势。一次关于概率、仪式感与每日偶然的 CMYS 实验。",
-  },
-  "/life": {
-    title: "CMYS — 沉默一生",
-    description: "沉默一生。用选择、属性与偶然走完一段人生的 CMYS 实验。",
-  },
-  "/lab": {
-    title: "CMYS — Curiosity Makes You Stray",
-    description: "Curiosity Makes You Stray. An index of CMYS experiments and wandering ideas.",
-  },
-  "/fragments": {
-    title: "CMYS — Certain Memories Yield Slowly",
-    description: "Certain Memories Yield Slowly. A small archive of phrases that happen to become CMYS.",
-  },
+  "/": { title: "CMYS — 聪明一世", description: "聪明一世，草木一生。CMYS 的个人网站与兴趣实验入口。" },
+  "/about": { title: "CMYS — 草木一生", description: "草木一生。关于 CMYS、时间，以及一路留下的片段。" },
+  "/gacha": { title: "CMYS — 揣摩运势", description: "揣摩运势。一次关于概率、仪式感与每日偶然的 CMYS 实验。" },
+  "/life": { title: "CMYS — 沉默一生", description: "沉默一生。用选择、属性与偶然走完一段人生的 CMYS 实验。" },
+  "/lab": { title: "CMYS — Curiosity Makes You Stray", description: "Curiosity Makes You Stray. An index of CMYS experiments and wandering ideas." },
+  "/fragments": { title: "CMYS — Certain Memories Yield Slowly", description: "Certain Memories Yield Slowly. A small archive of phrases that happen to become CMYS." },
+  "/signal": { title: "CMYS — SIGNAL", description: "一个在噪声中寻找隐藏短句的 CMYS 调频实验。" },
 };
 
-const NOT_FOUND_METADATA = {
-  title: "CMYS — 此门已失",
-  description: "此门已失。这里没有对应的路径。",
-};
+const NOT_FOUND_METADATA = { title: "CMYS — 此门已失", description: "此门已失。这里没有对应的路径。" };
 
 function getTodayDate(): string {
-  // 返回中国标准时间 (CST, UTC+8) 的日期字符串 (YYYY-MM-DD)
   const now = new Date();
   const formatter = new Intl.DateTimeFormat("zh-CN", {
     timeZone: "Asia/Shanghai",
@@ -89,7 +69,6 @@ function RouteMetadata() {
   useEffect(() => {
     const metadata = ROUTE_METADATA[location.pathname] ?? NOT_FOUND_METADATA;
     document.title = metadata.title;
-
     let description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     if (!description) {
       description = document.createElement("meta");
@@ -110,30 +89,19 @@ function RouteScrollReset() {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       return;
     }
-
     const targetId = decodeURIComponent(location.hash.slice(1));
     const frame = window.requestAnimationFrame(() => {
       const target = document.getElementById(targetId);
-      if (target) {
-        target.scrollIntoView({ behavior: "auto", block: "start" });
-      } else {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      }
+      if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
+      else window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     });
-
     return () => window.cancelAnimationFrame(frame);
   }, [location.pathname, location.hash]);
 
   return null;
 }
 
-function AppContent({
-  onOpenFortune,
-  dailyFortune,
-  isFortuneOpen,
-  onCloseFortune,
-  onDailyFortuneSet
-}: {
+function AppContent({ onOpenFortune, dailyFortune, isFortuneOpen, onCloseFortune, onDailyFortuneSet }: {
   onOpenFortune: () => void,
   dailyFortune: Fortune | null,
   isFortuneOpen: boolean,
@@ -142,41 +110,27 @@ function AppContent({
 }) {
   const location = useLocation();
   const isMainSite = location.pathname === "/" || location.pathname === "/about";
-  const showFooter = isMainSite;
-  const showDecorativeScrollbar = isMainSite;
 
   return (
     <div className="relative">
       <RouteMetadata />
       <RouteScrollReset />
-      {showDecorativeScrollbar && <DecorativeScrollbar />}
+      {isMainSite && <DecorativeScrollbar />}
       <Header />
       <main className="relative z-20 min-h-screen bg-canvas text-primary font-sans selection:bg-primary selection:text-canvas">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route
-            path="/gacha"
-            element={
-              <GachaPage
-                onOpenFortune={onOpenFortune}
-                dailyFortune={dailyFortune}
-              />
-            }
-          />
+          <Route path="/gacha" element={<GachaPage onOpenFortune={onOpenFortune} dailyFortune={dailyFortune} />} />
           <Route path="/life" element={<LifePage />} />
           <Route path="/lab" element={<LabPage />} />
           <Route path="/fragments" element={<FragmentsPage />} />
+          <Route path="/signal" element={<SignalPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
-      {showFooter && <Footer />}
-
-      <FortuneSystem 
-        isOpen={isFortuneOpen} 
-        onClose={onCloseFortune} 
-        onDailyFortuneSet={onDailyFortuneSet}
-      />
+      {isMainSite && <Footer />}
+      <FortuneSystem isOpen={isFortuneOpen} onClose={onCloseFortune} onDailyFortuneSet={onDailyFortuneSet} />
     </div>
   );
 }
@@ -195,14 +149,10 @@ export default function App() {
     loadFortunes();
   }, []);
 
-  const handleOpenFortune = () => {
-    setIsFortuneOpen(true);
-  };
-
   return (
     <BrowserRouter>
-      <AppContent 
-        onOpenFortune={handleOpenFortune}
+      <AppContent
+        onOpenFortune={() => setIsFortuneOpen(true)}
         dailyFortune={dailyFortune}
         isFortuneOpen={isFortuneOpen}
         onCloseFortune={() => setIsFortuneOpen(false)}
