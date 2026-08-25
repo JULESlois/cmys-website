@@ -19,6 +19,7 @@ import { FragmentsPage } from "./pages/FragmentsPage";
 import { SignalPage } from "./pages/SignalPage";
 import { MinutePage } from "./pages/MinutePage";
 import { MazePage } from "./pages/MazePage";
+import { MemoryPage } from "./pages/MemoryPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 
 const STORAGE_DATE_KEY = "esu_fortune_date";
@@ -34,6 +35,7 @@ const ROUTE_METADATA: Record<string, { title: string; description: string }> = {
   "/signal": { title: "CMYS — SIGNAL", description: "一个在噪声中寻找隐藏短句的 CMYS 调频实验。" },
   "/minute": { title: "CMYS — 一分钟一生", description: "六十秒，十二次人生节点。来不及完美，只能选择。" },
   "/maze": { title: "CMYS — 迷径", description: "没有地图的文字迷宫。凭方向、线索与记忆寻找出口。" },
+  "/memory": { title: "CMYS — 错梦已生", description: "八秒记忆实验。辨认真正出现过的片段，以及后来混进来的伪记忆。" },
 };
 
 const NOT_FOUND_METADATA = { title: "CMYS — 此门已失", description: "此门已失。这里没有对应的路径。" };
@@ -132,6 +134,7 @@ function AppContent({ onOpenFortune, dailyFortune, isFortuneOpen, onCloseFortune
           <Route path="/signal" element={<SignalPage />} />
           <Route path="/minute" element={<MinutePage />} />
           <Route path="/maze" element={<MazePage />} />
+          <Route path="/memory" element={<MemoryPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
