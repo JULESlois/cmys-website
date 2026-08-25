@@ -44,7 +44,7 @@ export function Timeline() {
         
         {/* Layer 1: Roots */}
         <div id="roots" className="relative min-h-[100svh] snap-always snap-start w-full px-6 py-12 max-h-[100svh] md:py-24 flex flex-col justify-center items-stretch overflow-hidden">
-          <SectionHeader title="纯墨韵声" period="2015-2020" />
+          <SectionHeader title="纯墨韵声" />
           <div className="grid grid-cols-1 md:grid-cols-24 gap-3 md:gap-4 mt-8 md:mt-12 items-end h-full">
             <div className="hidden md:block col-span-4" />
             <GridCard event={rootsEvents[0]} index={0} compact />
@@ -61,7 +61,7 @@ export function Timeline() {
 
         {/* Layer 2: Growth */}
         <div id="growth" className="relative min-h-[100svh] snap-always snap-start w-full px-6 py-12 max-h-[100svh] md:py-24 flex flex-col justify-center items-stretch overflow-hidden">
-          <SectionHeader title="驰鸣羽势" period="2021-2024" align="right" />
+          <SectionHeader title="驰鸣羽势" align="right" />
           <div className="grid grid-cols-1 md:grid-cols-24 gap-3 md:gap-4 mt-8 md:mt-12 auto-rows-max items-center h-full">
             {/* Introduce some empty spacer divs for the broken grid effect in md+ */}
             <div className="hidden md:block col-span-3" />
@@ -84,7 +84,7 @@ export function Timeline() {
 
         {/* Layer 3: Future / Recent */}
         <div id="now" className="relative min-h-[100svh] snap-always snap-start w-full px-6 py-12 max-h-[100svh] md:py-24 flex flex-col justify-center items-stretch overflow-hidden">
-          <SectionHeader title="诚盟远溯" period="2025-2026" />
+          <SectionHeader title="诚盟远溯" />
           <div className="grid grid-cols-1 md:grid-cols-24 gap-4 md:gap-6 mt-8 md:mt-16 items-start">
             {futureEvents.map((event, i) => (
               <GridCard key={event.id} event={event} index={i} compact />
@@ -97,7 +97,7 @@ export function Timeline() {
   );
 }
 
-function SectionHeader({ title, period, align = "left" }: { title: string, period: string, align?: "left" | "right" }) {
+function SectionHeader({ title, align = "left" }: { title: string, align?: "left" | "right" }) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -107,14 +107,11 @@ function SectionHeader({ title, period, align = "left" }: { title: string, perio
       viewport={{ once: false, margin: "-20%" }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "flex flex-col gap-2 relative z-10",
-        align === "right" ? "items-end text-right" : "items-start text-left"
+        "relative z-10",
+        align === "right" ? "text-right" : "text-left"
       )}
     >
-      <span className="font-mono text-sm tracking-widest text-secondary uppercase py-1 border-b border-primary/20">
-        {period}
-      </span>
-      <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-primary mt-2">
+      <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-primary">
         {title}
       </h2>
     </motion.div>
