@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { TimelineEvent } from "../data";
 import { cn } from "../lib/utils";
 
@@ -12,30 +12,31 @@ interface GridCardProps {
 export function GridCard({ event, index, compact = false }: GridCardProps) {
   const isNarrative = event.category === "Narrative";
   const isLeadership = event.category === "Leadership";
+  const shouldReduceMotion = useReducedMotion();
+  const fallbackSpan = 6 + (index % 3) * 2;
   
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={shouldReduceMotion ? false : { opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: false, margin: "-10%" }}
       transition={{ 
-        duration: 1.2, 
-        delay: index * 0.1,
+        duration: 0.9,
+        delay: shouldReduceMotion ? 0 : index * 0.08,
         ease: [0.22, 1, 0.36, 1] 
       }}
-      whileHover={{ scale: 1.02, y: -5 }}
       style={{
-        gridColumn: `span ${event.colSpan || Math.floor(Math.random() * 6) + 6}`,
+        gridColumn: `span ${event.colSpan || fallbackSpan}`,
       }}
       className={cn(
-        "group relative cursor-crosshair transition-all duration-300",
+        "group relative cursor-crosshair transition-colors duration-500",
         "glass-panel border-primary hover:bg-white/20",
         "overflow-hidden isolate min-w-[200px]",
         compact ? "p-4" : "p-6"
       )}
     >
       {/* 1px Solid Borders line-art style edges */}
-      <div className="absolute inset-0 border border-primary/20 group-hover:border-primary/50 transition-colors z-0 pointer-events-none" />
+      <div className="absolute inset-0 border border-primary/20 group-hover:border-primary/50 transition-colors duration-500 z-0 pointer-events-none" />
       
       {/* Decorative corner markers */}
       <div className="absolute top-0 left-0 w-2 h-[1px] bg-primary z-0" />
@@ -78,8 +79,8 @@ export function GridCard({ event, index, compact = false }: GridCardProps) {
         )}
       </div>
 
-      {/* Subtle hover effect text shift / shadow */}
-      <div className="absolute -inset-2 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-xl z-[-2]" />
+      {/* Subtle hover effect */}
+      <div className="absolute -inset-2 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl z-[-2]" />
     </motion.div>
   );
 }
