@@ -63,8 +63,9 @@ function AppContent({
   onDailyFortuneSet: (f: Fortune | null) => void
 }) {
   const location = useLocation();
-  const showFooter = location.pathname === "/" || location.pathname === "/about";
-  const showDecorativeScrollbar = location.pathname !== "/life";
+  const isMainSite = location.pathname === "/" || location.pathname === "/about";
+  const showFooter = isMainSite;
+  const showDecorativeScrollbar = isMainSite;
 
   return (
     <div className="relative">
@@ -128,4 +129,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
