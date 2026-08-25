@@ -26,6 +26,14 @@ const experiments = [
     note: "收集那些恰好长成 CMYS 的短句与余响。",
     status: "ACTIVE",
   },
+  {
+    index: "004",
+    path: "/signal",
+    title: "采鸣音隙",
+    label: "SIGNAL / FREQUENCY TUNER",
+    note: "转动频率，在噪声里找回四段短句。",
+    status: "ACTIVE",
+  },
 ] as const;
 
 export function LabPage() {
