@@ -106,8 +106,23 @@ function RouteScrollReset() {
   const location = useLocation();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [location.pathname]);
+    if (!location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      return;
+    }
+
+    const targetId = decodeURIComponent(location.hash.slice(1));
+    const frame = window.requestAnimationFrame(() => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: "auto", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [location.pathname, location.hash]);
 
   return null;
 }
