@@ -102,6 +102,16 @@ function RouteMetadata() {
   return null;
 }
 
+function RouteScrollReset() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
+
+  return null;
+}
+
 function AppContent({
   onOpenFortune,
   dailyFortune,
@@ -123,6 +133,7 @@ function AppContent({
   return (
     <div className="relative">
       <RouteMetadata />
+      <RouteScrollReset />
       {showDecorativeScrollbar && <DecorativeScrollbar />}
       <Header />
       <main className="relative z-20 min-h-screen bg-canvas text-primary font-sans selection:bg-primary selection:text-canvas">
