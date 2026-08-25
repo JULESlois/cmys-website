@@ -50,6 +50,14 @@ const experiments = [
     note: "没有地图，只靠方向、线索与记忆寻找出口。",
     status: "ACTIVE",
   },
+  {
+    index: "007",
+    path: "/memory",
+    title: "错梦已生",
+    label: "MEMORY / FALSE RECALL",
+    note: "八秒记住九个片段，再分辨哪些记忆从未发生。",
+    status: "ACTIVE",
+  },
 ] as const;
 
 export function LabPage() {
