@@ -22,11 +22,10 @@ const INITIAL_LINES: ShellLine[] = [
 
 const HELP_LINES = [
   "available commands:",
-  "help / about / life / fortune / gacha / music / ls / cd / pwd / echo / well / yomi / clear / exit",
+  "help / about / lab / life / fortune / gacha / music / ls / cd / pwd / echo / well / yomi / clear / exit",
   "music: music list / music 1 / music play 3 / music life_menu / music next / music prev / music pause / music resume",
-  "filesystem: ls / ls logs / cd music / cd .. / pwd / echo <text>",
+  "filesystem: ls / ls lab / cd music / cd .. / pwd / echo <text>",
 ];
-
 
 interface ChaosMusicEntry {
   commandId: string;
@@ -71,7 +70,8 @@ function findChaosMusicEntry(value: string | undefined): ChaosMusicEntry | undef
 }
 
 const VIRTUAL_FS: Record<string, string[]> = {
-  "/": ["about.txt", "life", "fortune", "music", "well", "yomi", "logs", "void"],
+  "/": ["about.txt", "lab", "life", "fortune", "music", "well", "yomi", "logs", "void"],
+  "/lab": ["gacha.experiment", "life.simulation"],
   "/life": ["mortality.sim", "save.record", "death.log"],
   "/fortune": ["daily.oracle", "probability.txt"],
   "/music": ["shuttle.device", "playlist.cache", "volume.lock"],
@@ -197,6 +197,15 @@ export function FooterChaosShell({ isOpen, onClose }: FooterChaosShellProps) {
       case "echo":
         output.push({ kind: "output", text: trimmed.replace(/^echo\s*/i, "") || "" });
         break;
+      case "lab":
+        output.push(
+          { kind: "output", text: "route: /lab" },
+          { kind: "output", text: "Curiosity Makes You Stray." },
+          { kind: "system", text: "opening experiment directory..." },
+        );
+        appendLines(output);
+        window.setTimeout(() => navigate("/lab"), 260);
+        return;
       case "life":
         output.push(
           { kind: "output", text: "route: /life" },
