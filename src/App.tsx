@@ -21,13 +21,36 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 const STORAGE_DATE_KEY = "esu_fortune_date";
 const STORAGE_KEY = "esu_fortune_daily";
 
-const ROUTE_TITLES: Record<string, string> = {
-  "/": "CMYS — 聪明一世",
-  "/about": "CMYS — 草木一生",
-  "/gacha": "CMYS — 揣摩运势",
-  "/life": "CMYS — 沉默一生",
-  "/lab": "CMYS — Curiosity Makes You Stray",
-  "/fragments": "CMYS — Certain Memories Yield Slowly",
+const ROUTE_METADATA: Record<string, { title: string; description: string }> = {
+  "/": {
+    title: "CMYS — 聪明一世",
+    description: "聪明一世，草木一生。CMYS 的个人网站与兴趣实验入口。",
+  },
+  "/about": {
+    title: "CMYS — 草木一生",
+    description: "草木一生。关于 CMYS、时间，以及一路留下的片段。",
+  },
+  "/gacha": {
+    title: "CMYS — 揣摩运势",
+    description: "揣摩运势。一次关于概率、仪式感与每日偶然的 CMYS 实验。",
+  },
+  "/life": {
+    title: "CMYS — 沉默一生",
+    description: "沉默一生。用选择、属性与偶然走完一段人生的 CMYS 实验。",
+  },
+  "/lab": {
+    title: "CMYS — Curiosity Makes You Stray",
+    description: "Curiosity Makes You Stray. An index of CMYS experiments and wandering ideas.",
+  },
+  "/fragments": {
+    title: "CMYS — Certain Memories Yield Slowly",
+    description: "Certain Memories Yield Slowly. A small archive of phrases that happen to become CMYS.",
+  },
+};
+
+const NOT_FOUND_METADATA = {
+  title: "CMYS — 此门已失",
+  description: "此门已失。这里没有对应的路径。",
 };
 
 function getTodayDate(): string {
@@ -64,7 +87,16 @@ function RouteMetadata() {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = ROUTE_TITLES[location.pathname] ?? "CMYS — 此门已失";
+    const metadata = ROUTE_METADATA[location.pathname] ?? NOT_FOUND_METADATA;
+    document.title = metadata.title;
+
+    let description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (!description) {
+      description = document.createElement("meta");
+      description.name = "description";
+      document.head.appendChild(description);
+    }
+    description.content = metadata.description;
   }, [location.pathname]);
 
   return null;
