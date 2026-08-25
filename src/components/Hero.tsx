@@ -38,8 +38,8 @@ export function Hero() {
           transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
           className="text-center"
         >
-          <h1 className="text-6xl sm:text-7xl lg:text-9xl font-bold tracking-tighter text-primary mb-6" style={{ fontVariantLigatures: "no-common-ligatures" }}>
-            <span className="block text-xl sm:text-3xl font-normal tracking-normal mb-4 font-mono text-secondary">你好，我叫</span>
+          <h1 className="text-6xl sm:text-7xl lg:text-9xl font-bold tracking-tighter text-primary" style={{ fontVariantLigatures: "no-common-ligatures" }}>
+            <span className="block text-xl sm:text-3xl font-normal tracking-normal mb-4 font-mono text-primary">你好，我叫</span>
             CMYS
           </h1>
           <motion.div
@@ -47,20 +47,10 @@ export function Hero() {
             whileInView={{ opacity: 0.3 }}
             viewport={{ once: false, amount: 0.5 }}
             transition={{ duration: 1.4, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="h-[1px] w-32 bg-primary mx-auto mt-8 mb-4"
+            className="h-[1px] w-32 bg-primary mx-auto mt-8"
           />
         </motion.div>
       </div>
-
-      <motion.div
-        className="absolute bottom-12 left-1/2 -translate-x-1/2"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 0.65 }}
-        viewport={{ once: false, amount: 0.5 }}
-        transition={{ delay: 1.1, duration: 1 }}
-      >
-        <span className="text-[10px] tracking-[0.28em] font-mono text-secondary">SCROLL</span>
-      </motion.div>
     </section>
   );
 }
