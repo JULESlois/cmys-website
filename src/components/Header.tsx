@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { cn } from "../lib/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -11,14 +11,19 @@ export function Header() {
   const { scrollYProgress } = useScroll();
   const navigate = useNavigate();
   const location = useLocation();
+  const shouldReduceMotion = useReducedMotion();
   
   const height = useTransform(scrollYProgress, [0, 0.2], ["15vh", "8vh"]);
   const logoScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.7]);
+  const logoLetterSpacing = useTransform(scrollYProgress, [0, 0.2], ["-0.05em", "0.2em"]);
+  const logoFontWeight = useTransform(scrollYProgress, [0, 0.2], ["700", "400"]);
+  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const isGachaPage = location.pathname === "/gacha";
   const isLifePage = location.pathname === "/life";
   const showNavLinks = location.pathname === "/" || location.pathname === "/about";
-  const headerY = useTransform(scrollYProgress, [0.85, 0.9], [isGachaPage ? "0%" : "0%", isGachaPage ? "0%" : "-100%"]);
+  const headerY = useTransform(scrollYProgress, [0.85, 0.9], ["0%", isGachaPage ? "0%" : "-100%"]);
   const headerOpacity = useTransform(scrollYProgress, [0.85, 0.9], [1, isGachaPage ? 1 : 0]);
+  const scrollBehavior: ScrollBehavior = shouldReduceMotion ? "auto" : "smooth";
 
   const navLinks: NavLinkItem[] = [
     { name: "纯墨韵声", path: "/about#roots" },
@@ -35,7 +40,7 @@ export function Header() {
       } else {
         const element = document.getElementById(hash);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          element.scrollIntoView({ behavior: scrollBehavior, block: "start" });
         }
       }
     } else {
@@ -52,7 +57,11 @@ export function Header() {
 
   return (
     <motion.header
-      style={{ height, y: headerY, opacity: headerOpacity }}
+      style={
+        shouldReduceMotion
+          ? { height: "8vh", y: "0%", opacity: 1 }
+          : { height, y: headerY, opacity: headerOpacity }
+      }
       className={`header-hover-reveal fixed top-0 left-0 w-full z-50 flex items-center border-b border-primary/10 px-6 overflow-hidden transition-all duration-300 ${
         isLifePage ? "hidden" : ""
       }`}
@@ -73,7 +82,7 @@ export function Header() {
 
         {/* Center Logo */}
         <motion.div
-          style={{ scale: logoScale }}
+          style={shouldReduceMotion ? undefined : { scale: logoScale }}
           className={`flex justify-center items-center ${isLifePage ? "md:opacity-0 pointer-events-none" : ""}`}
         >
           <button 
@@ -81,18 +90,19 @@ export function Header() {
               if (location.pathname !== "/") {
                 navigate("/");
               } else {
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                window.scrollTo({ top: 0, behavior: scrollBehavior });
               }
             }}
             className="font-serif text-4xl sm:text-5xl tracking-tighter text-primary group overflow-hidden cursor-pointer"
           >
             <motion.span 
               className="inline-block"
-              style={{ 
-                letterSpacing: useTransform(scrollYProgress, [0, 0.2], ["-0.05em", "0.2em"]),
-                fontWeight: useTransform(scrollYProgress, [0, 0.2], ["700", "400"])
-              }}
-              transition={{ duration: 0.5 }}
+              style={
+                shouldReduceMotion
+                  ? { letterSpacing: "0.2em", fontWeight: 400 }
+                  : { letterSpacing: logoLetterSpacing, fontWeight: logoFontWeight }
+              }
+              transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             >
               CMYS
             </motion.span>
@@ -115,7 +125,7 @@ export function Header() {
       
       <motion.div
         className="absolute bottom-0 left-0 h-[1px] bg-secondary"
-        style={{ width: useTransform(scrollYProgress, [0, 1], ["0%", "100%"]) }}
+        style={{ width: shouldReduceMotion ? "100%" : progressWidth }}
       />
     </motion.header>
   );
