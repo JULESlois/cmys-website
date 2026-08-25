@@ -15,6 +15,7 @@ import { AboutPage } from "./pages/AboutPage";
 import { GachaPage } from "./pages/GachaPage";
 import { LifePage } from "./pages/LifePage";
 import { LabPage } from "./pages/LabPage";
+import { FragmentsPage } from "./pages/FragmentsPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 
 const STORAGE_DATE_KEY = "esu_fortune_date";
@@ -26,6 +27,7 @@ const ROUTE_TITLES: Record<string, string> = {
   "/gacha": "CMYS — 揣摩运势",
   "/life": "CMYS — 沉默一生",
   "/lab": "CMYS — Curiosity Makes You Stray",
+  "/fragments": "CMYS — Certain Memories Yield Slowly",
 };
 
 function getTodayDate(): string {
@@ -106,6 +108,7 @@ function AppContent({
           />
           <Route path="/life" element={<LifePage />} />
           <Route path="/lab" element={<LabPage />} />
+          <Route path="/fragments" element={<FragmentsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
