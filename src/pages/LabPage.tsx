@@ -58,6 +58,14 @@ const experiments = [
     note: "八秒记住九个片段，再分辨哪些记忆从未发生。",
     status: "ACTIVE",
   },
+  {
+    index: "008",
+    path: "/constellation",
+    title: "辰芒映宿",
+    label: "CONSTELLATION / GENERATIVE DRAWING",
+    note: "落下星点，让最近的两颗星自己找到彼此。",
+    status: "ACTIVE",
+  },
 ] as const;
 
 export function LabPage() {
