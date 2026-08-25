@@ -18,6 +18,14 @@ const experiments = [
     note: "用选择、属性与偶然走完一段人生。",
     status: "ACTIVE",
   },
+  {
+    index: "003",
+    path: "/fragments",
+    title: "残梦余声",
+    label: "FRAGMENTS / CMYS LANGUAGE STUDY",
+    note: "收集那些恰好长成 CMYS 的短句与余响。",
+    status: "ACTIVE",
+  },
 ] as const;
 
 export function LabPage() {
@@ -106,7 +114,7 @@ export function LabPage() {
         </div>
 
         <footer className="mt-8 flex items-center justify-between gap-6 font-mono text-[9px] uppercase tracking-[0.22em] text-secondary/70">
-          <span>2 experiments indexed</span>
+          <span>{experiments.length} experiments indexed</span>
           <span>More nodes may appear</span>
         </footer>
       </motion.div>
