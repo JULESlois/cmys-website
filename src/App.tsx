@@ -20,6 +20,14 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 const STORAGE_DATE_KEY = "esu_fortune_date";
 const STORAGE_KEY = "esu_fortune_daily";
 
+const ROUTE_TITLES: Record<string, string> = {
+  "/": "CMYS — 聪明一世",
+  "/about": "CMYS — 草木一生",
+  "/gacha": "CMYS — 揣摩运势",
+  "/life": "CMYS — 沉默一生",
+  "/lab": "CMYS — Curiosity Makes You Stray",
+};
+
 function getTodayDate(): string {
   // 返回中国标准时间 (CST, UTC+8) 的日期字符串 (YYYY-MM-DD)
   const now = new Date();
@@ -50,6 +58,16 @@ function getStoredDailyFortune(fortunes: Fortune[]): Fortune | null {
   }
 }
 
+function RouteMetadata() {
+  const location = useLocation();
+
+  useEffect(() => {
+    document.title = ROUTE_TITLES[location.pathname] ?? "CMYS — 此门已失";
+  }, [location.pathname]);
+
+  return null;
+}
+
 function AppContent({
   onOpenFortune,
   dailyFortune,
@@ -70,6 +88,7 @@ function AppContent({
 
   return (
     <div className="relative">
+      <RouteMetadata />
       {showDecorativeScrollbar && <DecorativeScrollbar />}
       <Header />
       <main className="relative z-20 min-h-screen bg-canvas text-primary font-sans selection:bg-primary selection:text-canvas">
