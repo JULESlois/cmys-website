@@ -39,7 +39,7 @@ export function Hero() {
           className="text-center"
         >
           <h1 className="text-6xl sm:text-7xl lg:text-9xl font-bold tracking-tighter text-primary" style={{ fontVariantLigatures: "no-common-ligatures" }}>
-            <span className="block text-xl sm:text-3xl font-normal tracking-normal mb-4 font-mono text-primary">你好，我叫</span>
+            <span className="block text-xl sm:text-3xl font-normal tracking-normal mb-4 font-mono text-secondary">你好，我叫</span>
             CMYS
           </h1>
           <motion.div
