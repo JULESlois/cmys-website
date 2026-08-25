@@ -42,6 +42,14 @@ const experiments = [
     note: "六十秒走完一生，每五秒只来得及选一次。",
     status: "ACTIVE",
   },
+  {
+    index: "006",
+    path: "/maze",
+    title: "穿迷夜巷",
+    label: "MAZE / TEXT EXPLORATION",
+    note: "没有地图，只靠方向、线索与记忆寻找出口。",
+    status: "ACTIVE",
+  },
 ] as const;
 
 export function LabPage() {
