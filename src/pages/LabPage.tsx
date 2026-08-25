@@ -34,6 +34,14 @@ const experiments = [
     note: "转动频率，在噪声里找回四段短句。",
     status: "ACTIVE",
   },
+  {
+    index: "005",
+    path: "/minute",
+    title: "驰梦一瞬",
+    label: "MINUTE / 60 SECOND LIFE",
+    note: "六十秒走完一生，每五秒只来得及选一次。",
+    status: "ACTIVE",
+  },
 ] as const;
 
 export function LabPage() {
