@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll } from "motion/react";
 import { useRef } from "react";
 import { timelineData } from "../data";
 import { GridCard } from "./GridCard";
@@ -6,11 +6,6 @@ import { cn } from "../lib/utils";
 
 export function Timeline() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start center", "end end"]
-  });
-
   const pathLength = useScroll({
     target: containerRef,
     offset: ["start center", "end center"]
@@ -103,12 +98,14 @@ export function Timeline() {
 }
 
 function SectionHeader({ title, period, align = "left" }: { title: string, period: string, align?: "left" | "right" }) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <motion.div 
-      initial={{ opacity: 0, x: align === "left" ? -50 : 50 }}
-      whileInView={{ opacity: 1, x: 0 }}
+    <motion.div
+      initial={shouldReduceMotion ? false : { opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: false, margin: "-20%" }}
-      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
         "flex flex-col gap-2 relative z-10",
         align === "right" ? "items-end text-right" : "items-start text-left"
