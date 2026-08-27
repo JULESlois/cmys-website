@@ -62,7 +62,7 @@ export function HomeQuoteScreen({ quotes, headingLevel, alignRight = false }: Ho
             {quote.before}
             <Link
               to={quote.href}
-              className="home-quote-link transition-colors duration-300 hover:text-secondary focus-visible:outline-1 focus-visible:outline-primary focus-visible:outline-offset-4"
+              className="home-quote-link focus-visible:outline-1 focus-visible:outline-primary focus-visible:outline-offset-4"
             >
               「{quote.linkText}」
             </Link>

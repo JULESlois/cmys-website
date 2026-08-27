@@ -16,7 +16,6 @@ export function Header() {
   const height = useTransform(scrollYProgress, [0, 0.2], ["15vh", "8vh"]);
   const logoScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.7]);
   const logoLetterSpacing = useTransform(scrollYProgress, [0, 0.2], ["-0.05em", "0.2em"]);
-  const logoFontWeight = useTransform(scrollYProgress, [0, 0.2], ["700", "400"]);
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const isGachaPage = location.pathname === "/gacha";
   const isLifePage = location.pathname === "/life";
@@ -99,8 +98,8 @@ export function Header() {
               className="inline-block"
               style={
                 shouldReduceMotion
-                  ? { letterSpacing: "0.2em", fontWeight: 400 }
-                  : { letterSpacing: logoLetterSpacing, fontWeight: logoFontWeight }
+                  ? { letterSpacing: "0.2em" }
+                  : { letterSpacing: logoLetterSpacing }
               }
               transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             >

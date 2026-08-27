@@ -14,8 +14,18 @@
 
 @layer base {
   html {
-    scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
+  }
+
+  /* Scroll snapping belongs to the narrative pages (/ and /about) only.
+     Applying it on <html> globally made every lab experiment snap while scrolling. */
+  html[data-snap="true"] {
+    scroll-snap-type: y mandatory;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-primary);
+    outline-offset: 3px;
   }
   body {
     background-color: var(--color-canvas);
@@ -106,6 +116,22 @@
   z-index: 10;
 }
 
+/* The two homepage quote links are the whole page's navigation.
+   A hairline underline keeps them findable without hover — the 「」 marks
+   alone give touch users no affordance at all. */
+.home-quote-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  transition: text-decoration-color 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-quote-link:hover,
+.home-quote-link:focus-visible {
+  text-decoration-color: color-mix(in srgb, var(--color-primary) 60%, transparent);
+}
+
 @keyframes cinematic-roll {
   0% { transform: translateY(72vh); }
   100% { transform: translateY(-112%); }
@@ -113,4 +139,46 @@
 
 .cinematic-roll {
   animation: cinematic-roll 32s linear forwards;
+}
+
+/* /redact — a committed cut blacks out, then collapses out of layout. */
+@keyframes redact-scar {
+  0% { opacity: 1; }
+  55% { opacity: 1; }
+  100% { opacity: 0.12; }
+}
+
+/* Keyboard-only escape hatch past the hover-reveal navigation. */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  padding: 0.65rem 1.1rem;
+  background-color: var(--color-primary);
+  color: var(--color-canvas);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.skip-link:focus-visible {
+  top: 1rem;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

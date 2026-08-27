@@ -66,6 +66,14 @@ const experiments = [
     note: "落下星点，让最近的两颗星自己找到彼此。",
     status: "ACTIVE",
   },
+  {
+    index: "009",
+    path: "/redact",
+    title: "裁墨隐书",
+    label: "REDACT / SELECTION AS INPUT",
+    note: "用浏览器自己的选中手势删字，让剩下的话重新成句。",
+    status: "ACTIVE",
+  },
 ] as const;
 
 export function LabPage() {

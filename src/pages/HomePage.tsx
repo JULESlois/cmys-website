@@ -9,11 +9,15 @@ export function HomePage() {
       <div className="relative bg-canvas">
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none opacity-10"
+          className="absolute inset-0 pointer-events-none opacity-[0.05]"
           style={{
             backgroundImage:
               "linear-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(90deg, var(--color-primary) 1px, transparent 1px)",
             backgroundSize: "100px 100px",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)",
           }}
         />
         <div className="relative z-10">

@@ -21,6 +21,7 @@ import { MinutePage } from "./pages/MinutePage";
 import { MazePage } from "./pages/MazePage";
 import { MemoryPage } from "./pages/MemoryPage";
 import { ConstellationPage } from "./pages/ConstellationPage";
+import { RedactPage } from "./pages/RedactPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 
 const STORAGE_DATE_KEY = "esu_fortune_date";
@@ -38,6 +39,7 @@ const ROUTE_METADATA: Record<string, { title: string; description: string }> = {
   "/maze": { title: "CMYS — 迷径", description: "没有地图的文字迷宫。凭方向、线索与记忆寻找出口。" },
   "/memory": { title: "CMYS — 错梦已生", description: "八秒记忆实验。辨认真正出现过的片段，以及后来混进来的伪记忆。" },
   "/constellation": { title: "CMYS — 辰芒映宿", description: "Connect Moments, Yield Stars. 点击空白，自行连出一幅只属于此刻的星图。" },
+  "/redact": { title: "CMYS — 裁墨隐书", description: "裁墨隐书。用浏览器自己的选中手势删去字句，让剩下的文字重新说话。" },
 };
 
 const NOT_FOUND_METADATA = { title: "CMYS — 此门已失", description: "此门已失。这里没有对应的路径。" };
@@ -119,13 +121,26 @@ function AppContent({ onOpenFortune, dailyFortune, isFortuneOpen, onCloseFortune
   const location = useLocation();
   const isMainSite = location.pathname === "/" || location.pathname === "/about";
 
+  // Only the narrative pages opt into scroll snapping; lab experiments scroll normally.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isMainSite) root.dataset.snap = "true";
+    else delete root.dataset.snap;
+    return () => {
+      delete root.dataset.snap;
+    };
+  }, [isMainSite]);
+
   return (
     <div className="relative">
       <RouteMetadata />
       <RouteScrollReset />
+      <a href="#main-content" className="skip-link">
+        跳到主要内容
+      </a>
       {isMainSite && <DecorativeScrollbar />}
       <Header />
-      <main className="relative z-20 min-h-screen bg-canvas text-primary font-sans selection:bg-primary selection:text-canvas">
+      <main id="main-content" className="relative z-20 min-h-screen bg-canvas text-primary font-sans selection:bg-primary selection:text-canvas">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -138,6 +153,7 @@ function AppContent({ onOpenFortune, dailyFortune, isFortuneOpen, onCloseFortune
           <Route path="/maze" element={<MazePage />} />
           <Route path="/memory" element={<MemoryPage />} />
           <Route path="/constellation" element={<ConstellationPage />} />
+          <Route path="/redact" element={<RedactPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
